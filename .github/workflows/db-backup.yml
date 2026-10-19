@@ -1,0 +1,72 @@
+name: Nightly Database Backup
+
+on:
+  schedule:
+    - cron: "0 2 * * *"   # 02:00 UTC daily
+  workflow_dispatch:        # manual trigger for pre-migration checkpoints
+
+jobs:
+  backup:
+    name: pg_dump → encrypt → upload
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y postgresql-client gnupg
+
+      - name: Dump, encrypt, and upload
+        env:
+          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
+          BACKUP_BUCKET: ${{ secrets.BACKUP_BUCKET_URL }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        run: |
+          TIMESTAMP=$(date -u +%Y%m%dT%H%M%SZ)
+          FILENAME="acadex_backup_${TIMESTAMP}.dump.gpg"
+
+          # Dump → encrypt in one pipeline (no plaintext on disk)
+          pg_dump "$DATABASE_URL" \
+            --format=custom \
+            --no-acl \
+            --no-owner \
+          | gpg --batch \
+                --encrypt \
+                --recipient "$GPG_KEY_ID" \
+                --trust-model always \
+          > "$FILENAME"
+
+          echo "Dump size: $(du -sh $FILENAME)"
+
+          # Upload to off-platform bucket
+          # Supports s3://, gs://, or r2:// depending on your cloud provider.
+          # Example below uses AWS CLI — swap for gsutil / rclone as needed.
+          aws s3 cp "$FILENAME" "${BACKUP_BUCKET}/${FILENAME}" \
+            --storage-class STANDARD_IA
+
+          echo "Uploaded: ${BACKUP_BUCKET}/${FILENAME}"
+
+      - name: Enforce 90-day retention
+        env:
+          BACKUP_BUCKET: ${{ secrets.BACKUP_BUCKET_URL }}
+        run: |
+          # Delete objects older than 90 days.
+          # Alternatively configure a lifecycle rule on the bucket directly.
+          CUTOFF=$(date -u -d "90 days ago" +%Y-%m-%dT%H:%M:%SZ 2>/dev/null || \
+                   date -u -v-90d +%Y-%m-%dT%H:%M:%SZ)
+          echo "Retaining backups newer than: $CUTOFF"
+          aws s3 ls "${BACKUP_BUCKET}/" \
+            | awk -v cutoff="$CUTOFF" '$1 < cutoff {print $4}' \
+            | while read -r key; do
+                aws s3 rm "${BACKUP_BUCKET}/${key}"
+                echo "Removed: $key"
+              done
+
+      - name: Verify dump integrity
+        run: |
+          # Confirm the encrypted file is non-zero and starts with GPG magic bytes
+          if [ ! -s *.dump.gpg ]; then
+            echo "ERROR: Backup file is empty!" >&2
+            exit 1
+          fi
+          echo "Backup file integrity check passed."

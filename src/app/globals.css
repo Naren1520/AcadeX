@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme {
+  /* Typography */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+
+  /* Navy blue — primary accent */
+  --color-navy: #1e3a5f;
+  --color-navy-light: #2d5a9e;
+  --color-navy-dark: #132840;
+
+  /* Neutral palette */
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f3f4f6;
+  --color-neutral-200: #e5e7eb;
+  --color-neutral-300: #d1d5db;
+  --color-neutral-400: #9ca3af;
+  --color-neutral-500: #6b7280;
+  --color-neutral-600: #4b5563;
+  --color-neutral-700: #374151;
+  --color-neutral-800: #1f2937;
+  --color-neutral-900: #111827;
+
+  /* Status colours */
+  --color-status-pending: #d97706;    /* amber-600 */
+  --color-status-approved: #16a34a;   /* green-600 */
+  --color-status-rejected: #dc2626;   /* red-600 */
+  --color-status-revision: #ea580c;   /* orange-600 */
+}
+
+/* Base typography */
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-neutral-900);
+    background-color: #ffffff;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-weight: 600;
+    color: var(--color-neutral-900);
+  }
+
+  a {
+    color: var(--color-navy);
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+}
