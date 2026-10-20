@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -13,6 +13,9 @@ export interface NavItem {
 interface SidebarProps {
   navItems: NavItem[];
   role: "admin" | "faculty" | "student";
+  /** controlled from Header hamburger on mobile */
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
 }
 
 const roleLabel: Record<string, string> = {
@@ -21,67 +24,75 @@ const roleLabel: Record<string, string> = {
   student: "Student",
 };
 
-export function Sidebar({ navItems, role }: SidebarProps) {
-  const [collapsed, setCollapsed] = useState(false);
+export function Sidebar({ navItems, role, mobileOpen = false, onMobileClose }: SidebarProps) {
+  const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const pathname = usePathname();
+
+  // Close mobile drawer on route change
+  useEffect(() => {
+    onMobileClose?.();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname]);
 
   return (
     <>
-      {/* Mobile overlay */}
-      {!collapsed && (
+      {/* ── Mobile backdrop ── */}
+      {mobileOpen && (
         <div
-          className="fixed inset-0 z-20 md:hidden"
-          style={{ backgroundColor: "rgba(0,0,0,0.3)" }}
-          onClick={() => setCollapsed(true)}
+          className="fixed inset-0 z-30 md:hidden"
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+          onClick={onMobileClose}
           aria-hidden="true"
         />
       )}
 
+      {/* ── Sidebar ── */}
       <aside
-        className={`flex h-full flex-col transition-all duration-200 ${
-          collapsed ? "w-0 overflow-hidden md:w-16" : "w-64"
-        }`}
-        style={{
-          backgroundColor: "#1e3a5f",
-          minHeight: "100vh",
-          flexShrink: 0,
-        }}
+        className={[
+          "flex flex-col transition-all duration-200",
+          // Mobile: fixed drawer that slides in/out
+          "fixed inset-y-0 left-0 z-40 md:relative md:z-auto md:translate-x-0",
+          mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
+          // Desktop width
+          desktopCollapsed ? "md:w-16" : "md:w-64",
+          // Mobile always full sidebar width when open
+          "w-64",
+        ].join(" ")}
+        style={{ backgroundColor: "#1e3a5f", minHeight: "100dvh", flexShrink: 0 }}
         aria-label="Main navigation"
       >
-        {/* Logo + collapse */}
+        {/* Logo + collapse toggle */}
         <div
           className="flex items-center justify-between px-4 py-4"
           style={{ borderBottom: "1px solid rgba(255,255,255,0.1)" }}
         >
-          {!collapsed && (
+          {!desktopCollapsed && (
             <span className="text-lg font-bold text-white">AcadeX</span>
           )}
+          {/* Desktop collapse button */}
           <button
-            onClick={() => setCollapsed((c) => !c)}
-            className="rounded p-1 text-white/70 transition-colors hover:text-white"
-            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+            onClick={() => setDesktopCollapsed((c) => !c)}
+            className="hidden cursor-pointer rounded p-1 text-white/70 transition-colors hover:text-white md:block"
+            aria-label={desktopCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 18 18"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              aria-hidden="true"
-            >
-              {collapsed ? (
-                <path d="M3 9h12M3 4h12M3 14h12" />
-              ) : (
-                <path d="M3 9h12M3 4h12M3 14h12" />
-              )}
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+              <path d="M3 9h12M3 4h12M3 14h12" />
+            </svg>
+          </button>
+          {/* Mobile close button */}
+          <button
+            onClick={onMobileClose}
+            className="cursor-pointer rounded p-1 text-white/70 transition-colors hover:text-white md:hidden"
+            aria-label="Close menu"
+          >
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
+              <path d="M4 4l10 10M14 4L4 14" />
             </svg>
           </button>
         </div>
 
         {/* Role badge */}
-        {!collapsed && (
+        {!desktopCollapsed && (
           <div className="px-4 py-2">
             <span
               className="inline-block rounded px-2 py-0.5 text-xs font-medium"
@@ -93,32 +104,28 @@ export function Sidebar({ navItems, role }: SidebarProps) {
         )}
 
         {/* Nav items */}
-        <nav className="flex-1 px-2 py-2">
+        <nav className="flex-1 overflow-y-auto px-2 py-2">
           <ul role="list" className="flex flex-col gap-0.5">
             {navItems.map((item) => {
               const isActive =
                 item.href === "/admin" || item.href === "/faculty" || item.href === "/student"
-                  ? pathname === item.href          // exact match for dashboard roots
+                  ? pathname === item.href
                   : pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <li key={item.href}>
                   <Link
                     href={item.href}
-                    className="flex items-center gap-3 rounded px-3 py-2 text-sm transition-colors"
+                    className="flex items-center gap-3 rounded px-3 py-2.5 text-sm transition-colors"
                     style={{
                       color: isActive ? "#ffffff" : "rgba(255,255,255,0.7)",
-                      backgroundColor: isActive
-                        ? "rgba(255,255,255,0.15)"
-                        : "transparent",
+                      backgroundColor: isActive ? "rgba(255,255,255,0.15)" : "transparent",
                     }}
                     aria-current={isActive ? "page" : undefined}
                   >
                     {item.icon && (
-                      <span aria-hidden="true" className="flex-shrink-0">
-                        {item.icon}
-                      </span>
+                      <span aria-hidden="true" className="flex-shrink-0">{item.icon}</span>
                     )}
-                    {!collapsed && <span>{item.label}</span>}
+                    {!desktopCollapsed && <span>{item.label}</span>}
                   </Link>
                 </li>
               );
@@ -127,15 +134,12 @@ export function Sidebar({ navItems, role }: SidebarProps) {
         </nav>
 
         {/* Sign out */}
-        {!collapsed && (
-          <div
-            className="px-4 py-4"
-            style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}
-          >
+        {!desktopCollapsed && (
+          <div className="px-4 py-4" style={{ borderTop: "1px solid rgba(255,255,255,0.1)" }}>
             <form action="/api/auth/logout" method="POST">
               <button
                 type="submit"
-                className="w-full rounded px-3 py-2 text-left text-sm transition-colors"
+                className="w-full cursor-pointer rounded px-3 py-2 text-left text-sm transition-colors hover:bg-white/10"
                 style={{ color: "rgba(255,255,255,0.7)" }}
               >
                 Sign out

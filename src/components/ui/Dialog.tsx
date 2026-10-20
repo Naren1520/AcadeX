@@ -25,8 +25,13 @@ export function Dialog({
           style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
         />
         <RadixDialog.Content
-          className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 shadow-lg"
-          style={{ border: "1px solid #e5e7eb" }}
+          className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 shadow-lg sm:rounded-lg"
+          style={{
+            border: "1px solid #e5e7eb",
+            // Full screen on mobile, modal on sm+
+            maxHeight: "100dvh",
+            overflowY: "auto",
+          }}
         >
           <div className="flex items-start justify-between gap-4">
             <div>
