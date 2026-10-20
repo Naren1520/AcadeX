@@ -1,11 +1,13 @@
 import { NextResponse } from "next/server";
-import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseRouteClient } from "@/lib/supabase/server";
 import { writeAuditLog, AuditEventTypes } from "@/server/audit";
 import { toErrorResponse } from "@/lib/errors/httpResponse";
 
-export async function POST() {
+export async function POST(request: Request) {
   try {
-    const supabase = await getSupabaseServerClient();
+    const response = NextResponse.redirect(new URL("/login", request.url));
+    const supabase = await createSupabaseRouteClient(response);
+
     const { data: { user } } = await supabase.auth.getUser();
 
     if (user) {
@@ -23,8 +25,15 @@ export async function POST() {
     }
 
     await supabase.auth.signOut();
-    return NextResponse.json({ success: true });
+
+    // Redirect to login — cookies cleared by signOut are set on this response
+    return response;
   } catch (err) {
     return toErrorResponse(err);
   }
+}
+
+// Handle accidental GET navigation (e.g. someone types the URL)
+export async function GET(request: Request) {
+  return NextResponse.redirect(new URL("/login", request.url));
 }

@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+﻿import { NextResponse } from "next/server";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 
 export async function GET(request: Request) {
@@ -18,9 +18,9 @@ export async function GET(request: Request) {
 
       const profile = profileData as { role: string } | null;
       const role = profile?.role;
-      let redirectPath = "/portal/student";
-      if (role === "admin") redirectPath = "/portal/admin";
-      else if (role === "faculty") redirectPath = "/portal/faculty";
+      let redirectPath = "/student";
+      if (role === "admin") redirectPath = "/admin";
+      else if (role === "faculty") redirectPath = "/faculty";
 
       return NextResponse.redirect(`${origin}${redirectPath}`);
     }

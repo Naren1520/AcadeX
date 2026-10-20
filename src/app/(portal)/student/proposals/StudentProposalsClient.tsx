@@ -175,7 +175,7 @@ export function StudentProposalsClient({ teamId, teamStatus, proposals, facultyL
                 {status === "revision_requested" && (
                   <div className="mt-3">
                     <a
-                      href={`/portal/student/proposals/${String(p.id)}/resubmit`}
+                      href={`/student/proposals/${String(p.id)}/resubmit`}
                       className="inline-flex items-center gap-1 text-sm font-medium"
                       style={{ color: "#1e3a5f" }}
                     >

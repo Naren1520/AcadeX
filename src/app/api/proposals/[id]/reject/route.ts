@@ -78,7 +78,7 @@ export async function PATCH(
     const notifPayload = {
       recipientIds,
       message: `Your proposal "${proposal.title}" has been rejected. Reason: ${parsed.data.rejection_reason}`,
-      deepLink: `/portal/student/proposals/${id}`,
+      deepLink: `/student/proposals/${id}`,
       triggerEvent: "proposal.rejected" as const,
     };
     sendInAppNotifications(notifPayload).catch(console.error);

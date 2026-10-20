@@ -235,7 +235,7 @@ export async function joinTeam(
   sendInAppNotifications({
     recipientIds: [req.studentId],
     message: "You have successfully joined the team.",
-    deepLink: `/portal/student/teams/${req.teamId}`,
+    deepLink: `/student/teams/${req.teamId}`,
     triggerEvent: "team.membership_changed",
   }).catch((err) =>
     console.error("[TeamFormation] Notification failed:", err)

@@ -1,15 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get("redirectTo");
 
@@ -18,32 +18,18 @@ function LoginForm() {
     setIsLoading(true);
     setError(null);
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
+    const supabase = getSupabaseBrowserClient();
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
-    const data = (await res.json()) as {
-      userId?: string;
-      role?: string;
-      error?: string;
-    };
-
-    if (!res.ok) {
-      setError(data.error ?? "Sign in failed. Please try again.");
+    if (signInError) {
+      setError("Invalid credentials. Please check your email and password.");
       setIsLoading(false);
       return;
     }
 
-    // Redirect based on role
-    const role = data.role;
-    let dest = redirectTo ?? "/portal/student";
-    if (role === "admin") dest = "/portal/admin";
-    else if (role === "faculty") dest = "/portal/faculty";
-
-    router.push(dest);
-    router.refresh();
+    // Let the server figure out the role — hard navigate to /dashboard
+    // which will redirect to the correct portal based on role
+    window.location.href = redirectTo ?? "/dashboard";
   }
 
   return (
@@ -52,20 +38,11 @@ function LoginForm() {
         className="w-full max-w-sm rounded bg-white p-8"
         style={{ border: "1px solid #e5e7eb" }}
       >
-        {/* Branding */}
         <div className="mb-6 text-center">
-          <h1
-            className="text-2xl font-bold"
-            style={{ color: "#1e3a5f" }}
-          >
-            AcadeX
-          </h1>
-          <p className="mt-1 text-sm text-neutral-500">
-            Sign in to your account
-          </p>
+          <h1 className="text-2xl font-bold" style={{ color: "#1e3a5f" }}>AcadeX</h1>
+          <p className="mt-1 text-sm text-neutral-500">Sign in to your account</p>
         </div>
 
-        {/* Generic error banner */}
         {error && (
           <p
             id="login-error"
@@ -79,10 +56,7 @@ function LoginForm() {
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-neutral-700"
-            >
+            <label htmlFor="email" className="block text-sm font-medium text-neutral-700">
               Email address
             </label>
             <input
@@ -100,10 +74,7 @@ function LoginForm() {
           </div>
 
           <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-neutral-700"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-neutral-700">
               Password
             </label>
             <input
@@ -131,9 +102,7 @@ function LoginForm() {
         </form>
 
         <p className="mt-4 text-center text-sm text-neutral-500">
-          <a href="/forgot-password" style={{ color: "#1e3a5f" }}>
-            Forgot your password?
-          </a>
+          <a href="/forgot-password" style={{ color: "#1e3a5f" }}>Forgot your password?</a>
         </p>
       </div>
     </main>
@@ -142,13 +111,11 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense
-      fallback={
-        <main className="flex min-h-screen items-center justify-center bg-white">
-          <p className="text-sm text-neutral-500">Loading…</p>
-        </main>
-      }
-    >
+    <Suspense fallback={
+      <main className="flex min-h-screen items-center justify-center bg-white">
+        <p className="text-sm text-neutral-500">Loading…</p>
+      </main>
+    }>
       <LoginForm />
     </Suspense>
   );

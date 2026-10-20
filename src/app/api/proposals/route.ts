@@ -110,7 +110,7 @@ export async function POST(request: Request) {
     sendInAppNotifications({
       recipientIds,
       message: `Your proposal "${parsed.data.title}" has been submitted and is pending review.`,
-      deepLink: `/portal/student/proposals/${proposal.id}`,
+      deepLink: `/student/proposals/${proposal.id}`,
       triggerEvent: "proposal.approved",
     }).catch(console.error);
 

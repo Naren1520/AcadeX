@@ -78,7 +78,7 @@ export async function PATCH(
     const notifPayload = {
       recipientIds,
       message: `Revision requested on proposal "${proposal.title}". Notes: ${parsed.data.revision_notes}`,
-      deepLink: `/portal/student/proposals/${id}`,
+      deepLink: `/student/proposals/${id}`,
       triggerEvent: "proposal.revision_requested" as const,
     };
     sendInAppNotifications(notifPayload).catch(console.error);

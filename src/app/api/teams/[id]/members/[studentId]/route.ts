@@ -44,7 +44,7 @@ export async function DELETE(
     sendInAppNotifications({
       recipientIds: [studentId],
       message: "You have been removed from your team.",
-      deepLink: `/portal/student/teams`,
+      deepLink: `/student/teams`,
       triggerEvent: "team.membership_changed",
     }).catch(console.error);
 

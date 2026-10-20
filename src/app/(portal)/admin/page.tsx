@@ -1,7 +1,6 @@
-import { redirect } from "next/navigation";
+﻿import { redirect } from "next/navigation";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { requireRole } from "@/server/authorization";
-import { getUserProfile } from "@/lib/supabase/helpers";
+import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { Shell } from "@/components/layout/Shell";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { Card, CardContent } from "@/components/ui/Card";
@@ -10,16 +9,30 @@ import { adminNav } from "@/config/navigation";
 
 export default async function AdminDashboard() {
   const supabase = await getSupabaseServerClient();
-  try { await requireRole(supabase, ["admin"]); } catch { redirect("/login"); }
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) redirect("/login");
 
-  const { data: { user } } = await supabase.auth.getUser();
-  const profile = await getUserProfile(supabase, user!.id);
+  const userId = session.user.id;
+
+  // Use service role to read profile — bypasses RLS
+  const service = getSupabaseServiceRoleClient();
+  const { data: profile } = await service
+    .from("profiles")
+    .select("role, full_name")
+    .eq("id", userId)
+    .single() as { data: { role: string; full_name: string } | null };
+
+  // Wrong role — redirect to their dashboard
+  if (!profile) redirect("/login");
+  if (profile.role === "faculty") redirect("/faculty");
+  if (profile.role === "student") redirect("/student");
+  if (profile.role !== "admin") redirect("/login");
 
   const [{ count: deptCount }, { count: studentCount }, { count: facultyCount }] =
     await Promise.all([
-      supabase.from("departments").select("id", { count: "exact", head: true }).eq("is_active", true),
-      supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "student"),
-      supabase.from("profiles").select("id", { count: "exact", head: true }).eq("role", "faculty"),
+      service.from("departments").select("id", { count: "exact", head: true }).eq("is_active", true),
+      service.from("profiles").select("id", { count: "exact", head: true }).eq("role", "student"),
+      service.from("profiles").select("id", { count: "exact", head: true }).eq("role", "faculty"),
     ]);
 
   const stats = [
@@ -29,10 +42,10 @@ export default async function AdminDashboard() {
   ];
 
   const quickActions = [
-    { label: "Manage Departments", href: "/portal/admin/departments" },
-    { label: "Manage Academic Years", href: "/portal/admin/academic-years" },
-    { label: "Assign Faculty", href: "/portal/admin/faculty-assignments" },
-    { label: "View Audit Logs", href: "/portal/admin/audit-logs" },
+    { label: "Manage Departments", href: "/admin/departments" },
+    { label: "Manage Academic Years", href: "/admin/academic-years" },
+    { label: "Assign Faculty", href: "/admin/faculty-assignments" },
+    { label: "View Audit Logs", href: "/admin/audit-logs" },
   ];
 
   return (
@@ -40,7 +53,7 @@ export default async function AdminDashboard() {
       role="admin"
       navItems={adminNav}
       breadcrumbs={[{ label: "Admin" }, { label: "Dashboard" }]}
-      userFullName={profile?.full_name}
+      userFullName={profile.full_name}
     >
       <PageWrapper
         title="Admin Dashboard"

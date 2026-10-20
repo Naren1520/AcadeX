@@ -1,38 +1,21 @@
-﻿import { getUserProfile } from "@/lib/supabase/helpers";
+﻿import { requirePageRole } from "@/lib/supabase/pageAuth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { requireRole } from "@/server/authorization";
 import { Shell } from "@/components/layout/Shell";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { redirect } from "next/navigation";
 import { FacultyMilestonesClient } from "./FacultyMilestonesClient";
 import { facultyNav } from "@/config/navigation";
 
 export default async function FacultyMilestonesPage() {
+  const { userId, fullName } = await requirePageRole(["faculty"]);
   const supabase = await getSupabaseServerClient();
-  try { await requireRole(supabase, ["faculty"]); } catch { redirect("/login"); }
 
-  const { data: { user } } = await supabase.auth.getUser();
-  const profile = await getUserProfile(supabase, user!.id);
-
-  const { data: milestones } = await supabase
-    .from("milestones")
-    .select("*, proposals(title, team_id)")
-    .eq("faculty_id", user!.id)
-    .order("deadline", { ascending: true });
-
-  const { data: proposals } = await supabase
-    .from("proposals")
-    .select("id, title")
-    .eq("faculty_id", user!.id)
-    .eq("status", "approved");
+  const [{ data: milestones }, { data: proposals }] = await Promise.all([
+    supabase.from("milestones").select("*, proposals(title, team_id)").eq("faculty_id", userId).order("deadline", { ascending: true }),
+    supabase.from("proposals").select("id, title").eq("faculty_id", userId).eq("status", "approved"),
+  ]);
 
   return (
-    <Shell
-      role="faculty"
-      navItems={facultyNav}
-      breadcrumbs={[{ label: "Faculty", href: "/portal/faculty" }, { label: "Milestones" }]}
-      userFullName={profile?.full_name}
-    >
+    <Shell role="faculty" navItems={facultyNav} breadcrumbs={[{ label: "Faculty", href: "/faculty" }, { label: "Milestones" }]} userFullName={fullName}>
       <PageWrapper title="Milestones" description="Create and manage project milestones.">
         <FacultyMilestonesClient
           milestones={(milestones ?? []) as Record<string, unknown>[]}
@@ -42,5 +25,3 @@ export default async function FacultyMilestonesPage() {
     </Shell>
   );
 }
-
-

@@ -7,13 +7,15 @@ export default async function PortalLayout({
   children: React.ReactNode;
 }) {
   const supabase = await getSupabaseServerClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: { session } } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     redirect("/login");
   }
 
-  return <div className="min-h-screen" style={{ backgroundColor: "#f9fafb" }}>{children}</div>;
+  return (
+    <div className="min-h-screen" style={{ backgroundColor: "#f9fafb" }}>
+      {children}
+    </div>
+  );
 }

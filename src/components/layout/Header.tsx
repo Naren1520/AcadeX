@@ -69,7 +69,7 @@ export function Header({
         {/* Notifications bell */}
         {role && (
           <Link
-            href={`/portal/${role}/notifications`}
+            href={`/${role}/notifications`}
             className="relative rounded p-1.5 text-neutral-500 transition-colors hover:text-neutral-900"
             aria-label={
               unreadCount > 0

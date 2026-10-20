@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -34,7 +34,7 @@ export default function MfaPage() {
     });
 
     if (res.ok) {
-      router.push("/portal/admin");
+      router.push("/admin");
       router.refresh();
     } else {
       const data = (await res.json()) as { error?: string };
@@ -102,7 +102,7 @@ export default function MfaPage() {
             className="rounded px-4 py-2 text-sm font-medium text-white transition-opacity disabled:opacity-60"
             style={{ backgroundColor: "#1e3a5f" }}
           >
-            {isLoading ? "Verifying…" : "Verify Code"}
+            {isLoading ? "Verifyingâ€¦" : "Verify Code"}
           </button>
         </form>
       </div>

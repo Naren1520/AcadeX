@@ -1,32 +1,23 @@
-﻿import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { requireRole } from "@/server/authorization";
+﻿import { requirePageRole } from "@/lib/supabase/pageAuth";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { Shell } from "@/components/layout/Shell";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { getUserProfile } from "@/lib/supabase/helpers";
-import { redirect } from "next/navigation";
 import { StudentProfileClient } from "./StudentProfileClient";
 import { studentNav } from "@/config/navigation";
 
 export default async function StudentProfilePage() {
+  const { userId, fullName, email } = await requirePageRole(["student"]);
   const supabase = await getSupabaseServerClient();
-  try { await requireRole(supabase, ["student"]); } catch { redirect("/login"); }
 
-  const { data: { user } } = await supabase.auth.getUser();
-  const profile = await getUserProfile(supabase, user!.id);
-  const { data: student } = await supabase.from("students").select("*").eq("id", user!.id).single();
+  const { data: student } = await supabase.from("students").select("*").eq("id", userId).single();
 
   return (
-    <Shell
-      role="student"
-      navItems={studentNav}
-      breadcrumbs={[{ label: "Student", href: "/portal/student" }, { label: "Profile" }]}
-      userFullName={profile?.full_name}
-    >
+    <Shell role="student" navItems={studentNav} breadcrumbs={[{ label: "Student", href: "/student" }, { label: "Profile" }]} userFullName={fullName}>
       <PageWrapper title="My Profile" description="Manage your skills, GitHub profile, and resume.">
         <StudentProfileClient
-          studentId={user!.id}
-          fullName={profile?.full_name ?? ""}
-          email={profile?.email ?? ""}
+          studentId={userId}
+          fullName={fullName}
+          email={email}
           usn={student?.usn ?? ""}
           cgpa={student?.cgpa ?? 0}
           initialSkills={student?.skills ?? []}
@@ -37,4 +28,3 @@ export default async function StudentProfilePage() {
     </Shell>
   );
 }
-

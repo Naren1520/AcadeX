@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import { NextResponse } from "next/server";
 
 /**
  * Returns a Supabase server client.
@@ -29,6 +30,39 @@ export async function getSupabaseServerClient(): Promise<ReturnType<typeof creat
           } catch {
             // Server Components can't set cookies — expected behaviour.
           }
+        },
+      },
+    }
+  );
+}
+
+/**
+ * Creates a Supabase client for Route Handlers.
+ * Accepts a NextResponse so that session cookies set during auth
+ * (e.g. signInWithPassword) are written onto the response and
+ * sent to the browser.
+ *
+ * Returns both the client and the response to return from the handler.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function createSupabaseRouteClient(response: NextResponse): Promise<ReturnType<typeof createServerClient<any>>> {
+  const cookieStore = await cookies();
+
+  return createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return cookieStore.getAll();
+        },
+        setAll(cookiesToSet) {
+          // Write to both the cookie store (for same-request reads)
+          // and directly onto the outgoing NextResponse headers.
+          cookiesToSet.forEach(({ name, value, options }) => {
+            try { cookieStore.set(name, value, options); } catch { /* ignore */ }
+            response.cookies.set(name, value, options);
+          });
         },
       },
     }

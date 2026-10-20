@@ -79,7 +79,7 @@ export async function POST(request: Request) {
         sendInAppNotifications({
           recipientIds,
           message: `A submission window for milestone "${milestone.name}" is now open.`,
-          deepLink: `/portal/student/submissions`,
+          deepLink: `/student/submissions`,
           triggerEvent: "submission_window.opened",
         }).catch(console.error);
       }

@@ -49,7 +49,7 @@ export async function GET(request: Request) {
       await sendInAppNotifications({
         recipientIds,
         message: `Milestone "${milestone.name}" deadline is approaching: ${new Date(milestone.deadline).toLocaleString()}.`,
-        deepLink: `/portal/student/milestones`,
+        deepLink: `/student/milestones`,
         triggerEvent: "milestone.deadline_approaching",
       });
       notificationsSent += recipientIds.length;

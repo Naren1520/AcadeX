@@ -59,7 +59,7 @@ export async function PATCH(
     const notifPayload = {
       recipientIds,
       message: `Your proposal "${proposal.title}" has been approved.`,
-      deepLink: `/portal/student/proposals/${id}`,
+      deepLink: `/student/proposals/${id}`,
       triggerEvent: "proposal.approved" as const,
     };
     sendInAppNotifications(notifPayload).catch(console.error);

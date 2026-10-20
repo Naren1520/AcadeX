@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { emailSchema } from "@/lib/validation";
 import { checkRateLimit } from "@/lib/rateLimit";
-import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { createSupabaseRouteClient } from "@/lib/supabase/server";
 import { writeAuditLog, AuditEventTypes } from "@/server/audit";
 import { toErrorResponse } from "@/lib/errors/httpResponse";
 
@@ -38,7 +38,11 @@ export async function POST(request: Request) {
     }
 
     const { email, password } = parsed.data;
-    const supabase = await getSupabaseServerClient();
+
+    // Create a response object first so session cookies can be attached to it.
+    const response = NextResponse.json({ ok: true });
+    const supabase = await createSupabaseRouteClient(response);
+
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error || !data.user) {
@@ -60,7 +64,13 @@ export async function POST(request: Request) {
       targetRecordId: data.user.id,
     });
 
-    return NextResponse.json({ userId: data.user.id, role: profile?.role ?? null });
+    // Return the pre-created response (which now has session cookies set on it)
+    // with the actual payload merged in.
+    const body2 = JSON.stringify({ userId: data.user.id, role: profile?.role ?? null });
+    return new NextResponse(body2, {
+      status: 200,
+      headers: response.headers,
+    });
   } catch (err) {
     return toErrorResponse(err);
   }

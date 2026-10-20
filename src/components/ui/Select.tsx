@@ -1,5 +1,6 @@
 "use client";
 
+import { useId } from "react";
 import * as RadixSelect from "@radix-ui/react-select";
 
 interface SelectOption {
@@ -28,7 +29,8 @@ export function Select({
   error,
   disabled,
 }: SelectProps) {
-  const selectId = id ?? `select-${Math.random().toString(36).slice(2, 7)}`;
+  const generatedId = useId();
+  const selectId = id ?? `select-${generatedId}`;
   const errorId = `${selectId}-error`;
 
   return (

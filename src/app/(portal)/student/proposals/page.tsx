@@ -1,47 +1,29 @@
-﻿import { getUserProfile } from "@/lib/supabase/helpers";
+﻿import { requirePageRole } from "@/lib/supabase/pageAuth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { requireRole } from "@/server/authorization";
+import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { Shell } from "@/components/layout/Shell";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { redirect } from "next/navigation";
 import { StudentProposalsClient } from "./StudentProposalsClient";
 import { studentNav } from "@/config/navigation";
 
 export default async function StudentProposalsPage() {
+  const { userId, fullName } = await requirePageRole(["student"]);
   const supabase = await getSupabaseServerClient();
-  try { await requireRole(supabase, ["student"]); } catch { redirect("/login"); }
-
-  const { data: { user } } = await supabase.auth.getUser();
-  const profile = await getUserProfile(supabase, user!.id);
+  const service = getSupabaseServiceRoleClient();
 
   const { data: membership } = await supabase
-    .from("team_members")
-    .select("team_id, is_lead, teams(status)")
-    .eq("student_id", user!.id)
-    .maybeSingle();
-
+    .from("team_members").select("team_id, is_lead, teams(status)").eq("student_id", userId).maybeSingle();
   const teamId = membership?.team_id ?? null;
 
-  const { data: proposals } = teamId
-    ? await supabase
-        .from("proposals")
-        .select("*, proposal_sdgs(sdg_number)")
-        .eq("team_id", teamId)
-        .order("submitted_at", { ascending: false })
-    : { data: [] };
-
-  const { data: facultyList } = await supabase
-    .from("profiles")
-    .select("id, full_name")
-    .eq("role", "faculty");
+  const [{ data: proposals }, { data: facultyList }] = await Promise.all([
+    teamId
+      ? supabase.from("proposals").select("*, proposal_sdgs(sdg_number)").eq("team_id", teamId).order("submitted_at", { ascending: false })
+      : Promise.resolve({ data: [] }),
+    service.from("profiles").select("id, full_name").eq("role", "faculty"),
+  ]);
 
   return (
-    <Shell
-      role="student"
-      navItems={studentNav}
-      breadcrumbs={[{ label: "Student", href: "/portal/student" }, { label: "Proposals" }]}
-      userFullName={profile?.full_name}
-    >
+    <Shell role="student" navItems={studentNav} breadcrumbs={[{ label: "Student", href: "/student" }, { label: "Proposals" }]} userFullName={fullName}>
       <PageWrapper title="Proposals" description="Submit and track your project proposals.">
         <StudentProposalsClient
           teamId={teamId}
@@ -53,5 +35,3 @@ export default async function StudentProposalsPage() {
     </Shell>
   );
 }
-
-
