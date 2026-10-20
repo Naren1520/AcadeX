@@ -1,4 +1,4 @@
-# AcadeX — College Academic Management Platform
+# AcadeX — College Academic Project Management Platform
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.4.2-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.3.0-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)
@@ -16,7 +16,7 @@
 
 ## Overview
 
-**AcadeX** is an enterprise-grade, institutional academic management platform designed for colleges and universities. It centralizes academic project lifecycles, rule-driven team formations based on CGPA bands, UN Sustainable Development Goal (SDG) mappings, multi-stage proposal workflows, milestone deliverables, and strict role-based access control (RBAC).
+**AcadeX** is an enterprise-grade, institutional Academic Project Management Platform designed for colleges and universities. It centralizes academic project lifecycles, rule-driven team formations based on CGPA bands, UN Sustainable Development Goal (SDG) mappings, multi-stage proposal workflows, milestone deliverables, and strict role-based access control (RBAC).
 
 ---
 

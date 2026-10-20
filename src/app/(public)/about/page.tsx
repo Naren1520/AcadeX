@@ -10,7 +10,7 @@ export default function AboutPage() {
       <main className="mx-auto max-w-3xl px-6 py-16">
         <h1 className="text-3xl font-bold text-neutral-900">About AcadeX</h1>
         <p className="mt-4 text-neutral-600">
-          AcadeX is a production-oriented College Academic Management Platform built on
+          AcadeX is a production-oriented College Academic Project Management Platform built on
           Next.js 15, TypeScript, Supabase, and Tailwind CSS.
         </p>
         <p className="mt-3 text-neutral-600">

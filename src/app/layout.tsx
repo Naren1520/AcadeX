@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AcadeX — College Academic Management Platform",
+  title: "AcadeX — College Academic Project Management Platform",
   description:
     "Manage academic project teams, approvals, milestones, and submissions.",
 };

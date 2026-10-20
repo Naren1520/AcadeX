@@ -131,7 +131,7 @@ export default function PublicHomePage() {
         className="px-6 py-4 text-center text-xs text-neutral-400"
         style={{ borderTop: "1px solid #e5e7eb" }}
       >
-        © 2024 AcadeX. College Academic Management Platform.
+        © 2026 AcadeX. College Academic Project Management Platform.
       </footer>
     </div>
   );
