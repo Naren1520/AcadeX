@@ -16,16 +16,13 @@ import {
 import type { NavItem } from "@/components/layout/Sidebar";
 
 export const adminNav: NavItem[] = [
-  { label: "Dashboard",          href: "/admin",                     icon: <IconDashboard size={16} /> },
-  { label: "Departments",        href: "/admin/departments",          icon: <IconSettings size={16} /> },
-  { label: "Academic Years",     href: "/admin/academic-years",      icon: <IconClipboard size={16} /> },
-  { label: "Semesters",          href: "/admin/semesters",           icon: <IconClipboard size={16} /> },
-  { label: "Sections",           href: "/admin/sections",            icon: <IconClipboard size={16} /> },
-  { label: "Users",               href: "/admin/users",               icon: <IconUsers size={16} /> },
-  { label: "Faculty Assignments", href: "/admin/faculty-assignments", icon: <IconUsers size={16} /> },
-  { label: "Students",           href: "/admin/students",            icon: <IconUsers size={16} /> },
-  { label: "Audit Logs",         href: "/admin/audit-logs",          icon: <IconFileText size={16} /> },
-  { label: "Notifications",      href: "/admin/notifications",       icon: <IconBell size={16} /> },
+  { label: "Dashboard",           href: "/admin",                      icon: <IconDashboard size={16} /> },
+  { label: "Departments",         href: "/admin/departments",           icon: <IconSettings size={16} /> },
+  { label: "Users",               href: "/admin/users",                 icon: <IconUsers size={16} /> },
+  { label: "Faculty Assignments", href: "/admin/faculty-assignments",   icon: <IconUsers size={16} /> },
+  { label: "Students",            href: "/admin/students",              icon: <IconUsers size={16} /> },
+  { label: "Audit Logs",          href: "/admin/audit-logs",            icon: <IconFileText size={16} /> },
+  { label: "Notifications",       href: "/admin/notifications",         icon: <IconBell size={16} /> },
 ];
 
 export const facultyNav: NavItem[] = [

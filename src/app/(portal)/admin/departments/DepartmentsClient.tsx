@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { DataTable } from "@/components/tables/DataTable";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -19,6 +20,7 @@ interface Department {
 interface Props { initialDepartments: Department[] }
 
 export function DepartmentsClient({ initialDepartments }: Props) {
+  const router = useRouter();
   const [departments, setDepartments] = useState(initialDepartments);
   const [showCreate, setShowCreate] = useState(false);
   const [name, setName] = useState("");
@@ -55,18 +57,29 @@ export function DepartmentsClient({ initialDepartments }: Props) {
   const columns = [
     { key: "name", header: "Name", sortable: true },
     { key: "code", header: "Code" },
-    { key: "is_active", header: "Status", render: (row: Department) => (
-      <Badge variant={row.is_active ? "approved" : "neutral"}>
-        {row.is_active ? "Active" : "Inactive"}
-      </Badge>
-    )},
-    { key: "actions", header: "Actions", render: (row: Department) => (
-      row.is_active ? (
-        <Button variant="ghost" size="sm" onClick={() => handleDeactivate(row.id)}>
-          Deactivate
-        </Button>
-      ) : <span className="text-xs text-neutral-400">Inactive</span>
-    )},
+    {
+      key: "is_active", header: "Status",
+      render: (row: Department) => (
+        <Badge variant={row.is_active ? "approved" : "neutral"}>
+          {row.is_active ? "Active" : "Inactive"}
+        </Badge>
+      ),
+    },
+    {
+      key: "actions", header: "Actions",
+      render: (row: Department) => (
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" size="sm" onClick={() => router.push(`/admin/departments/${row.id}`)}>
+            Manage →
+          </Button>
+          {row.is_active && (
+            <Button variant="ghost" size="sm" onClick={() => handleDeactivate(row.id)}>
+              Deactivate
+            </Button>
+          )}
+        </div>
+      ),
+    },
   ];
 
   return (

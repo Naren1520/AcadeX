@@ -40,7 +40,7 @@ export function Dialog({
               )}
             </div>
             <RadixDialog.Close
-              className="rounded p-1 text-neutral-400 transition-colors hover:text-neutral-700"
+              className="rounded p-1 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-700"
               aria-label="Close dialog"
             >
               <svg

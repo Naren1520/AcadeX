@@ -96,7 +96,10 @@ export function Sidebar({ navItems, role }: SidebarProps) {
         <nav className="flex-1 px-2 py-2">
           <ul role="list" className="flex flex-col gap-0.5">
             {navItems.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+              const isActive =
+                item.href === "/admin" || item.href === "/faculty" || item.href === "/student"
+                  ? pathname === item.href          // exact match for dashboard roots
+                  : pathname === item.href || pathname.startsWith(`${item.href}/`);
               return (
                 <li key={item.href}>
                   <Link

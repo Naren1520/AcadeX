@@ -53,7 +53,7 @@ export function Select({
           id={selectId}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? errorId : undefined}
-          className="flex w-full items-center justify-between rounded px-3 py-2 text-sm text-neutral-900 focus:outline-none"
+          className="flex w-full cursor-pointer items-center justify-between rounded px-3 py-2 text-sm text-neutral-900 focus:outline-none disabled:cursor-not-allowed disabled:opacity-60"
           style={{
             border: error ? "1px solid #dc2626" : "1px solid #d1d5db",
             backgroundColor: "#ffffff",
