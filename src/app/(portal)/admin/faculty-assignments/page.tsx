@@ -51,17 +51,16 @@ export default async function FacultyAssignmentsPage() {
       .order("name"),
   ]);
 
-  const sectionOptions: SectionOption[] = (sections ?? []).map((s: {
-    id: string; label: string; department_id: string;
-    departments: { code: string } | null;
-    semesters: { label: string } | null;
-  }) => ({
-    id:             s.id,
-    label:          s.label,
-    department_id:  s.department_id,
-    dept_code:      s.departments?.code ?? "",
-    semester_label: s.semesters?.label  ?? "",
-  }));
+  const sectionOptions: SectionOption[] = (sections ?? []).map((s: unknown) => {
+    const row = s as { id: string; label: string; department_id: string; departments: { code: string } | null; semesters: { label: string } | null };
+    return {
+      id:             row.id,
+      label:          row.label,
+      department_id:  row.department_id,
+      dept_code:      row.departments?.code ?? "",
+      semester_label: row.semesters?.label  ?? "",
+    };
+  });
 
   return (
     <Shell

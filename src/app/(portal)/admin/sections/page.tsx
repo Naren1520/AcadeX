@@ -39,13 +39,14 @@ export default async function SectionsPage() {
       .order("name"),
   ]);
 
-  const semesterOptions: SemesterOption[] = (semesters ?? []).map((s: {
-    id: string; label: string; academic_years: { label: string } | null
-  }) => ({
-    id: s.id,
-    label: s.label,
-    academic_year_label: s.academic_years?.label ?? "",
-  }));
+  const semesterOptions: SemesterOption[] = (semesters ?? []).map((s: unknown) => {
+    const row = s as { id: string; label: string; academic_years: { label: string } | null };
+    return {
+      id:                  row.id,
+      label:               row.label,
+      academic_year_label: row.academic_years?.label ?? "",
+    };
+  });
 
   return (
     <Shell

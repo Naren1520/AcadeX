@@ -89,20 +89,20 @@ export default async function SectionDetailPage({
   type R = { id: string; usn: string; cgpa: number; section_id: string | null; profiles: { full_name: string; email: string } | null };
   type A = { id: string; faculty_id: string; profiles: { full_name: string; email: string } | null };
 
-  const students: StudentInSection[] = (rawStudents as R[] ?? []).map((s) => ({
+  const students: StudentInSection[] = (rawStudents as unknown as R[] ?? []).map((s) => ({
     id: s.id, usn: s.usn, cgpa: s.cgpa,
     full_name: s.profiles?.full_name ?? "",
     email:     s.profiles?.email    ?? "",
   }));
 
-  const faculty: FacultyInSection[] = (rawAssignments as A[] ?? []).map((a) => ({
+  const faculty: FacultyInSection[] = (rawAssignments as unknown as A[] ?? []).map((a) => ({
     assignment_id: a.id,
     faculty_id:    a.faculty_id,
     full_name:     a.profiles?.full_name ?? "",
     email:         a.profiles?.email    ?? "",
   }));
 
-  const studentOptions: StudentOption[] = (allDeptStudents as R[] ?? []).map((s) => ({
+  const studentOptions: StudentOption[] = (allDeptStudents as unknown as R[] ?? []).map((s) => ({
     id: s.id, usn: s.usn, cgpa: s.cgpa,
     full_name:  s.profiles?.full_name ?? "",
     email:      s.profiles?.email    ?? "",
