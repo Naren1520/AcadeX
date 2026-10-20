@@ -1,0 +1,21 @@
+[build]
+  command   = "npm run build"
+  publish   = ".next"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Required for Next.js on Netlify (App Router / SSR support)
+# The plugin auto-installs for new Next.js sites — this pins it explicitly.
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Security headers at the CDN layer (Next.js also sets these in next.config.ts)
+[[headers]]
+  for = "/*"
+
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
+    Permissions-Policy     = "camera=(), microphone=(), geolocation=()"

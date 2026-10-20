@@ -21,6 +21,7 @@ export const adminNav: NavItem[] = [
   { label: "Academic Years",     href: "/admin/academic-years",      icon: <IconClipboard size={16} /> },
   { label: "Semesters",          href: "/admin/semesters",           icon: <IconClipboard size={16} /> },
   { label: "Sections",           href: "/admin/sections",            icon: <IconClipboard size={16} /> },
+  { label: "Users",               href: "/admin/users",               icon: <IconUsers size={16} /> },
   { label: "Faculty Assignments", href: "/admin/faculty-assignments", icon: <IconUsers size={16} /> },
   { label: "Students",           href: "/admin/students",            icon: <IconUsers size={16} /> },
   { label: "Audit Logs",         href: "/admin/audit-logs",          icon: <IconFileText size={16} /> },
