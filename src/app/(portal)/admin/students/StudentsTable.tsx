@@ -75,7 +75,7 @@ export function StudentsTable({ students, sections }: Props) {
       key: "actions", header: "",
       render: (r: StudentRow) => (
         <Button variant="ghost" size="sm" onClick={() => openEdit(r)}>
-          Assign Section
+          {r.section_id ? "Change Section" : "Assign Section"}
         </Button>
       ),
     },
@@ -90,7 +90,7 @@ export function StudentsTable({ students, sections }: Props) {
       <Dialog
         open={!!editing}
         onOpenChange={(o) => { if (!o) setEditing(null); }}
-        title={`Assign Section — ${editing?.profiles?.full_name ?? ""}`}
+        title={editing?.section_id ? `Change Section — ${editing?.profiles?.full_name ?? ""}` : `Assign Section — ${editing?.profiles?.full_name ?? ""}`}
       >
         <form onSubmit={handleSave} className="flex flex-col gap-4">
           <FormError message={error} />

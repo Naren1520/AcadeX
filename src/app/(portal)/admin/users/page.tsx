@@ -11,6 +11,10 @@ export type UserRow = {
   full_name: string;
   email: string;
   created_at: string;
+  // student extras (populated via join in page)
+  usn?: string;
+  department_id?: string;
+  cgpa?: number;
 };
 
 export default async function AdminUsersPage() {
@@ -19,9 +23,22 @@ export default async function AdminUsersPage() {
 
   const { data: users } = await service
     .from("profiles")
-    .select("id, role, full_name, email, created_at")
+    .select("id, role, full_name, email, created_at, students(usn, department_id, cgpa)")
     .in("role", ["faculty", "student"])
     .order("created_at", { ascending: false });
+
+  // Flatten students join into flat UserRow shape
+  type RawUser = {
+    id: string; role: "faculty" | "student"; full_name: string;
+    email: string; created_at: string;
+    students: { usn: string; department_id: string; cgpa: number }[] | null;
+  };
+  const flatUsers = (users as unknown as RawUser[] ?? []).map((u) => ({
+    id: u.id, role: u.role, full_name: u.full_name, email: u.email, created_at: u.created_at,
+    usn:           u.students?.[0]?.usn,
+    department_id: u.students?.[0]?.department_id,
+    cgpa:          u.students?.[0]?.cgpa,
+  }));
 
   // Fetch departments for the student creation form
   const { data: departments } = await service
@@ -45,7 +62,7 @@ export default async function AdminUsersPage() {
     >
       <PageWrapper title="Users" description="Create and manage faculty and student accounts.">
         <UsersClient
-          initialUsers={(users ?? []) as UserRow[]}
+          initialUsers={flatUsers as UserRow[]}
           departments={departments ?? []}
           sections={(sections ?? []) as unknown as SectionOption[]}
         />
