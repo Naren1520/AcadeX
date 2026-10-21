@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { FormError } from "@/components/forms/FormError";
-import { IconClose } from "@/components/ui/Icon";
+import { IconClose, IconUpload, IconFileText, IconCheck } from "@/components/ui/Icon";
 
 interface Props {
   studentId: string;
@@ -36,6 +36,8 @@ export function StudentProfileClient({
   const [uploadingResume, setUploadingResume] = useState(false);
   const [resumeUploaded, setResumeUploaded] = useState(!!resumePath);
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+  const [draggingResume, setDraggingResume] = useState(false);
+  const resumeInputRef = useRef<HTMLInputElement>(null);
 
   function addSkill() {
     const trimmed = newSkill.trim();
@@ -186,20 +188,72 @@ export function StudentProfileClient({
         <CardHeader><CardTitle>Resume</CardTitle></CardHeader>
         <CardContent>
           <FormError message={resumeError} />
-          <p className="mb-3 text-sm text-neutral-500">
-            {resumeUploaded ? "A resume is uploaded." : "No resume uploaded yet."} PDF only, max 20 MB.
-          </p>
-          <div className="flex flex-col gap-3">
-            <label htmlFor="resume-upload" className="text-sm font-medium text-neutral-700">
-              Upload new resume
-            </label>
+
+          {/* Status */}
+          <div
+            className="mb-4 flex items-center gap-2 rounded-lg px-3 py-2 text-sm"
+            style={{
+              backgroundColor: resumeUploaded ? "#f0fdf4" : "#f9fafb",
+              border: `1px solid ${resumeUploaded ? "#bbf7d0" : "#e5e7eb"}`,
+              color: resumeUploaded ? "#16a34a" : "#6b7280",
+            }}
+          >
+            {resumeUploaded
+              ? <><IconCheck size={14} /> Resume uploaded</>
+              : <><IconFileText size={14} /> No resume uploaded yet</>}
+            <span className="ml-auto text-xs" style={{ color: "#9ca3af" }}>PDF · max 20 MB</span>
+          </div>
+
+          {/* Drop zone */}
+          <div
+            onDragOver={(e) => { e.preventDefault(); setDraggingResume(true); }}
+            onDragLeave={() => setDraggingResume(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setDraggingResume(false);
+              const f = e.dataTransfer.files[0];
+              if (f) setResumeFile(f);
+            }}
+            onClick={() => resumeInputRef.current?.click()}
+            className="cursor-pointer rounded-xl p-6 text-center transition-all"
+            style={{
+              border: `2px dashed ${draggingResume ? "#1e3a5f" : resumeFile ? "#16a34a" : "#d1d5db"}`,
+              backgroundColor: draggingResume ? "#eff6ff" : resumeFile ? "#f0fdf4" : "#fafafa",
+            }}
+          >
+            <div className="mb-2 flex justify-center">
+              <IconUpload
+                size={32}
+                style={{ color: draggingResume ? "#1e3a5f" : resumeFile ? "#16a34a" : "#9ca3af" }}
+              />
+            </div>
+            {resumeFile ? (
+              <div>
+                <p className="text-sm font-medium" style={{ color: "#16a34a" }}>
+                  {resumeFile.name}
+                </p>
+                <p className="mt-0.5 text-xs text-neutral-400">
+                  {(resumeFile.size / (1024 * 1024)).toFixed(2)} MB · Click to change
+                </p>
+              </div>
+            ) : (
+              <div>
+                <p className="text-sm font-medium text-neutral-700">
+                  Drop your PDF here
+                </p>
+                <p className="mt-0.5 text-xs text-neutral-400">or click to browse</p>
+              </div>
+            )}
             <input
-              id="resume-upload"
+              ref={resumeInputRef}
               type="file"
               accept="application/pdf"
+              className="hidden"
               onChange={(e) => setResumeFile(e.target.files?.[0] ?? null)}
-              className="text-sm text-neutral-600"
             />
+          </div>
+
+          <div className="mt-3 flex flex-col gap-2">
             <Button
               type="button"
               variant="primary"
@@ -208,11 +262,13 @@ export function StudentProfileClient({
               isLoading={uploadingResume}
               disabled={!resumeFile}
             >
+              <IconUpload size={13} />
               Upload Resume
             </Button>
             {resumeUploaded && (
               <Button type="button" variant="secondary" size="sm" onClick={viewResume}>
-                View Resume (Signed URL)
+                <IconFileText size={13} />
+                View Current Resume
               </Button>
             )}
           </div>
