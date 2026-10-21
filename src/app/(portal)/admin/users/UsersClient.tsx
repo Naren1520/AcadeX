@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { FormError } from "@/components/forms/FormError";
+import { BulkUploadClient } from "./BulkUploadClient";
+import { IconUpload } from "@/components/ui/Icon";
 import type { UserRow, DepartmentOption, SectionOption } from "./page";
 
 interface Props {
@@ -18,9 +20,10 @@ interface Props {
 type RoleTab = "faculty" | "student";
 
 export function UsersClient({ initialUsers, departments, sections }: Props) {
-  const [users, setUsers]         = useState(initialUsers);
-  const [showCreate, setShowCreate] = useState(false);
-  const [tab, setTab]             = useState<RoleTab>("faculty");
+  const [users, setUsers]           = useState(initialUsers);
+  const [showCreate, setShowCreate]   = useState(false);
+  const [showBulk, setShowBulk]       = useState(false);
+  const [tab, setTab]                 = useState<RoleTab>("faculty");
   const [error, setError]         = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -103,9 +106,15 @@ export function UsersClient({ initialUsers, departments, sections }: Props) {
 
   return (
     <div>
-      <div className="mb-4 flex justify-end">
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          <Button variant="secondary" size="sm" onClick={() => setShowBulk(true)}>
+            <IconUpload size={14} />
+            Bulk Upload
+          </Button>
+        </div>
         <Button variant="primary" size="sm" onClick={handleOpen}>
-          Add User
+          + Add User
         </Button>
       </div>
 
@@ -266,6 +275,21 @@ export function UsersClient({ initialUsers, departments, sections }: Props) {
             </Button>
           </div>
         </form>
+      </Dialog>
+      {/* Bulk upload dialog */}
+      <Dialog
+        open={showBulk}
+        onOpenChange={setShowBulk}
+        title="Bulk Upload Users"
+        description="Upload an Excel or CSV file to create multiple faculty or students at once."
+        size="xl"
+      >
+        <BulkUploadClient
+          departments={departments}
+          sections={sections}
+          onComplete={(newUsers) => setUsers((prev) => [...newUsers, ...prev])}
+          onClose={() => setShowBulk(false)}
+        />
       </Dialog>
     </div>
   );

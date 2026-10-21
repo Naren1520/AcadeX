@@ -1,4 +1,4 @@
-import { SkeletonTable } from "@/components/feedback/Skeleton";
+import { LoadingShell } from "@/components/layout/LoadingShell";
 export default function Loading() {
-  return <div className="mx-auto max-w-7xl px-4 py-6"><SkeletonTable rows={8} cols={5} /></div>;
+  return <LoadingShell role="admin" rows={8} cols={5} />;
 }

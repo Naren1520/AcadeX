@@ -8,7 +8,10 @@ interface DialogProps {
   title: string;
   description?: string;
   children: React.ReactNode;
+  size?: "md" | "lg" | "xl";
 }
+
+const maxWidths = { md: "max-w-md", lg: "max-w-2xl", xl: "max-w-4xl" };
 
 export function Dialog({
   open,
@@ -16,6 +19,7 @@ export function Dialog({
   title,
   description,
   children,
+  size = "md",
 }: DialogProps) {
   return (
     <RadixDialog.Root open={open} onOpenChange={onOpenChange}>
@@ -25,11 +29,10 @@ export function Dialog({
           style={{ backgroundColor: "rgba(0,0,0,0.4)" }}
         />
         <RadixDialog.Content
-          className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 shadow-lg sm:rounded-lg"
+          className={`fixed left-1/2 top-1/2 z-50 w-full -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 shadow-lg ${maxWidths[size]}`}
           style={{
             border: "1px solid #e5e7eb",
-            // Full screen on mobile, modal on sm+
-            maxHeight: "100dvh",
+            maxHeight: "90dvh",
             overflowY: "auto",
           }}
         >
@@ -48,19 +51,8 @@ export function Dialog({
               className="rounded p-1 cursor-pointer text-neutral-400 transition-colors hover:text-neutral-700"
               aria-label="Close dialog"
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12 4L4 12M4 4l8 8"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M12 4L4 12M4 4l8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
               </svg>
             </RadixDialog.Close>
           </div>
