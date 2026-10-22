@@ -90,8 +90,22 @@ export function SectionDetailClient({
     if (!res.ok) { setFacultyError(data.error ?? "Failed."); setFacultyLoading(false); return; }
 
     const f = facultyOptions.find((x) => x.id === selectedFaculty)!;
-    setFaculty((prev) => [...prev, { assignment_id: data.assignment!.id, faculty_id: f.id, full_name: f.full_name, email: f.email }]);
+    setFaculty((prev) => [...prev, { assignment_id: data.assignment!.id, faculty_id: f.id, full_name: f.full_name, email: f.email, can_manage_students: false }]);
     setShowAddFaculty(false); setSelectedFaculty(""); setFacultyLoading(false);
+  }
+
+  // ── Toggle can_manage_students ───────────────────────────────
+  async function handleToggleManage(assignmentId: string, current: boolean) {
+    const res = await fetch(`/api/admin/faculty-assignments/${assignmentId}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ can_manage_students: !current }),
+    });
+    if (res.ok) {
+      setFaculty((prev) => prev.map((f) =>
+        f.assignment_id === assignmentId ? { ...f, can_manage_students: !current } : f
+      ));
+    }
   }
 
   async function handleRemoveFaculty(assignmentId: string, name: string) {
@@ -150,7 +164,6 @@ export function SectionDetailClient({
               faculty.map((f) => (
                 <div key={f.assignment_id} className="flex items-center justify-between px-5 py-4 hover:bg-neutral-50">
                   <div className="flex items-center gap-3">
-                    {/* Avatar */}
                     <div
                       className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold"
                       style={{ backgroundColor: "#dbeafe", color: "#1e3a5f" }}
@@ -160,16 +173,54 @@ export function SectionDetailClient({
                     <div>
                       <p className="text-sm font-medium text-neutral-800">{f.full_name}</p>
                       <p className="text-xs text-neutral-500">{f.email}</p>
+                      {/* Permission badge */}
+                      <span
+                        className="mt-0.5 inline-block rounded-full px-2 py-0.5 text-xs font-medium"
+                        style={{
+                          backgroundColor: f.can_manage_students ? "#f0fdf4" : "#f9fafb",
+                          color: f.can_manage_students ? "#16a34a" : "#9ca3af",
+                          border: `1px solid ${f.can_manage_students ? "#bbf7d0" : "#e5e7eb"}`,
+                        }}
+                      >
+                        {f.can_manage_students ? "Can manage students" : "View only"}
+                      </span>
                     </div>
                   </div>
                   {!isClosed && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveFaculty(f.assignment_id, f.full_name)}
-                      className="cursor-pointer rounded px-2 py-1 text-xs text-red-500 transition-colors hover:bg-red-50 hover:text-red-700"
-                    >
-                      Remove
-                    </button>
+                    <div className="flex items-center gap-2">
+                      {/* Toggle */}
+                      <button
+                        type="button"
+                        onClick={() => handleToggleManage(f.assignment_id, f.can_manage_students)}
+                        title={f.can_manage_students ? "Revoke student management access" : "Grant student management access"}
+                        className="cursor-pointer rounded-full transition-colors"
+                        style={{
+                          width: 36, height: 20,
+                          backgroundColor: f.can_manage_students ? "#16a34a" : "#d1d5db",
+                          position: "relative", flexShrink: 0,
+                        }}
+                        aria-label={f.can_manage_students ? "Revoke manage students permission" : "Grant manage students permission"}
+                      >
+                        <span
+                          style={{
+                            position: "absolute",
+                            top: 2, left: f.can_manage_students ? 18 : 2,
+                            width: 16, height: 16,
+                            backgroundColor: "#fff",
+                            borderRadius: "50%",
+                            transition: "left 0.15s",
+                            display: "block",
+                          }}
+                        />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFaculty(f.assignment_id, f.full_name)}
+                        className="cursor-pointer rounded px-2 py-1 text-xs text-red-500 transition-colors hover:bg-red-50 hover:text-red-700"
+                      >
+                        Remove
+                      </button>
+                    </div>
                   )}
                 </div>
               ))

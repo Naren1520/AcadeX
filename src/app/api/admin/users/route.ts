@@ -5,6 +5,7 @@ import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { requireRole } from "@/server/authorization";
 import { toErrorResponse } from "@/lib/errors/httpResponse";
 import { ConflictError, ValidationError } from "@/lib/errors";
+import { writeAuditLog, AuditEventTypes, extractRequestMeta } from "@/server/audit";
 
 const createUserSchema = z.object({
   email:      z.string().email(),
@@ -40,7 +41,7 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const supabase = await getSupabaseServerClient();
-    await requireRole(supabase, ["admin"]);
+    const { userId: adminUserId } = await requireRole(supabase, ["admin"]);
 
     let body: unknown;
     try { body = await request.json(); } catch {
@@ -81,14 +82,10 @@ export async function POST(request: Request) {
 
     // Create profile row
     const { error: profileError } = await service.from("profiles").insert({
-      id: userId,
-      role,
-      full_name,
-      email,
+      id: userId, role, full_name, email,
     });
 
     if (profileError) {
-      // Roll back the auth user if profile insert fails
       await service.auth.admin.deleteUser(userId);
       throw profileError;
     }
@@ -104,20 +101,23 @@ export async function POST(request: Request) {
       });
 
       if (studentError) {
-        // Roll back profile + auth user
         await service.from("profiles").delete().eq("id", userId);
         await service.auth.admin.deleteUser(userId);
-        if (studentError.code === "23505") {
-          throw new ConflictError("A student with this USN already exists.", "usn");
-        }
+        if (studentError.code === "23505") throw new ConflictError("A student with this USN already exists.", "usn");
         throw studentError;
       }
     }
 
-    return NextResponse.json(
-      { user: { id: userId, email, role, full_name } },
-      { status: 201 }
-    );
+    const { ipAddress, userAgent } = extractRequestMeta(request);
+    writeAuditLog({
+      actorId: adminUserId, actorRole: "admin",
+      actionType: AuditEventTypes.USER_CREATED,
+      targetTable: "profiles", targetRecordId: userId,
+      newValue: { email, role, full_name },
+      ipAddress, userAgent,
+    });
+
+    return NextResponse.json({ user: { id: userId, email, role, full_name } }, { status: 201 });
   } catch (err) {
     return toErrorResponse(err);
   }

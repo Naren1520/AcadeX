@@ -5,6 +5,7 @@ import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { requireRole } from "@/server/authorization";
 import { toErrorResponse } from "@/lib/errors/httpResponse";
 import { NotFoundError, ForbiddenError, ValidationError, ConflictError } from "@/lib/errors";
+import { writeAuditLog, AuditEventTypes, extractRequestMeta } from "@/server/audit";
 
 const editSchema = z.object({
   full_name:     z.string().min(1).max(200).optional(),
@@ -90,13 +91,14 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
     const supabase = await getSupabaseServerClient();
     const { userId: adminId } = await requireRole(supabase, ["admin"]);
+    const { ipAddress, userAgent } = extractRequestMeta(request);
 
     if (id === adminId) throw new ForbiddenError("You cannot delete your own account.");
 
@@ -104,7 +106,7 @@ export async function DELETE(
 
     const { data: profile } = await service
       .from("profiles")
-      .select("id, role")
+      .select("id, role, email, full_name")
       .eq("id", id)
       .single();
 
@@ -113,6 +115,14 @@ export async function DELETE(
 
     const { error } = await service.auth.admin.deleteUser(id);
     if (error) throw error;
+
+    writeAuditLog({
+      actorId: adminId, actorRole: "admin",
+      actionType: AuditEventTypes.USER_DELETED,
+      targetTable: "profiles", targetRecordId: id,
+      newValue: { deletedEmail: profile.email, deletedRole: profile.role },
+      ipAddress, userAgent,
+    });
 
     return NextResponse.json({ success: true });
   } catch (err) {

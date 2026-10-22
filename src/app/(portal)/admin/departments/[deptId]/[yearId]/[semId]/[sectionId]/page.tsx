@@ -19,6 +19,7 @@ export type FacultyInSection = {
   faculty_id: string;
   full_name: string;
   email: string;
+  can_manage_students: boolean;
 };
 
 export type StudentOption = {
@@ -69,7 +70,7 @@ export default async function SectionDetailPage({
   // Faculty assigned to this section
   const { data: rawAssignments } = await supabase
     .from("faculty_assignments")
-    .select("id, faculty_id, profiles(full_name, email)")
+    .select("id, faculty_id, can_manage_students, profiles(full_name, email)")
     .eq("section_id", sectionId);
 
   // All students in this dept (for add dropdown)
@@ -87,7 +88,7 @@ export default async function SectionDetailPage({
     .order("full_name");
 
   type R = { id: string; usn: string; cgpa: number; section_id: string | null; profiles: { full_name: string; email: string } | null };
-  type A = { id: string; faculty_id: string; profiles: { full_name: string; email: string } | null };
+  type A = { id: string; faculty_id: string; can_manage_students: boolean; profiles: { full_name: string; email: string } | null };
 
   const students: StudentInSection[] = (rawStudents as unknown as R[] ?? []).map((s) => ({
     id: s.id, usn: s.usn, cgpa: s.cgpa,
@@ -96,10 +97,11 @@ export default async function SectionDetailPage({
   }));
 
   const faculty: FacultyInSection[] = (rawAssignments as unknown as A[] ?? []).map((a) => ({
-    assignment_id: a.id,
-    faculty_id:    a.faculty_id,
-    full_name:     a.profiles?.full_name ?? "",
-    email:         a.profiles?.email    ?? "",
+    assignment_id:       a.id,
+    faculty_id:          a.faculty_id,
+    can_manage_students: a.can_manage_students,
+    full_name:           a.profiles?.full_name ?? "",
+    email:               a.profiles?.email    ?? "",
   }));
 
   const studentOptions: StudentOption[] = (allDeptStudents as unknown as R[] ?? []).map((s) => ({
