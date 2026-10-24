@@ -69,6 +69,8 @@ export default async function SectionDashboardPage({
     { data: rawMilestones },
     { data: rawWindows },
     { data: teams },
+    { data: rawInvitations },
+    { data: rawSubmissions },
   ] = await Promise.all([
     service.from("students")
       .select("id, usn, cgpa, section_id, github_url, profiles(full_name, email)")
@@ -87,6 +89,15 @@ export default async function SectionDashboardPage({
       .select("id, milestone_id, opens_at, closes_at, milestones(name, proposals(teams(section_id)))")
       .eq("faculty_id", userId).order("opens_at", { ascending: false }),
     service.from("teams").select("id").eq("section_id", sectionId),
+    service.from("onboarding_invitations")
+      .select("id, label, opens_at, closes_at, max_uses, use_count, is_active, created_at")
+      .eq("faculty_id", userId).eq("section_id", sectionId)
+      .order("created_at", { ascending: false }),
+    service.from("onboarding_submissions")
+      .select("id, full_name, email, usn, cgpa, github_url, skills, status, submitted_at, rejection_note, onboarding_invitations!inner(section_id, faculty_id)")
+      .eq("onboarding_invitations.faculty_id", userId)
+      .eq("onboarding_invitations.section_id", sectionId)
+      .order("submitted_at", { ascending: false }),
   ]);
 
   // Shape students
@@ -116,6 +127,14 @@ export default async function SectionDashboardPage({
   const windows: SubmissionWindow[] = (rawWindows as unknown as RW[] ?? [])
     .filter((w) => milestoneIds.has(w.milestone_id))
     .map((w) => ({ ...w, milestones: w.milestones ? { name: w.milestones.name } : null }));
+
+  type RawInv = { id: string; label: string; opens_at: string; closes_at: string; max_uses: number; use_count: number; is_active: boolean; created_at: string };
+  const invitations = (rawInvitations as unknown as RawInv[] ?? []);
+
+  type RawSub = { id: string; full_name: string; email: string; usn: string; cgpa: number; github_url: string | null; skills: string[]; status: string; submitted_at: string; rejection_note: string | null };
+  const onboardingSubmissions = (rawSubmissions as unknown as RawSub[] ?? []).map((s) => ({
+    ...s, status: s.status as "pending" | "approved" | "rejected",
+  }));
 
   // Approved proposals for milestone creation dropdown
   const approvedProposals = proposals.filter((p) => p.status === "approved").map((p) => ({ id: p.id, title: p.title }));
@@ -149,6 +168,7 @@ export default async function SectionDashboardPage({
           sectionLabel={sectionLabel}
           deptCode={deptCode}
           deptName={deptName}
+          departmentId={a.department_id}
           canManageStudents={a.can_manage_students}
           stats={stats}
           initialStudents={students}
@@ -158,6 +178,8 @@ export default async function SectionDashboardPage({
           initialWindows={windows}
           approvedProposals={approvedProposals}
           openMilestones={openMilestones}
+          initialInvitations={invitations}
+          initialOnboardingSubmissions={onboardingSubmissions}
         />
       </PageWrapper>
     </Shell>

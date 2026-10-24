@@ -7,15 +7,17 @@ import { TeamRulesTab }         from "./tabs/TeamRulesTab";
 import { ProposalsTab }         from "./tabs/ProposalsTab";
 import { MilestonesTab }        from "./tabs/MilestonesTab";
 import { SubmissionWindowsTab } from "./tabs/SubmissionWindowsTab";
+import { OnboardingTab }        from "./tabs/OnboardingTab";
 import type { Student, Rule, Proposal, Milestone, SubmissionWindow } from "./page";
 
-type Tab = "overview" | "students" | "rules" | "proposals" | "milestones" | "windows";
+type Tab = "overview" | "students" | "rules" | "proposals" | "milestones" | "windows" | "onboarding";
 
 interface Props {
   sectionId: string;
   sectionLabel: string;
   deptCode: string;
   deptName: string;
+  departmentId: string;
   canManageStudents: boolean;
   stats: { students: number; teams: number; pendingProposals: number; openMilestones: number };
   initialStudents: Student[];
@@ -25,21 +27,25 @@ interface Props {
   initialWindows: SubmissionWindow[];
   approvedProposals: { id: string; title: string }[];
   openMilestones: { id: string; name: string }[];
+  initialInvitations: { id: string; label: string; opens_at: string; closes_at: string; max_uses: number; use_count: number; is_active: boolean; created_at: string }[];
+  initialOnboardingSubmissions: { id: string; full_name: string; email: string; usn: string; cgpa: number; github_url: string | null; skills: string[]; status: "pending" | "approved" | "rejected"; submitted_at: string; rejection_note: string | null }[];
 }
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
-  { id: "overview",   label: "Overview",           icon: <IconClipboard size={14} /> },
+  { id: "overview",    label: "Overview",           icon: <IconClipboard size={14} /> },
   { id: "students",   label: "Students",           icon: <IconUsers size={14} /> },
   { id: "rules",      label: "Team Rules",         icon: <IconSettings size={14} /> },
   { id: "proposals",  label: "Proposals",          icon: <IconFileText size={14} /> },
   { id: "milestones", label: "Milestones",         icon: <IconFlag size={14} /> },
   { id: "windows",    label: "Submission Windows", icon: <IconUpload size={14} /> },
+  { id: "onboarding", label: "Onboarding",         icon: <IconUsers size={14} /> },
 ];
 
 export function SectionDashboard({
-  sectionId, sectionLabel, deptCode, deptName, canManageStudents,
+  sectionId, sectionLabel, deptCode, deptName, departmentId, canManageStudents,
   stats, initialStudents, initialRules, initialProposals,
   initialMilestones, initialWindows, approvedProposals, openMilestones,
+  initialInvitations, initialOnboardingSubmissions,
 }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [students, setStudents]   = useState(initialStudents);
@@ -132,6 +138,15 @@ export function SectionDashboard({
           <SubmissionWindowsTab
             initialWindows={initialWindows}
             openMilestones={openMilestones}
+          />
+        )}
+        {activeTab === "onboarding" && (
+          <OnboardingTab
+            sectionId={sectionId}
+            sectionLabel={sectionLabel}
+            departmentId={departmentId}
+            initialInvitations={initialInvitations}
+            initialSubmissions={initialOnboardingSubmissions}
           />
         )}
       </div>
