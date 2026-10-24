@@ -16,6 +16,10 @@ function makeRule(overrides: Partial<TeamFormationRule> = {}): TeamFormationRule
     max_team_size: 4,
     max_teams: 5,
     is_enabled: true,
+    label: "Test Rule",
+    team_size: 4,
+    formed_count: 0,
+    team_formation_slots: [],
     ...overrides,
   };
 }
@@ -65,16 +69,20 @@ describe("Property 2: Student CGPA Eligibility", () => {
         (studentCgpa, rawRules) => {
           const rules: TeamFormationRule[] = rawRules.map((r, i) => ({
             id: `rule-${i}`,
-            cgpa_lower: Math.min(r.cgpaLower, r.cgpaUpper),
-            cgpa_upper: Math.max(r.cgpaLower, r.cgpaUpper),
+            cgpa_lower:    Math.min(r.cgpaLower, r.cgpaUpper),
+            cgpa_upper:    Math.max(r.cgpaLower, r.cgpaUpper),
             min_team_size: 2,
             max_team_size: 4,
-            max_teams: 5,
-            is_enabled: true,
+            max_teams:     5,
+            is_enabled:    true,
+            label:         "Test",
+            team_size:     4,
+            formed_count:  0,
+            team_formation_slots: [],
           }));
 
           const actuallyEligible = rules.some(
-            (r) => studentCgpa >= r.cgpa_lower && studentCgpa <= r.cgpa_upper
+            (r) => studentCgpa >= (r.cgpa_lower ?? 0) && studentCgpa <= (r.cgpa_upper ?? 10)
           );
           const { eligible } = checkEligibility(studentCgpa, rules);
           expect(eligible).toBe(actuallyEligible);

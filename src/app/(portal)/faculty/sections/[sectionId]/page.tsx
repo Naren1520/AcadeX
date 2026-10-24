@@ -12,8 +12,19 @@ export type Student = {
   cgpa: number; github_url: string | null; section_id: string | null;
 };
 export type Rule = {
-  id: string; section_id: string; cgpa_lower: number; cgpa_upper: number;
-  min_team_size: number; max_team_size: number; max_teams: number; is_enabled: boolean;
+  id: string;
+  section_id: string;
+  label: string;
+  team_size: number;
+  max_teams: number;
+  formed_count: number;
+  is_enabled: boolean;
+  team_formation_slots: { cgpa_lower: number; cgpa_upper: number; count: number; label: string }[];
+  // legacy
+  cgpa_lower?: number;
+  cgpa_upper?: number;
+  min_team_size?: number;
+  max_team_size?: number;
 };
 export type Proposal = {
   id: string; title: string; description: string;

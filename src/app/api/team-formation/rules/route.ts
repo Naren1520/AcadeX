@@ -4,22 +4,28 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { requireRole } from "@/server/authorization";
 import { toErrorResponse } from "@/lib/errors/httpResponse";
 import { ValidationError } from "@/lib/errors";
-import { cgpaSchema } from "@/lib/validation";
-import { validateRuleBands } from "@/server/workflows/teamFormationEngine";
+
+const slotSchema = z.object({
+  cgpa_lower: z.number().min(0).max(10),
+  cgpa_upper: z.number().min(0).max(10),
+  count:      z.number().int().min(1),
+  label:      z.string().max(100).default(""),
+}).refine((s) => s.cgpa_upper >= s.cgpa_lower, {
+  message: "cgpa_upper must be >= cgpa_lower", path: ["cgpa_upper"],
+});
 
 const createRuleSchema = z.object({
   section_id: z.string().uuid(),
-  cgpa_lower: cgpaSchema,
-  cgpa_upper: cgpaSchema,
-  min_team_size: z.number().int().min(1),
-  max_team_size: z.number().int().min(1),
-  max_teams: z.number().int().min(1),
-}).refine((d) => d.cgpa_upper >= d.cgpa_lower, {
-  message: "cgpa_upper must be >= cgpa_lower",
-  path: ["cgpa_upper"],
-}).refine((d) => d.max_team_size >= d.min_team_size, {
-  message: "max_team_size must be >= min_team_size",
-  path: ["max_team_size"],
+  label:      z.string().min(1).max(100).default("Rule"),
+  team_size:  z.number().int().min(1),
+  max_teams:  z.number().int().min(1),
+  slots:      z.array(slotSchema).min(1, "At least one CGPA slot is required."),
+}).refine((d) => {
+  const total = d.slots.reduce((sum, s) => sum + s.count, 0);
+  return total === d.team_size;
+}, {
+  message: "Sum of slot counts must equal team_size.",
+  path: ["slots"],
 });
 
 export async function GET(request: Request) {
@@ -31,7 +37,7 @@ export async function GET(request: Request) {
 
     let query = supabase
       .from("team_formation_rules")
-      .select("*")
+      .select("*, team_formation_slots(*)")
       .eq("is_enabled", true)
       .order("created_at");
     if (sectionId) query = query.eq("section_id", sectionId);
@@ -59,17 +65,41 @@ export async function POST(request: Request) {
       throw new ValidationError("Validation failed.", parsed.error.flatten().fieldErrors as Record<string, string>);
     }
 
-    const bandCheck = validateRuleBands(parsed.data.cgpa_lower, parsed.data.cgpa_upper);
-    if (!bandCheck.valid) throw new ValidationError(bandCheck.error!, { cgpa_upper: bandCheck.error! });
+    const { section_id, label, team_size, max_teams, slots } = parsed.data;
 
-    const { data, error } = await supabase
+    // Insert rule — keep legacy columns with placeholder values for compatibility
+    const { data: rule, error: ruleError } = await supabase
       .from("team_formation_rules")
-      .insert({ ...parsed.data, faculty_id: userId })
-      .select()
+      .insert({
+        faculty_id:    userId,
+        section_id,
+        label,
+        team_size,
+        max_teams,
+        formed_count:  0,
+        // Legacy columns — kept for existing queries
+        cgpa_lower:    Math.min(...slots.map((s) => s.cgpa_lower)),
+        cgpa_upper:    Math.max(...slots.map((s) => s.cgpa_upper)),
+        min_team_size: team_size,
+        max_team_size: team_size,
+      })
+      .select("id, label, team_size, max_teams, formed_count, is_enabled, created_at, section_id")
       .single();
 
-    if (error) throw error;
-    return NextResponse.json({ rule: data }, { status: 201 });
+    if (ruleError) throw ruleError;
+
+    // Insert slots
+    const { data: insertedSlots, error: slotsError } = await supabase
+      .from("team_formation_slots")
+      .insert(slots.map((s) => ({ rule_id: rule.id, ...s })))
+      .select();
+
+    if (slotsError) {
+      await supabase.from("team_formation_rules").delete().eq("id", rule.id);
+      throw slotsError;
+    }
+
+    return NextResponse.json({ rule: { ...rule, team_formation_slots: insertedSlots } }, { status: 201 });
   } catch (err) {
     return toErrorResponse(err);
   }
