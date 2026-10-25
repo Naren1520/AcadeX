@@ -6,16 +6,16 @@
 --   2. Run this file:  supabase db seed   OR   psql ... -f supabase/seed.sql
 --
 -- Dev login credentials
--- ┌──────────┬───────────────────────────┬──────────────────┐
+-- ┌──────────┬┬──────────────────┐
 -- │ Role     │ Email                     │ Password         │
--- ├──────────┼───────────────────────────┼──────────────────┤
+-- ├──────────┼┼──────────────────┤
 -- │ Admin    │ admin@acadex.dev          │ Admin@123        │
 -- │ Faculty  │ faculty@acadex.dev        │ Faculty@123      │
 -- │ Student  │ student@acadex.dev        │ Student@123      │
--- └──────────┴───────────────────────────┴──────────────────┘
+-- └──────────┴┴──────────────────┘
 -- =============================================================
 
--- ─── Fixed UUIDs (used across tables) ─────────────────────────
+-- ─── Fixed UUIDs (used across tables) ───
 -- Departments
 -- CSE  : 11111111-0000-0000-0000-000000000001
 -- ECE  : 11111111-0000-0000-0000-000000000002

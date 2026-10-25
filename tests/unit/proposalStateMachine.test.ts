@@ -22,7 +22,7 @@ const VALID_TRANSITIONS: Record<ProposalStatus, ProposalStatus[]> = {
   rejected: [],
 };
 
-// ─── Property 6: Proposal State Machine Validity ───────────────────────────
+// ─── Property 6: Proposal State Machine Validity 
 describe("Property 6: Proposal State Machine Validity", () => {
   it("all valid transitions succeed; all invalid transitions fail", () => {
     fc.assert(
@@ -71,7 +71,7 @@ describe("Property 6: Proposal State Machine Validity", () => {
   });
 });
 
-// ─── Property 8: Resubmission Precondition ─────────────────────────────────
+// ─── Property 8: Resubmission Precondition 
 describe("Property 8: Resubmission Precondition", () => {
   it("only revision_requested → pending is allowed (resubmit path)", () => {
     fc.assert(
@@ -88,7 +88,7 @@ describe("Property 8: Resubmission Precondition", () => {
   });
 });
 
-// ─── Property 9: Milestone Deadline Futurity ───────────────────────────────
+// ─── Property 9: Milestone Deadline Futurity 
 describe("Property 9: Milestone Deadline Futurity", () => {
   it("rejects any past or present date", () => {
     fc.assert(
@@ -114,7 +114,7 @@ describe("Property 9: Milestone Deadline Futurity", () => {
   });
 });
 
-// ─── Property 10: Submission Window Temporal Validity ──────────────────────
+// ─── Property 10: Submission Window Temporal Validity 
 describe("Property 10: Submission Window Temporal Validity", () => {
   it("rejects window where closes_at <= opens_at", () => {
     fc.assert(
@@ -148,7 +148,7 @@ describe("Property 10: Submission Window Temporal Validity", () => {
   });
 });
 
-// ─── Unit: submission edge cases ───────────────────────────────────────────
+// ─── Unit: submission edge cases 
 describe("Submission edge cases (unit)", () => {
   it("resubmission against approved returns false for valid transition check", () => {
     expect(applyProposalTransition("approved", "pending").success).toBe(false);

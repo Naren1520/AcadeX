@@ -24,7 +24,7 @@ function makeRule(overrides: Partial<TeamFormationRule> = {}): TeamFormationRule
   };
 }
 
-// ─── Property 1: CGPA Band Validity Invariant ──────────────────────────────
+// ─── Property 1: CGPA Band Validity Invariant 
 describe("Property 1: CGPA Band Validity Invariant", () => {
   it("validates when upper >= lower and both in [0,10]", () => {
     fc.assert(
@@ -53,7 +53,7 @@ describe("Property 1: CGPA Band Validity Invariant", () => {
   });
 });
 
-// ─── Property 2: Student CGPA Eligibility ──────────────────────────────────
+// ─── Property 2: Student CGPA Eligibility 
 describe("Property 2: Student CGPA Eligibility", () => {
   it("returns ineligible when CGPA falls outside all rule bands", () => {
     fc.assert(
@@ -114,7 +114,7 @@ describe("Property 2: Student CGPA Eligibility", () => {
   });
 });
 
-// ─── Unit: edge cases ──────────────────────────────────────────────────────
+// ─── Unit: edge cases ─
 describe("Team formation edge cases", () => {
   it("matches correct rule when multiple rules exist", () => {
     const rules = [

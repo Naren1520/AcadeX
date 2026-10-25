@@ -560,7 +560,7 @@ ON CONFLICT (id) DO NOTHING;
 -- After logging in, go to /admin/users to create faculty/student accounts.
 -- =============================================================
 
--- ── Admin auth user ───────────────────────────────────────────
+-- ── Admin auth user 
 INSERT INTO auth.users (
   id,
   instance_id,
@@ -610,7 +610,7 @@ INSERT INTO auth.identities (
 )
 ON CONFLICT (id) DO NOTHING;
 
--- ── Admin profile ─────────────────────────────────────────────
+-- ── Admin profile 
 INSERT INTO profiles (id, role, full_name, email) VALUES (
   'aaaaaaaa-0000-0000-0000-000000000001',
   'admin',

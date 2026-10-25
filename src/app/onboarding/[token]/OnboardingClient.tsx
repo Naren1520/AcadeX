@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/Input";
 import { FormError } from "@/components/forms/FormError";
 import { IconCheck, IconAlertCircle, IconUsers } from "@/components/ui/Icon";
 
-// ── Types ─────────────────────────────────────────────────────
+// ── Types 
 interface InvitationInfo {
   label: string;
   section: string;
@@ -19,7 +19,7 @@ interface InvitationInfo {
 
 type Step = "loading" | "info" | "verify" | "form" | "success" | "error";
 
-// ── Helper ────────────────────────────────────────────────────
+// ── Helper 
 function fmt(iso: string) {
   return new Date(iso).toLocaleString("en-IN", {
     day: "2-digit", month: "short", year: "numeric",
@@ -27,7 +27,7 @@ function fmt(iso: string) {
   });
 }
 
-// ── Main ──────────────────────────────────────────────────────
+// ── Main ─
 export function OnboardingClient({ token }: { token: string }) {
   const [step, setStep]             = useState<Step>("loading");
   const [invitation, setInvitation] = useState<InvitationInfo | null>(null);
@@ -48,7 +48,7 @@ export function OnboardingClient({ token }: { token: string }) {
   const [formError, setFormError]   = useState<string | null>(null);
   const [formLoading, setFormLoading] = useState(false);
 
-  // ── Load invitation info ────────────────────────────────────
+  // ── Load invitation info 
   useEffect(() => {
     fetch(`/api/onboarding/${token}`)
       .then((r) => r.json())
@@ -66,7 +66,7 @@ export function OnboardingClient({ token }: { token: string }) {
     return () => clearInterval(t);
   }, [retryAfter]);
 
-  // ── Verify passcode ─────────────────────────────────────────
+  // ── Verify passcode 
   async function handleVerify(e: React.FormEvent) {
     e.preventDefault();
     setVerifyLoading(true); setVerifyError(null);
@@ -88,7 +88,7 @@ export function OnboardingClient({ token }: { token: string }) {
     setVerifyLoading(false);
   }
 
-  // ── Submit form ─────────────────────────────────────────────
+  // ── Submit form 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setFormLoading(true); setFormError(null);
@@ -124,7 +124,7 @@ export function OnboardingClient({ token }: { token: string }) {
     setFormLoading(false);
   }
 
-  // ── Render ──────────────────────────────────────────────────
+  // ── Render 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10"
       style={{ backgroundColor: "#f0f4f8" }}>

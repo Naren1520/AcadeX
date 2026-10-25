@@ -23,7 +23,7 @@ interface Props {
   setStudents: React.Dispatch<React.SetStateAction<Student[]>>;
 }
 
-// ── Student detail side panel ─────────────────────────────────
+// ── Student detail side panel 
 function StudentPanel({ student, onClose }: { student: Student; onClose: () => void }) {
   return (
     <>
@@ -95,7 +95,7 @@ function StudentPanel({ student, onClose }: { student: Student; onClose: () => v
   );
 }
 
-// ── Bulk upload ───────────────────────────────────────────────
+// ── Bulk upload 
 const HEADERS = ["full_name", "email", "password", "usn", "cgpa"] as const;
 type ParsedRow = Record<string, string>;
 interface PreviewRow {
@@ -140,7 +140,7 @@ function validateRows(rows: ParsedRow[]): PreviewRow[] {
   });
 }
 
-// ── Main component ────────────────────────────────────────────
+// ── Main component 
 export function StudentsTab({
   sectionId, sectionLabel, deptCode, canManage, students, setStudents,
 }: Props) {

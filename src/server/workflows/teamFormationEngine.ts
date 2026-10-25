@@ -3,7 +3,7 @@ import { ConflictError, ValidationError } from "@/lib/errors";
 import { writeAuditLog, AuditEventTypes } from "@/server/audit";
 import { sendInAppNotifications } from "@/server/notifications";
 
-// ── Types ─────────────────────────────────────────────────────
+//  Types 
 export interface SlotDefinition {
   cgpa_lower: number;
   cgpa_upper: number;
@@ -40,7 +40,7 @@ export interface JoinTeamRequest {
   sectionId: string;
 }
 
-// ── Pure helpers ──────────────────────────────────────────────
+//  Pure helpers 
 
 /**
  * Returns the slot this student's CGPA matches, or null if none.
@@ -49,7 +49,12 @@ export function findMatchingSlot(
   studentCgpa: number,
   slots: SlotDefinition[]
 ): SlotDefinition | null {
-  return slots.find((s) => studentCgpa >= s.cgpa_lower && studentCgpa <= s.cgpa_upper) ?? null;
+  return slots.find((s) => {
+    // Coerce to number — Postgres numeric can deserialize as string
+    const lower = Number(s.cgpa_lower);
+    const upper = Number(s.cgpa_upper);
+    return studentCgpa >= lower && studentCgpa <= upper;
+  }) ?? null;
 }
 
 /**
@@ -66,7 +71,7 @@ export function checkEligibility(
       return findMatchingSlot(studentCgpa, r.team_formation_slots) !== null;
     }
     // Legacy band check
-    return studentCgpa >= (r.cgpa_lower ?? 0) && studentCgpa <= (r.cgpa_upper ?? 10);
+    return studentCgpa >= Number(r.cgpa_lower ?? 0) && studentCgpa <= Number(r.cgpa_upper ?? 10);
   });
   return matchingRule ? { eligible: true, matchingRule } : { eligible: false };
 }
@@ -125,8 +130,10 @@ async function getSlotSatisfaction(
 
   for (const slot of slots) {
     let needed = slot.count;
+    const lower = Number(slot.cgpa_lower);
+    const upper = Number(slot.cgpa_upper);
     for (let i = 0; i < memberCgpas.length; i++) {
-      if (!usedIndices.has(i) && memberCgpas[i] >= slot.cgpa_lower && memberCgpas[i] <= slot.cgpa_upper) {
+      if (!usedIndices.has(i) && memberCgpas[i] >= lower && memberCgpas[i] <= upper) {
         usedIndices.add(i);
         needed--;
         if (needed === 0) break;
@@ -140,7 +147,7 @@ async function getSlotSatisfaction(
   return { satisfied: remaining.length === 0, remaining };
 }
 
-// ── Team formation ────────────────────────────────────────────
+// ── Team formation 
 
 export async function formTeam(req: FormTeamRequest): Promise<{ id: string }> {
   const supabase = getSupabaseServiceRoleClient();
@@ -228,7 +235,7 @@ export async function joinTeam(req: JoinTeamRequest): Promise<{ id: string }> {
   if (slots.length > 0) {
     const { remaining } = await getSlotSatisfaction(supabase, req.teamId, slots);
     const fitsRemaining = remaining.some(
-      (s) => student.cgpa >= s.cgpa_lower && student.cgpa <= s.cgpa_upper
+      (s) => student.cgpa >= Number(s.cgpa_lower) && student.cgpa <= Number(s.cgpa_upper)
     );
     if (!fitsRemaining) {
       const bands = remaining

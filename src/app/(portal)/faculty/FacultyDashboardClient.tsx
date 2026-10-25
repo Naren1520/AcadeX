@@ -10,7 +10,7 @@ import {
   IconClipboard, IconArrowRight,
 } from "@/components/ui/Icon";
 
-// ── Types ─────────────────────────────────────────────────────
+// ── Types 
 interface Props {
   stats: {
     sections: number; students: number; pendingProposals: number;
@@ -25,7 +25,7 @@ interface Props {
   upcomingMilestones:{ deadline: string }[];
 }
 
-// ── Stat card ─────────────────────────────────────────────────
+// ── Stat card 
 function StatCard({
   label, value, icon, color, bg, border, href,
 }: {
@@ -48,7 +48,7 @@ function StatCard({
   );
 }
 
-// ── Chart card wrapper ────────────────────────────────────────
+// ── Chart card wrapper 
 function ChartCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl p-5" style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
@@ -58,7 +58,7 @@ function ChartCard({ title, children }: { title: string; children: React.ReactNo
   );
 }
 
-// ── Custom tooltip ────────────────────────────────────────────
+// ── Custom tooltip 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
@@ -75,7 +75,7 @@ function ChartTooltip({ active, payload, label }: any) {
   );
 }
 
-// ── Main component ────────────────────────────────────────────
+// ── Main component 
 export function FacultyDashboardClient({
   stats, proposalsByStatus, proposalTrend, milestoneStatus,
   teamStatus, cgpaBands, studentsPerSection, upcomingMilestones,

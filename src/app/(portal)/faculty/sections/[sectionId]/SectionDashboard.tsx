@@ -154,7 +154,7 @@ export function SectionDashboard({
   );
 }
 
-// ── Overview tab ──────────────────────────────────────────────
+// ── Overview tab 
 function OverviewTab({
   sectionLabel, deptCode, deptName, stats,
   onNavigate,

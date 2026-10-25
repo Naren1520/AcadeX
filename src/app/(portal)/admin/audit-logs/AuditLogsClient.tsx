@@ -10,7 +10,7 @@ import { Select } from "@/components/ui/Select";
 import { SkeletonTable } from "@/components/feedback/Skeleton";
 import { IconDownload } from "@/components/ui/Icon";
 
-// ── Types ─────────────────────────────────────────────────────
+// ── Types 
 interface AuditEntry {
   event_id: string;
   actor_id: string;
@@ -26,7 +26,7 @@ interface AuditEntry {
   created_at: string;
 }
 
-// ── Action type options ───────────────────────────────────────
+// ── Action type options 
 const ACTION_OPTIONS = [
   { value: "", label: "All actions" },
   // Auth
@@ -65,13 +65,13 @@ const ACTION_OPTIONS = [
   { value: "file.accessed",         label: "File Accessed" },
 ];
 
-// ── Role badge variant ────────────────────────────────────────
+// ── Role badge variant 
 function roleBadge(role: string) {
   const v = role === "admin" ? "neutral" : role === "faculty" ? "approved" : role === "student" ? "pending" : "neutral";
   return <Badge variant={v}>{role}</Badge>;
 }
 
-// ── Action label chip ─────────────────────────────────────────
+// ── Action label chip 
 const ACTION_COLORS: Record<string, { bg: string; color: string }> = {
   "user.login":             { bg: "#f0fdf4", color: "#16a34a" },
   "user.logout":            { bg: "#f9fafb", color: "#6b7280" },
@@ -97,14 +97,14 @@ function actionChip(action: string) {
   );
 }
 
-// ── Format timestamp ──────────────────────────────────────────
+// ── Format timestamp 
 function fmt(iso: string) {
   const d = new Date(iso);
   return d.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })
     + " " + d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
 }
 
-// ── Parse user-agent to device hint ──────────────────────────
+// ── Parse user-agent to device hint 
 function deviceHint(ua: string | null) {
   if (!ua) return "—";
   if (/mobile/i.test(ua)) return "Mobile";
@@ -112,7 +112,7 @@ function deviceHint(ua: string | null) {
   return "Desktop";
 }
 
-// ── Main component ────────────────────────────────────────────
+// ── Main component 
 export function AuditLogsClient() {
   const [entries, setEntries]       = useState<AuditEntry[]>([]);
   const [total, setTotal]           = useState(0);
@@ -393,7 +393,7 @@ export function AuditLogsClient() {
   );
 }
 
-// ── Small helpers ─────────────────────────────────────────────
+// ── Small helpers 
 function Section({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>

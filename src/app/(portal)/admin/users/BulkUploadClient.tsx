@@ -11,11 +11,11 @@ import { FormError } from "@/components/forms/FormError";
 import type { DepartmentOption, SectionOption, UserRow } from "./page";
 import type { BulkRowResult } from "@/app/api/admin/users/bulk/route";
 
-// ── Template columns ──────────────────────────────────────────
+// ── Template columns 
 const FACULTY_HEADERS = ["full_name", "email", "password"] as const;
 const STUDENT_HEADERS = ["full_name", "email", "password", "usn", "department_code", "cgpa"] as const;
 
-// ── Types ─────────────────────────────────────────────────────
+// ── Types 
 type ParsedRow = Record<string, string>;
 
 interface PreviewRow {
@@ -39,7 +39,7 @@ interface Props {
   onClose: () => void;
 }
 
-// ── Template download ─────────────────────────────────────────
+// ── Template download 
 function downloadTemplate(type: "faculty" | "student", departments: DepartmentOption[]) {
   const wb = XLSX.utils.book_new();
 
@@ -69,7 +69,7 @@ function downloadTemplate(type: "faculty" | "student", departments: DepartmentOp
   XLSX.writeFile(wb, `acadex_${type}_template.xlsx`);
 }
 
-// ── CSV / XLSX parser ─────────────────────────────────────────
+// ── CSV / XLSX parser 
 function parseFile(file: File): Promise<ParsedRow[]> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -89,7 +89,7 @@ function parseFile(file: File): Promise<ParsedRow[]> {
   });
 }
 
-// ── Row validator ─────────────────────────────────────────────
+// ── Row validator 
 function validateRows(rows: ParsedRow[], role: "faculty" | "student", departments: DepartmentOption[]): PreviewRow[] {
   const deptByCode: Record<string, string> = {};
   departments.forEach((d) => { deptByCode[d.code.toUpperCase()] = d.id; });
@@ -138,7 +138,7 @@ function validateRows(rows: ParsedRow[], role: "faculty" | "student", department
   });
 }
 
-// ── Main component ────────────────────────────────────────────
+// ── Main component 
 export function BulkUploadClient({ departments, onComplete, onClose }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [role, setRole]           = useState<"faculty" | "student">("student");
@@ -153,7 +153,7 @@ export function BulkUploadClient({ departments, onComplete, onClose }: Props) {
   const [submitting, setSubmitting] = useState(false);
   const [summary, setSummary]     = useState<{ success: number; error: number } | null>(null);
 
-  // ── File handling ─────────────────────────────────────────────
+  // ── File handling 
   async function processFile(file: File) {
     setParseError(null);
     setFileName(file.name);
@@ -182,7 +182,7 @@ export function BulkUploadClient({ departments, onComplete, onClose }: Props) {
     if (file) processFile(file);
   }
 
-  // ── Submit ────────────────────────────────────────────────────
+  // ── Submit 
   async function handleSubmit() {
     setSubmitting(true);
     const validRows = previewRows.filter((r) => r._valid);
@@ -225,7 +225,7 @@ export function BulkUploadClient({ departments, onComplete, onClose }: Props) {
   const validCount   = previewRows.filter((r) => r._valid).length;
   const invalidCount = previewRows.length - validCount;
 
-  // ── Render ────────────────────────────────────────────────────
+  // ── Render 
   return (
     <div className="flex flex-col gap-6">
 

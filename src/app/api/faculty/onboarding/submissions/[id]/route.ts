@@ -49,7 +49,7 @@ export async function PATCH(
 
     const { action, rejection_note } = parsed.data;
 
-    // ── REJECT ────────────────────────────────────────────────
+    // ── REJECT 
     if (action === "reject") {
       if (!rejection_note) {
         throw new ValidationError("rejection_note is required when rejecting.", { rejection_note: "Required" });
@@ -61,7 +61,7 @@ export async function PATCH(
       return NextResponse.json({ success: true, status: "rejected" });
     }
 
-    // ── APPROVE ───────────────────────────────────────────────
+    // ── APPROVE 
     // Check duplicates
     const [{ data: emailExists }, { data: usnExists }] = await Promise.all([
       service.from("profiles").select("id").eq("email", sub.email).maybeSingle(),

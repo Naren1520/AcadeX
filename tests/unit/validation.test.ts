@@ -6,7 +6,7 @@ import { validateFileUpload } from "@/server/storage";
 import { ALLOWED_MIME_TYPES } from "@/lib/constants/storage";
 import type { ArtefactCategory } from "@/lib/constants/storage";
 
-// ─── Property 15: CGPA Numeric Bounds ──────────────────────────────────────
+// ─── Property 15: CGPA Numeric Bounds 
 // For any CGPA value outside [0.00, 10.00], cgpaSchema.safeParse must fail.
 describe("Property 15: CGPA Numeric Bounds", () => {
   it("rejects any value below 0", () => {
@@ -36,7 +36,7 @@ describe("Property 15: CGPA Numeric Bounds", () => {
   });
 });
 
-// ─── Property 14: USN Uniqueness Format ────────────────────────────────────
+// ─── Property 14: USN Uniqueness Format 
 describe("Property 14: USN Format Validation", () => {
   it("accepts exactly 10 alphanumeric characters", () => {
     expect(usnSchema.safeParse("1RF21CS042").success).toBe(true);
@@ -68,7 +68,7 @@ describe("Property 14: USN Format Validation", () => {
   });
 });
 
-// ─── Property 11: File MIME Type Enforcement ───────────────────────────────
+// ─── Property 11: File MIME Type Enforcement 
 describe("Property 11: File MIME Type Enforcement", () => {
   const categories: ArtefactCategory[] = ["resume", "ppt", "report"];
 
@@ -102,7 +102,7 @@ describe("Property 11: File MIME Type Enforcement", () => {
   });
 });
 
-// ─── Property 12: File Size Enforcement ────────────────────────────────────
+// ─── Property 12: File Size Enforcement 
 describe("Property 12: File Size Enforcement", () => {
   it("rejects files exceeding category size limits", () => {
     const limits: Record<ArtefactCategory, number> = {
@@ -131,7 +131,7 @@ describe("Property 12: File Size Enforcement", () => {
   });
 });
 
-// ─── GitHub URL validation ──────────────────────────────────────────────────
+// ─── GitHub URL validation 
 describe("GitHub URL Schemas", () => {
   it("profileSchema accepts valid profile URLs", () => {
     expect(githubProfileSchema.safeParse("https://github.com/username").success).toBe(true);

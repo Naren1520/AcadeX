@@ -29,13 +29,13 @@ export function SectionDetailClient({
   const [students, setStudents] = useState(initialStudents);
   const [faculty, setFaculty]   = useState(initialFaculty);
 
-  // ── Add student ───────────────────────────────────────────────
+  // ── Add student 
   const [showAddStudent, setShowAddStudent]     = useState(false);
   const [selectedStudent, setSelectedStudent]   = useState("");
   const [studentError, setStudentError]         = useState<string | null>(null);
   const [studentLoading, setStudentLoading]     = useState(false);
 
-  // ── Assign faculty ────────────────────────────────────────────
+  // ── Assign faculty 
   const [showAddFaculty, setShowAddFaculty]     = useState(false);
   const [selectedFaculty, setSelectedFaculty]   = useState("");
   const [facultyError, setFacultyError]         = useState<string | null>(null);
@@ -47,7 +47,7 @@ export function SectionDetailClient({
   const availableStudents = studentOptions.filter((s) => !studentInSet.has(s.id));
   const availableFaculty  = facultyOptions.filter((f) => !facultyInSet.has(f.id));
 
-  // ─────────────────────────────────────────────────────────────
+  // ────────
   async function handleAddStudent(e: React.FormEvent) {
     e.preventDefault();
     if (!selectedStudent) return;
@@ -94,7 +94,7 @@ export function SectionDetailClient({
     setShowAddFaculty(false); setSelectedFaculty(""); setFacultyLoading(false);
   }
 
-  // ── Toggle can_manage_students ───────────────────────────────
+  // ── Toggle can_manage_students 
   async function handleToggleManage(assignmentId: string, current: boolean) {
     const res = await fetch(`/api/admin/faculty-assignments/${assignmentId}`, {
       method: "PATCH",
@@ -114,7 +114,7 @@ export function SectionDetailClient({
     if (res.ok) setFaculty((prev) => prev.filter((f) => f.assignment_id !== assignmentId));
   }
 
-  // ─────────────────────────────────────────────────────────────
+  // ────────
   return (
     <div className="flex flex-col gap-8">
 

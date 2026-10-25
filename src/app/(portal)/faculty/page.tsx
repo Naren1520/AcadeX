@@ -23,7 +23,7 @@ export default async function FacultyDashboard() {
   if (profile.role === "student") redirect("/student");
   if (profile.role !== "faculty") redirect("/login");
 
-  // ── Fetch everything in parallel ───────────────────────────
+  // ── Fetch everything in parallel 
   const [
     { data: assignments },
     { data: allProposals },
@@ -70,7 +70,7 @@ export default async function FacultyDashboard() {
       : Promise.resolve({ data: [] }),
   ]);
 
-  // ── Shape data for charts ───────────────────────────────────
+  // ── Shape data for charts 
 
   // Proposal status distribution
   type RawP = { id: string; status: string; submitted_at: string; teams: { section_id: string } | null };
