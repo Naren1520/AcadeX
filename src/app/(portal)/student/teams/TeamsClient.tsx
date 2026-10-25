@@ -12,19 +12,36 @@ import { checkEligibility, findMatchingSlot } from "@/server/workflows/teamForma
 import type { TeamFormationRule, SlotDefinition } from "@/server/workflows/teamFormationEngine";
 import { IconUsers, IconCheck, IconAlertCircle } from "@/components/ui/Icon";
 
-// ── Types 
+// ── Types ─────────────────────────────────────────────────────
 interface Invitation {
   id: string;
   team_id: string;
   created_at: string;
   teams: { id: string; name: string; status: string } | null;
-  profiles: { full_name: string; email: string } | null; // inviter
+  profiles: { full_name: string; email: string } | null;
 }
 
 interface Sectionmate {
   id: string;
   usn: string;
   cgpa: number;
+  full_name: string;
+  email: string;
+}
+
+interface TeamMember {
+  student_id: string;
+  is_lead: boolean;
+  full_name: string;
+  email: string;
+  usn: string;
+  cgpa: number;
+}
+
+interface SentInvitation {
+  id: string;
+  invitee_id: string;
+  status: string;
   full_name: string;
   email: string;
 }
@@ -37,108 +54,14 @@ interface Props {
   sectionTeams: Record<string, unknown>[];
   rules: Record<string, unknown>[];
   pendingInvitations: Invitation[];
-  sectionmates: Sectionmate[];       // students in same section not in any team
-}
-
-// ── Team-is-forming view (lead can invite) 
-function MyTeamCard({
-  membership, studentId, sectionmates, teamId,
-}: {
-  membership: Record<string, unknown>;
-  studentId: string;
   sectionmates: Sectionmate[];
-  teamId: string;
-}) {
-  const team   = membership.teams as Record<string, unknown>;
-  const isLead = !!membership.is_lead;
-  const status = String(team.status ?? "forming") as "forming" | "confirmed" | "dissolved";
-
-  const [showInvite, setShowInvite]     = useState(false);
-  const [inviteeId, setInviteeId]       = useState("");
-  const [inviteError, setInviteError]   = useState<string | null>(null);
-  const [inviteLoading, setInviteLoading] = useState(false);
-  const [invitedIds, setInvitedIds]     = useState<string[]>([]);
-
-  async function handleInvite(e: React.FormEvent) {
-    e.preventDefault();
-    if (!inviteeId) return;
-    setInviteLoading(true); setInviteError(null);
-    const res = await fetch(`/api/teams/${teamId}/invitations`, {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ invitee_id: inviteeId }),
-    });
-    const data = await res.json() as { error?: string };
-    if (!res.ok) { setInviteError(data.error ?? "Failed to send invitation."); setInviteLoading(false); return; }
-    setInvitedIds((p) => [...p, inviteeId]);
-    setShowInvite(false); setInviteeId(""); setInviteLoading(false);
-  }
-
-  const available = sectionmates.filter((s) => s.id !== studentId && !invitedIds.includes(s.id));
-
-  return (
-    <Card>
-      <CardHeader>
-        <div className="flex flex-wrap items-center gap-3">
-          <CardTitle>{String(team.name)}</CardTitle>
-          <Badge variant={status}>{status}</Badge>
-          {isLead && <Badge variant="neutral">Team Lead</Badge>}
-        </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-sm text-neutral-600">You are a member of this team.</p>
-        {status === "confirmed" && (
-          <p className="mt-2 text-sm" style={{ color: "#16a34a" }}>
-            Team is confirmed — you can submit proposals.
-          </p>
-        )}
-        {status === "forming" && isLead && (
-          <div className="mt-4">
-            <p className="mb-2 text-sm text-neutral-500">
-              As team leader, you can invite section mates to join.
-            </p>
-            <Button variant="primary" size="sm" onClick={() => { setInviteeId(""); setInviteError(null); setShowInvite(true); }}
-              disabled={available.length === 0}>
-              <IconUsers size={13} /> Invite a Student
-            </Button>
-            {available.length === 0 && (
-              <p className="mt-2 text-xs text-neutral-400">
-                No available students to invite (all have been invited or are already in teams).
-              </p>
-            )}
-          </div>
-        )}
-      </CardContent>
-
-      <Dialog open={showInvite} onOpenChange={setShowInvite}
-        title="Invite Student to Your Team"
-        description="Select a section mate to send a join invitation to.">
-        <form onSubmit={handleInvite} className="flex flex-col gap-4">
-          <FormError message={inviteError} />
-          <Select
-            label="Student"
-            value={inviteeId}
-            onValueChange={setInviteeId}
-            options={available.map((s) => ({
-              value: s.id,
-              label: `${s.full_name} (${s.usn}) — CGPA ${s.cgpa.toFixed(2)}`,
-            }))}
-            placeholder="Select student…"
-          />
-          <div className="flex justify-end gap-2">
-            <Button variant="ghost" type="button" onClick={() => setShowInvite(false)}>Cancel</Button>
-            <Button variant="primary" type="submit" isLoading={inviteLoading} disabled={!inviteeId}>
-              Send Invitation
-            </Button>
-          </div>
-        </form>
-      </Dialog>
-    </Card>
-  );
+  teamMembers: TeamMember[];
+  sentInvitations: SentInvitation[];
 }
 
-// ── Pending invitations inbox 
+// ── Pending invitations inbox ─────────────────────────────────
 function InvitationsInbox({ invitations }: { invitations: Invitation[] }) {
-  const [list, setList]       = useState(invitations);
+  const [list, setList] = useState(invitations);
   const [loading, setLoading] = useState<{ id: string; action: "accept" | "decline" } | null>(null);
   const [error, setError]     = useState<string | null>(null);
 
@@ -165,7 +88,8 @@ function InvitationsInbox({ invitations }: { invitations: Invitation[] }) {
       <FormError message={error} />
       <div className="flex flex-col gap-3">
         {list.map((inv) => (
-          <div key={inv.id} className="flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3"
+          <div key={inv.id}
+            className="flex flex-wrap items-center justify-between gap-3 rounded-xl px-4 py-3"
             style={{ border: "1px solid #bfdbfe", backgroundColor: "#eff6ff" }}>
             <div>
               <p className="text-sm font-medium text-neutral-800">
@@ -197,11 +121,179 @@ function InvitationsInbox({ invitations }: { invitations: Invitation[] }) {
   );
 }
 
-// ── Main component 
+// ── My Team Card ──────────────────────────────────────────────
+function MyTeamCard({
+  membership, studentId, sectionmates, teamId,
+  initialMembers, initialSentInvitations,
+}: {
+  membership: Record<string, unknown>;
+  studentId: string;
+  sectionmates: Sectionmate[];
+  teamId: string;
+  initialMembers: TeamMember[];
+  initialSentInvitations: SentInvitation[];
+}) {
+  const team   = membership.teams as Record<string, unknown>;
+  const isLead = !!membership.is_lead;
+  const status = String(team.status ?? "forming") as "forming" | "confirmed" | "dissolved";
+
+  const [members, setMembers]   = useState(initialMembers);
+  const [pending, setPending]   = useState(initialSentInvitations);
+  const [showInvite, setShowInvite]       = useState(false);
+  const [inviteeId, setInviteeId]         = useState("");
+  const [inviteError, setInviteError]     = useState<string | null>(null);
+  const [inviteLoading, setInviteLoading] = useState(false);
+
+  const memberIds  = new Set(members.map((m) => m.student_id));
+  const invitedIds = new Set(pending.map((i) => i.invitee_id));
+  const available  = sectionmates.filter(
+    (s) => s.id !== studentId && !memberIds.has(s.id) && !invitedIds.has(s.id)
+  );
+
+  async function handleInvite(e: React.FormEvent) {
+    e.preventDefault();
+    if (!inviteeId) return;
+    setInviteLoading(true); setInviteError(null);
+    const res = await fetch(`/api/teams/${teamId}/invitations`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ invitee_id: inviteeId }),
+    });
+    const data = await res.json() as { error?: string };
+    if (!res.ok) { setInviteError(data.error ?? "Failed."); setInviteLoading(false); return; }
+    const s = sectionmates.find((x) => x.id === inviteeId)!;
+    setPending((p) => [...p, { id: Date.now().toString(), invitee_id: s.id, status: "pending", full_name: s.full_name, email: s.email }]);
+    setShowInvite(false); setInviteeId(""); setInviteLoading(false);
+  }
+
+  return (
+    <Card>
+      <CardHeader>
+        <div className="flex flex-wrap items-center gap-3">
+          <CardTitle>{String(team.name)}</CardTitle>
+          <Badge variant={status}>{status}</Badge>
+          {isLead && <Badge variant="neutral">Team Lead</Badge>}
+        </div>
+      </CardHeader>
+      <CardContent>
+        {status === "confirmed" && (
+          <p className="mb-4 text-sm font-medium" style={{ color: "#16a34a" }}>
+            Team is confirmed — you can submit proposals.
+          </p>
+        )}
+
+        {/* Members */}
+        <div className="mb-4">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+            Members ({members.length})
+          </p>
+          <div className="flex flex-col gap-2">
+            {members.map((m) => (
+              <div key={m.student_id}
+                className="flex items-center gap-3 rounded-lg px-3 py-2.5"
+                style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0" }}>
+                <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                  style={{ backgroundColor: "#16a34a" }}>
+                  {m.full_name.charAt(0).toUpperCase()}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="flex flex-wrap items-center gap-1.5 text-sm font-medium text-neutral-800">
+                    {m.full_name}
+                    {m.is_lead && (
+                      <span className="rounded-full px-1.5 py-0.5 text-xs font-semibold"
+                        style={{ backgroundColor: "#1e3a5f", color: "#fff" }}>Lead</span>
+                    )}
+                    {m.student_id === studentId && (
+                      <span className="text-xs text-neutral-400">(you)</span>
+                    )}
+                  </p>
+                  <p className="text-xs text-neutral-500">{m.usn} · CGPA {m.cgpa.toFixed(2)}</p>
+                </div>
+                <span className="flex items-center gap-1 text-xs font-medium" style={{ color: "#16a34a" }}>
+                  <IconCheck size={12} /> Joined
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Pending sent invitations */}
+        {pending.length > 0 && (
+          <div className="mb-4">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
+              Invited — Awaiting Response ({pending.length})
+            </p>
+            <div className="flex flex-col gap-2">
+              {pending.map((inv) => (
+                <div key={inv.id}
+                  className="flex items-center gap-3 rounded-lg px-3 py-2.5"
+                  style={{ backgroundColor: "#fffbeb", border: "1px solid #fde68a" }}>
+                  <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold"
+                    style={{ backgroundColor: "#fde68a", color: "#92400e" }}>
+                    {inv.full_name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-neutral-800">{inv.full_name}</p>
+                    <p className="text-xs text-neutral-500">{inv.email}</p>
+                  </div>
+                  <span className="text-xs font-medium" style={{ color: "#d97706" }}>
+                    Pending…
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Invite button */}
+        {status === "forming" && isLead && (
+          <div>
+            <Button variant="primary" size="sm"
+              onClick={() => { setInviteeId(""); setInviteError(null); setShowInvite(true); }}
+              disabled={available.length === 0}>
+              <IconUsers size={13} /> Invite a Student
+            </Button>
+            {available.length === 0 && (
+              <p className="mt-2 text-xs text-neutral-400">
+                All eligible section mates have been invited or joined.
+              </p>
+            )}
+          </div>
+        )}
+      </CardContent>
+
+      <Dialog open={showInvite} onOpenChange={setShowInvite}
+        title="Invite Student to Your Team"
+        description="Select a section mate — only students who fit the team rule are shown.">
+        <form onSubmit={handleInvite} className="flex flex-col gap-4">
+          <FormError message={inviteError} />
+          <Select
+            label="Student"
+            value={inviteeId}
+            onValueChange={setInviteeId}
+            options={available.map((s) => ({
+              value: s.id,
+              label: `${s.full_name} (${s.usn}) — CGPA ${s.cgpa.toFixed(2)}`,
+            }))}
+            placeholder="Select student…"
+          />
+          <div className="flex justify-end gap-2">
+            <Button variant="ghost" type="button" onClick={() => setShowInvite(false)}>Cancel</Button>
+            <Button variant="primary" type="submit" isLoading={inviteLoading} disabled={!inviteeId}>
+              Send Invitation
+            </Button>
+          </div>
+        </form>
+      </Dialog>
+    </Card>
+  );
+}
+
+// ── Main component ────────────────────────────────────────────
 export function TeamsClient({
   studentId, studentCgpa, sectionId,
   currentMembership, sectionTeams, rules,
   pendingInvitations, sectionmates,
+  teamMembers, sentInvitations,
 }: Props) {
   const [joiningTeam, setJoiningTeam]   = useState<string | null>(null);
   const [joinError, setJoinError]       = useState<string | null>(null);
@@ -213,10 +305,10 @@ export function TeamsClient({
   const team   = currentMembership ? (currentMembership.teams as Record<string, unknown>) : null;
   const teamId = team ? String(team.id) : "";
 
-  async function handleJoin(teamId: string) {
+  async function handleJoin(tid: string) {
     if (!sectionId) return;
-    setJoiningTeam(teamId); setJoinError(null);
-    const res = await fetch(`/api/teams/${teamId}/join`, {
+    setJoiningTeam(tid); setJoinError(null);
+    const res = await fetch(`/api/teams/${tid}/join`, {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ section_id: sectionId }),
     });
@@ -235,11 +327,11 @@ export function TeamsClient({
       body: JSON.stringify({ section_id: sectionId, rule_id: selectedRule, team_name: newTeamName }),
     });
     const data = await res.json() as { error?: string };
-    if (!res.ok) { setFormError(data.error ?? "Failed to form team."); setIsForming(false); return; }
+    if (!res.ok) { setFormError(data.error ?? "Failed."); setIsForming(false); return; }
     window.location.reload();
   }
 
-  // ── Already in a team 
+  // ── Already in a team ─────────────────────────────────────
   if (team) {
     return (
       <div className="flex flex-col gap-6">
@@ -249,17 +341,18 @@ export function TeamsClient({
           studentId={studentId}
           sectionmates={sectionmates}
           teamId={teamId}
+          initialMembers={teamMembers}
+          initialSentInvitations={sentInvitations}
         />
       </div>
     );
   }
 
-  // ── Not in a team yet 
+  // ── Not in a team ─────────────────────────────────────────
   const typedRules = rules as unknown as TeamFormationRule[];
 
   return (
     <div className="flex flex-col gap-6">
-      {/* Invitations inbox */}
       <InvitationsInbox invitations={pendingInvitations} />
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -272,28 +365,24 @@ export function TeamsClient({
           {sectionTeams.length === 0 ? (
             <div className="rounded-xl p-8 text-center text-sm text-neutral-500"
               style={{ border: "2px dashed #e5e7eb" }}>
-              No teams are currently accepting members.
+              No teams accepting members right now.
             </div>
           ) : (
             <div className="flex flex-col gap-3">
               {sectionTeams.map((t) => {
-                const rule = t.team_formation_rules as TeamFormationRule | undefined;
+                const rule  = t.team_formation_rules as TeamFormationRule | undefined;
                 const slots: SlotDefinition[] = rule?.team_formation_slots ?? [];
                 const eligible = slots.length > 0
                   ? findMatchingSlot(studentCgpa, slots) !== null
                   : rule ? checkEligibility(studentCgpa, [rule]).eligible : false;
 
                 return (
-                  <div key={String(t.id)}
-                    className="rounded-xl p-4"
+                  <div key={String(t.id)} className="rounded-xl p-4"
                     style={{ border: "1px solid #e5e7eb", backgroundColor: "#fff" }}>
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex-1">
                         <p className="font-semibold text-neutral-900">{String(t.name)}</p>
-                        {rule?.label && (
-                          <p className="text-xs text-neutral-500">Rule: {rule.label}</p>
-                        )}
-                        {/* Slot requirements */}
+                        {rule?.label && <p className="text-xs text-neutral-500">Rule: {rule.label}</p>}
                         {slots.length > 0 ? (
                           <div className="mt-1.5 flex flex-wrap gap-1">
                             {slots.map((s, i) => (
@@ -305,13 +394,11 @@ export function TeamsClient({
                             ))}
                           </div>
                         ) : rule && (
-                          <p className="text-xs text-neutral-500">
-                            CGPA {rule.cgpa_lower}–{rule.cgpa_upper}
-                          </p>
+                          <p className="text-xs text-neutral-500">CGPA {rule.cgpa_lower}–{rule.cgpa_upper}</p>
                         )}
                         {!eligible && (
                           <p className="mt-1 flex items-center gap-1 text-xs text-red-600">
-                            <IconAlertCircle size={11} /> Your CGPA ({studentCgpa}) doesn&apos;t match any slot.
+                            <IconAlertCircle size={11} /> Your CGPA ({studentCgpa}) doesn&apos;t fit.
                           </p>
                         )}
                       </div>
@@ -344,13 +431,11 @@ export function TeamsClient({
                     style={{ border: "1px solid #d1d5db", backgroundColor: "#fff" }}>
                     <option value="">Select a rule…</option>
                     {typedRules.map((rule) => {
-                      const slots = rule.team_formation_slots ?? [];
+                      const slots   = rule.team_formation_slots ?? [];
                       const eligible = slots.length > 0
                         ? findMatchingSlot(studentCgpa, slots) !== null
                         : checkEligibility(studentCgpa, [rule]).eligible;
-                      const quota = rule.formed_count !== undefined && rule.max_teams
-                        ? rule.formed_count >= rule.max_teams
-                        : false;
+                      const quota   = (rule.formed_count ?? 0) >= rule.max_teams;
                       return (
                         <option key={rule.id} value={rule.id} disabled={!eligible || quota}>
                           {rule.label ?? "Rule"} — size {rule.team_size ?? rule.max_team_size}
@@ -360,7 +445,6 @@ export function TeamsClient({
                     })}
                   </select>
                 </div>
-                {/* Show selected rule slots */}
                 {selectedRule && (() => {
                   const r = typedRules.find((x) => x.id === selectedRule);
                   const slots = r?.team_formation_slots ?? [];
