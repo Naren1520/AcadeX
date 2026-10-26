@@ -28,6 +28,7 @@ export const adminNav: NavItem[] = [
 export const facultyNav: NavItem[] = [
   { label: "Dashboard",          href: "/faculty",                         icon: <IconDashboard size={16} /> },
   { label: "My Sections",        href: "/faculty/sections",                icon: <IconClipboard size={16} /> },
+  { label: "Mentee Teams",       href: "/faculty/mentee",                  icon: <IconUsers size={16} /> },
   { label: "Team Formation Rules", href: "/faculty/team-formation",        icon: <IconUsers size={16} /> },
   { label: "Proposals",          href: "/faculty/proposals",               icon: <IconFileText size={16} /> },
   { label: "Milestones",         href: "/faculty/milestones",              icon: <IconFlag size={16} /> },

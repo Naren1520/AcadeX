@@ -4,13 +4,15 @@ import { useState } from "react";
 import { IconUsers, IconFileText, IconFlag, IconUpload, IconClipboard, IconSettings } from "@/components/ui/Icon";
 import { StudentsTab }          from "./tabs/StudentsTab";
 import { TeamRulesTab }         from "./tabs/TeamRulesTab";
+import { TeamsTab }             from "./tabs/TeamsTab";
 import { ProposalsTab }         from "./tabs/ProposalsTab";
 import { MilestonesTab }        from "./tabs/MilestonesTab";
 import { SubmissionWindowsTab } from "./tabs/SubmissionWindowsTab";
 import { OnboardingTab }        from "./tabs/OnboardingTab";
+import { MentorTab }            from "./tabs/MentorTab";
 import type { Student, Rule, Proposal, Milestone, SubmissionWindow } from "./page";
 
-type Tab = "overview" | "students" | "rules" | "proposals" | "milestones" | "windows" | "onboarding";
+type Tab = "overview" | "students" | "rules" | "teams" | "proposals" | "milestones" | "windows" | "onboarding" | "mentors";
 
 interface Props {
   sectionId: string;
@@ -29,16 +31,23 @@ interface Props {
   openMilestones: { id: string; name: string }[];
   initialInvitations: { id: string; label: string; opens_at: string; closes_at: string; max_uses: number; use_count: number; is_active: boolean; created_at: string }[];
   initialOnboardingSubmissions: { id: string; full_name: string; email: string; usn: string; cgpa: number; github_url: string | null; skills: string[]; status: "pending" | "approved" | "rejected"; submitted_at: string; rejection_note: string | null }[];
+  facultyId: string;
+  facultyList: { id: string; full_name: string; email: string }[];
+  teamsWithMentors: { team_id: string; team_name: string; team_status: string; mentor_id: string | null; mentor_name: string | null; mentor_email: string | null }[];
+  teamsData: { id: string; name: string; status: "forming" | "confirmed" | "dissolved"; rule_id: string; rule_label: string; team_size: number; slots: { cgpa_lower: number; cgpa_upper: number; count: number; label: string }[]; members: { student_id: string; is_lead: boolean; full_name: string; email: string; usn: string; cgpa: number }[]; pending_invites: { id: string; invitee_id: string; full_name: string; email: string; created_at: string }[] }[];
+  teamCountByRule: Record<string, number>;
 }
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: "overview",    label: "Overview",           icon: <IconClipboard size={14} /> },
   { id: "students",   label: "Students",           icon: <IconUsers size={14} /> },
   { id: "rules",      label: "Team Rules",         icon: <IconSettings size={14} /> },
+  { id: "teams",      label: "Teams",              icon: <IconUsers size={14} /> },
   { id: "proposals",  label: "Proposals",          icon: <IconFileText size={14} /> },
   { id: "milestones", label: "Milestones",         icon: <IconFlag size={14} /> },
   { id: "windows",    label: "Submission Windows", icon: <IconUpload size={14} /> },
   { id: "onboarding", label: "Onboarding",         icon: <IconUsers size={14} /> },
+  { id: "mentors",    label: "Mentors",            icon: <IconUsers size={14} /> },
 ];
 
 export function SectionDashboard({
@@ -46,6 +55,7 @@ export function SectionDashboard({
   stats, initialStudents, initialRules, initialProposals,
   initialMilestones, initialWindows, approvedProposals, openMilestones,
   initialInvitations, initialOnboardingSubmissions,
+  facultyId, facultyList, teamsWithMentors, teamsData, teamCountByRule,
 }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [students, setStudents]   = useState(initialStudents);
@@ -123,7 +133,10 @@ export function SectionDashboard({
           />
         )}
         {activeTab === "rules" && (
-          <TeamRulesTab sectionId={sectionId} initialRules={initialRules} />
+          <TeamRulesTab sectionId={sectionId} initialRules={initialRules} teamCountByRule={teamCountByRule} />
+        )}
+        {activeTab === "teams" && (
+          <TeamsTab sectionId={sectionId} initialTeams={teamsData} />
         )}
         {activeTab === "proposals" && (
           <ProposalsTab initialProposals={initialProposals} />
@@ -147,6 +160,14 @@ export function SectionDashboard({
             departmentId={departmentId}
             initialInvitations={initialInvitations}
             initialSubmissions={initialOnboardingSubmissions}
+          />
+        )}
+        {activeTab === "mentors" && (
+          <MentorTab
+            sectionId={sectionId}
+            facultyId={facultyId}
+            initialTeams={teamsWithMentors}
+            facultyList={facultyList}
           />
         )}
       </div>

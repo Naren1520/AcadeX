@@ -34,11 +34,12 @@ interface Rule {
 interface Props {
   sectionId: string;
   initialRules: Rule[];
+  teamCountByRule: Record<string, number>; // real count from teams table
 }
 
 const emptySlot = (): Slot => ({ cgpa_lower: 0, cgpa_upper: 10, count: 1, label: "" });
 
-export function TeamRulesTab({ sectionId, initialRules }: Props) {
+export function TeamRulesTab({ sectionId, initialRules, teamCountByRule }: Props) {
   const [rules, setRules]     = useState<Rule[]>(initialRules);
   const [showAdd, setShowAdd] = useState(false);
   const [error, setError]     = useState<string | null>(null);
@@ -151,11 +152,11 @@ export function TeamRulesTab({ sectionId, initialRules }: Props) {
                     Max teams: <strong>{r.max_teams}</strong>
                   </span>
                   <span className="text-xs font-medium" style={{
-                    color: r.formed_count >= r.max_teams ? "#dc2626" : "#16a34a"
+                    color: (teamCountByRule[r.id] ?? r.formed_count) >= r.max_teams ? "#dc2626" : "#16a34a"
                   }}>
-                    {r.formed_count}/{r.max_teams} formed
+                    {teamCountByRule[r.id] ?? r.formed_count}/{r.max_teams} formed
                   </span>
-                  {r.formed_count >= r.max_teams && (
+                  {(teamCountByRule[r.id] ?? r.formed_count) >= r.max_teams && (
                     <Badge variant="rejected">Quota full</Badge>
                   )}
                 </div>

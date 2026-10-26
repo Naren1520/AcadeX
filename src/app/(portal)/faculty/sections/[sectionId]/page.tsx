@@ -79,9 +79,11 @@ export default async function SectionDashboardPage({
     { data: rawProposals },
     { data: rawMilestones },
     { data: rawWindows },
-    { data: teams },
+    { data: rawAllTeams },
     { data: rawInvitations },
     { data: rawSubmissions },
+    { data: rawFacultyList },
+    { data: rawSectionTeams },
   ] = await Promise.all([
     service.from("students")
       .select("id, usn, cgpa, section_id, github_url, profiles(full_name, email)")
@@ -99,7 +101,7 @@ export default async function SectionDashboardPage({
     service.from("submission_windows")
       .select("id, milestone_id, opens_at, closes_at, milestones(name, proposals(teams(section_id)))")
       .eq("faculty_id", userId).order("opens_at", { ascending: false }),
-    service.from("teams").select("id").eq("section_id", sectionId),
+    service.from("teams").select("id, name, status, rule_id, team_formation_rules(label, team_size, team_formation_slots(*)), team_members(student_id, is_lead, students!team_members_student_id_fkey(usn, cgpa, profiles(full_name, email))), team_invitations(id, invitee_id, status, created_at, profiles!team_invitations_invitee_id_fkey(full_name, email))").eq("section_id", sectionId),
     service.from("onboarding_invitations")
       .select("id, label, opens_at, closes_at, max_uses, use_count, is_active, created_at")
       .eq("faculty_id", userId).eq("section_id", sectionId)
@@ -109,6 +111,10 @@ export default async function SectionDashboardPage({
       .eq("onboarding_invitations.faculty_id", userId)
       .eq("onboarding_invitations.section_id", sectionId)
       .order("submitted_at", { ascending: false }),
+    // All faculty for mentor assignment
+    service.from("profiles").select("id, full_name, email").eq("role", "faculty").order("full_name"),
+    // Teams in this section with mentor info
+    service.from("teams").select("id, name, status, team_mentors(mentor_id, profiles!team_mentors_mentor_id_fkey(full_name, email))").eq("section_id", sectionId),
   ]);
 
   // Shape students
@@ -118,8 +124,10 @@ export default async function SectionDashboardPage({
     full_name: s.profiles?.full_name ?? "", email: s.profiles?.email ?? "",
   }));
 
+  const teams = rawAllTeams ?? [];
+
   // Filter proposals/milestones/windows to this section via their team → section_id link
-  const sectionTeamIds = new Set((teams ?? []).map((t: { id: string }) => t.id));
+  const sectionTeamIds = new Set(teams.map((t: { id: string }) => t.id));
 
   type RP = { id: string; title: string; description: string; status: string; version: number; submitted_at: string; proposal_sdgs: { sdg_number: number }[]; teams: { name: string; section_id: string } | null };
   const proposals: Proposal[] = (rawProposals as unknown as RP[] ?? [])
@@ -152,12 +160,69 @@ export default async function SectionDashboardPage({
   // Open milestones for submission window dropdown
   const openMilestones = milestones.filter((m) => m.status === "open").map((m) => ({ id: m.id, name: m.name }));
 
+  // Shape full teams data for TeamsTab
+  type RawTeam = {
+    id: string; name: string; status: string; rule_id: string;
+    team_formation_rules: { label: string | null; team_size: number | null; team_formation_slots: { cgpa_lower: number; cgpa_upper: number; count: number; label: string }[] } | null;
+    team_members: { student_id: string; is_lead: boolean; students: { usn: string; cgpa: number; profiles: { full_name: string; email: string } | null } | null }[];
+    team_invitations: { id: string; invitee_id: string; status: string; created_at: string; profiles: { full_name: string; email: string } | null }[];
+  };
+  const teamsData = (rawAllTeams as unknown as RawTeam[] ?? []).map((t) => ({
+    id:         t.id,
+    name:       t.name,
+    status:     t.status as "forming" | "confirmed" | "dissolved",
+    rule_id:    t.rule_id,
+    rule_label: t.team_formation_rules?.label ?? "",
+    team_size:  t.team_formation_rules?.team_size ?? 0,
+    slots:      t.team_formation_rules?.team_formation_slots ?? [],
+    members:    (t.team_members ?? []).map((m) => ({
+      student_id: m.student_id,
+      is_lead:    m.is_lead,
+      full_name:  m.students?.profiles?.full_name ?? "",
+      email:      m.students?.profiles?.email    ?? "",
+      usn:        m.students?.usn  ?? "",
+      cgpa:       m.students?.cgpa ?? 0,
+    })),
+    pending_invites: (t.team_invitations ?? [])
+      .filter((i) => i.status === "pending")
+      .map((i) => ({
+        id:         i.id,
+        invitee_id: i.invitee_id,
+        full_name:  i.profiles?.full_name ?? "",
+        email:      i.profiles?.email    ?? "",
+        created_at: i.created_at,
+      })),
+  }));
+
+  // Real team count per rule (fixes formed_count bug)
+  const teamCountByRule: Record<string, number> = {};
+  teamsData.forEach((t) => {
+    if (t.rule_id) teamCountByRule[t.rule_id] = (teamCountByRule[t.rule_id] ?? 0) + 1;
+  });
+
   const stats = {
     students:         students.length,
     teams:            (teams ?? []).length,
     pendingProposals: proposals.filter((p) => p.status === "pending").length,
     openMilestones:   milestones.filter((m) => m.status === "open").length,
   };
+
+  const facultyList = (rawFacultyList ?? []).map((f: { id: string; full_name: string; email: string }) => ({
+    id: f.id, full_name: f.full_name, email: f.email,
+  }));
+
+  type RawST = { id: string; name: string; status: string; team_mentors: { mentor_id: string; profiles: { full_name: string; email: string } | null }[] | null };
+  const teamsWithMentors = (rawSectionTeams as unknown as RawST[] ?? []).map((t) => {
+    const m = t.team_mentors?.[0] ?? null;
+    return {
+      team_id:      t.id,
+      team_name:    t.name,
+      team_status:  t.status,
+      mentor_id:    m?.mentor_id    ?? null,
+      mentor_name:  m?.profiles?.full_name ?? null,
+      mentor_email: m?.profiles?.email    ?? null,
+    };
+  });
 
   return (
     <Shell
@@ -191,6 +256,11 @@ export default async function SectionDashboardPage({
           openMilestones={openMilestones}
           initialInvitations={invitations}
           initialOnboardingSubmissions={onboardingSubmissions}
+          facultyId={userId}
+          facultyList={facultyList}
+          teamsWithMentors={teamsWithMentors}
+          teamsData={teamsData}
+          teamCountByRule={teamCountByRule}
         />
       </PageWrapper>
     </Shell>

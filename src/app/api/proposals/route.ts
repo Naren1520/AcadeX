@@ -74,9 +74,9 @@ export async function POST(request: Request) {
     const { data: proposal, error: propError } = await supabase
       .from("proposals")
       .insert({
-        team_id: parsed.data.team_id,
-        faculty_id: parsed.data.faculty_id,
-        title: parsed.data.title,
+        team_id:     parsed.data.team_id,
+        faculty_id:  parsed.data.faculty_id,
+        title:       parsed.data.title,
         description: parsed.data.description,
         status: "pending",
         version: 1,
@@ -84,12 +84,22 @@ export async function POST(request: Request) {
       .select()
       .single();
 
-    if (propError || !proposal) throw propError ?? new Error("Failed to create proposal.");
+    if (propError) {
+      console.error("[Proposals] Proposal insert failed:", JSON.stringify(propError));
+      throw propError;
+    }
+    if (!proposal) throw new Error("Failed to create proposal — no data returned.");
 
     // Insert SDG associations
-    await supabase.from("proposal_sdgs").insert(
+    const { error: sdgError } = await supabase.from("proposal_sdgs").insert(
       parsed.data.sdg_numbers.map((n) => ({ proposal_id: proposal.id, sdg_number: n }))
     );
+    if (sdgError) {
+      // Roll back proposal if SDGs fail
+      await supabase.from("proposals").delete().eq("id", proposal.id);
+      console.error("[Proposals] SDG insert failed:", sdgError);
+      throw sdgError;
+    }
 
     writeAuditLog({
       actorId: userId,

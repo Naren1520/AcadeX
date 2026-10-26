@@ -492,6 +492,14 @@ CREATE POLICY "proposals_admin_all"      ON proposals FOR ALL USING (current_use
 CREATE POLICY "psdgs_select"             ON proposal_sdgs FOR SELECT USING (
   EXISTS (SELECT 1 FROM proposals p WHERE p.id = proposal_sdgs.proposal_id)
 );
+CREATE POLICY "psdgs_student_insert"     ON proposal_sdgs FOR INSERT WITH CHECK (
+  EXISTS (
+    SELECT 1 FROM proposals p
+    JOIN team_members tm ON tm.team_id = p.team_id
+    WHERE p.id = proposal_sdgs.proposal_id
+      AND tm.student_id = auth.uid()
+  )
+);
 CREATE POLICY "psdgs_admin_all"          ON proposal_sdgs FOR ALL USING (current_user_role() = 'admin');
 
 -- milestones
