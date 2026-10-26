@@ -4,8 +4,10 @@ import {
   AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
 } from "recharts";
+import { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
-import { IconUsers, IconFileText, IconFlag, IconUpload, IconCheck } from "@/components/ui/Icon";
+import { IconUsers, IconFileText, IconFlag, IconUpload, IconCheck, IconChat } from "@/components/ui/Icon";
+import { ChatPanel } from "@/app/(portal)/student/teams/[teamId]/chat/ChatPanel";
 
 // ── Types ─────────────────────────────────────────────────────
 interface TeamInfo {
@@ -23,6 +25,7 @@ interface Props {
   submissions: Record<string, unknown>[];
   mentorshipNotes: string | null;
   assignedBy: string;
+  currentUserId: string;
 }
 
 // ── Tooltip ───────────────────────────────────────────────────
@@ -52,9 +55,10 @@ function Stat({ label, value, color, bg }: { label: string; value: string | numb
 // ── Main ──────────────────────────────────────────────────────
 export function MenteeTeamDashboard({
   team, members, avgCgpa, proposals, milestones, submissions,
-  mentorshipNotes, assignedBy,
+  mentorshipNotes, assignedBy, currentUserId,
 }: Props) {
 
+  const [activeTab, setActiveTab] = useState<"dashboard" | "chat">("dashboard");
   const teamStatus = team.status as "forming" | "confirmed" | "dissolved";
 
   // Proposal status counts
@@ -90,7 +94,32 @@ export function MenteeTeamDashboard({
   return (
     <div className="flex flex-col gap-7">
 
-      {/* ── Team header info ── */}
+      {/* ── Tab bar ── */}
+      <div className="flex gap-1 rounded-xl p-1" style={{ backgroundColor: "#f3f4f6" }}>
+        {([
+          { id: "dashboard" as const, label: "Dashboard" },
+          { id: "chat"      as const, label: "Group Chat", icon: <IconChat size={13} /> },
+        ]).map((t) => (
+          <button key={t.id} type="button" onClick={() => setActiveTab(t.id)}
+            className="flex cursor-pointer items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-all"
+            style={{
+              backgroundColor: activeTab === t.id ? "#ffffff" : "transparent",
+              color:           activeTab === t.id ? "#1e3a5f" : "#6b7280",
+              boxShadow:       activeTab === t.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+            }}>
+            {t.icon} {t.label}
+          </button>
+        ))}
+      </div>
+
+      {/* ── Chat tab ── */}
+      {activeTab === "chat" && (
+        <ChatPanel teamId={team.id} currentUserId={currentUserId} />
+      )}
+
+      {/* ── Dashboard tab ── */}
+      {activeTab === "dashboard" && (
+      <>
       <div className="rounded-2xl p-5" style={{ backgroundColor: "#f5f3ff", border: "1px solid #ddd6fe" }}>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -359,6 +388,8 @@ export function MenteeTeamDashboard({
             })}
           </div>
         </div>
+      )}
+      </>
       )}
     </div>
   );

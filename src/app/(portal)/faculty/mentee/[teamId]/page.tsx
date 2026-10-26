@@ -116,6 +116,7 @@ export default async function MenteeTeamPage({
           assignedBy={
             (mentorship as unknown as { profiles: { full_name: string } | null }).profiles?.full_name ?? ""
           }
+          currentUserId={userId}
         />
       </PageWrapper>
     </Shell>

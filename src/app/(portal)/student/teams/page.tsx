@@ -1,4 +1,5 @@
-﻿import { requirePageRole } from "@/lib/supabase/pageAuth";
+﻿import { notFound, redirect } from "next/navigation";
+import { requirePageRole } from "@/lib/supabase/pageAuth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { Shell } from "@/components/layout/Shell";
@@ -20,6 +21,9 @@ export default async function StudentTeamsPage() {
 
   const sectionId = student?.section_id ?? null;
   const myTeamId  = (membership?.team_id) ?? null;
+
+  // If already in a team, go straight to team dashboard
+  if (myTeamId) redirect(`/student/teams/${myTeamId}`);
 
   const [
     { data: sectionTeams },
