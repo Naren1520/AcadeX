@@ -63,7 +63,7 @@ interface Props {
 function InvitationsInbox({ invitations }: { invitations: Invitation[] }) {
   const [list, setList] = useState(invitations);
   const [loading, setLoading] = useState<{ id: string; action: "accept" | "decline" } | null>(null);
-  const [error, setError]     = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   if (list.length === 0) return null;
 
@@ -133,20 +133,20 @@ function MyTeamCard({
   initialMembers: TeamMember[];
   initialSentInvitations: SentInvitation[];
 }) {
-  const team   = membership.teams as Record<string, unknown>;
+  const team = membership.teams as Record<string, unknown>;
   const isLead = !!membership.is_lead;
   const status = String(team.status ?? "forming") as "forming" | "confirmed" | "dissolved";
 
-  const [members, setMembers]   = useState(initialMembers);
-  const [pending, setPending]   = useState(initialSentInvitations);
-  const [showInvite, setShowInvite]       = useState(false);
-  const [inviteeId, setInviteeId]         = useState("");
-  const [inviteError, setInviteError]     = useState<string | null>(null);
+  const [members, setMembers] = useState(initialMembers);
+  const [pending, setPending] = useState(initialSentInvitations);
+  const [showInvite, setShowInvite] = useState(false);
+  const [inviteeId, setInviteeId] = useState("");
+  const [inviteError, setInviteError] = useState<string | null>(null);
   const [inviteLoading, setInviteLoading] = useState(false);
 
-  const memberIds  = new Set(members.map((m) => m.student_id));
+  const memberIds = new Set(members.map((m) => m.student_id));
   const invitedIds = new Set(pending.map((i) => i.invitee_id));
-  const available  = sectionmates.filter(
+  const available = sectionmates.filter(
     (s) => s.id !== studentId && !memberIds.has(s.id) && !invitedIds.has(s.id)
   );
 
@@ -177,7 +177,7 @@ function MyTeamCard({
       <CardContent>
         {status === "confirmed" && (
           <p className="mb-4 text-sm font-medium" style={{ color: "#16a34a" }}>
-            Team is confirmed — you can submit proposals.
+            Team is confirmed - you can submit proposals.
           </p>
         )}
 
@@ -220,7 +220,7 @@ function MyTeamCard({
         {pending.length > 0 && (
           <div className="mb-4">
             <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-400">
-              Invited — Awaiting Response ({pending.length})
+              Invited - Awaiting Response ({pending.length})
             </p>
             <div className="flex flex-col gap-2">
               {pending.map((inv) => (
@@ -263,7 +263,7 @@ function MyTeamCard({
 
       <Dialog open={showInvite} onOpenChange={setShowInvite}
         title="Invite Student to Your Team"
-        description="Select a section mate — only students who fit the team rule are shown.">
+        description="Select a section mate - only students who fit the team rule are shown.">
         <form onSubmit={handleInvite} className="flex flex-col gap-4">
           <FormError message={inviteError} />
           <Select
@@ -272,7 +272,7 @@ function MyTeamCard({
             onValueChange={setInviteeId}
             options={available.map((s) => ({
               value: s.id,
-              label: `${s.full_name} (${s.usn}) — CGPA ${s.cgpa.toFixed(2)}`,
+              label: `${s.full_name} (${s.usn}) - CGPA ${s.cgpa.toFixed(2)}`,
             }))}
             placeholder="Select student…"
           />
@@ -295,14 +295,14 @@ export function TeamsClient({
   pendingInvitations, sectionmates,
   teamMembers, sentInvitations,
 }: Props) {
-  const [joiningTeam, setJoiningTeam]   = useState<string | null>(null);
-  const [joinError, setJoinError]       = useState<string | null>(null);
-  const [formError, setFormError]       = useState<string | null>(null);
-  const [newTeamName, setNewTeamName]   = useState("");
+  const [joiningTeam, setJoiningTeam] = useState<string | null>(null);
+  const [joinError, setJoinError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [newTeamName, setNewTeamName] = useState("");
   const [selectedRule, setSelectedRule] = useState("");
-  const [isForming, setIsForming]       = useState(false);
+  const [isForming, setIsForming] = useState(false);
 
-  const team   = currentMembership ? (currentMembership.teams as Record<string, unknown>) : null;
+  const team = currentMembership ? (currentMembership.teams as Record<string, unknown>) : null;
   const teamId = team ? String(team.id) : "";
 
   async function handleJoin(tid: string) {
@@ -370,7 +370,7 @@ export function TeamsClient({
           ) : (
             <div className="flex flex-col gap-3">
               {sectionTeams.map((t) => {
-                const rule  = t.team_formation_rules as TeamFormationRule | undefined;
+                const rule = t.team_formation_rules as TeamFormationRule | undefined;
                 const slots: SlotDefinition[] = rule?.team_formation_slots ?? [];
                 const eligible = slots.length > 0
                   ? findMatchingSlot(studentCgpa, slots) !== null
@@ -431,14 +431,14 @@ export function TeamsClient({
                     style={{ border: "1px solid #d1d5db", backgroundColor: "#fff" }}>
                     <option value="">Select a rule…</option>
                     {typedRules.map((rule) => {
-                      const slots   = rule.team_formation_slots ?? [];
+                      const slots = rule.team_formation_slots ?? [];
                       const eligible = slots.length > 0
                         ? findMatchingSlot(studentCgpa, slots) !== null
                         : checkEligibility(studentCgpa, [rule]).eligible;
-                      const quota   = (rule.formed_count ?? 0) >= rule.max_teams;
+                      const quota = (rule.formed_count ?? 0) >= rule.max_teams;
                       return (
                         <option key={rule.id} value={rule.id} disabled={!eligible || quota}>
-                          {rule.label ?? "Rule"} — size {rule.team_size ?? rule.max_team_size}
+                          {rule.label ?? "Rule"} - size {rule.team_size ?? rule.max_team_size}
                           {quota ? " (quota full)" : !eligible ? " (ineligible)" : ""}
                         </option>
                       );

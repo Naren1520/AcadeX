@@ -1,4 +1,4 @@
-# AcadeX — Database Recovery Runbook
+# AcadeX - Database Recovery Runbook
 
 > **Last updated:** See git history for this file.
 > **Maintain this document** whenever backup configuration changes.
@@ -9,9 +9,9 @@
 
 | Layer | Mechanism | Frequency | Retention |
 |-------|-----------|-----------|-----------|
-| L1 — Supabase PITR | Write-Ahead Log streaming | Continuous | 7–30 days (plan-dependent) |
-| L2 — Supabase Daily Snapshot | Physical volume snapshot | Daily ~03:00 UTC | 7 days (Pro) |
-| L3 — Off-Platform pg_dump | GitHub Actions cron | Nightly 02:00 UTC | 90 days (separate cloud bucket) |
+| L1 - Supabase PITR | Write-Ahead Log streaming | Continuous | 7–30 days (plan-dependent) |
+| L2 - Supabase Daily Snapshot | Physical volume snapshot | Daily ~03:00 UTC | 7 days (Pro) |
+| L3 - Off-Platform pg_dump | GitHub Actions cron | Nightly 02:00 UTC | 90 days (separate cloud bucket) |
 
 ---
 
@@ -23,7 +23,7 @@
 
 1. Open Supabase Dashboard → **Settings → Backups → Point in Time Recovery**.
 2. Select a timestamp _before_ the deletion occurred.
-3. Click **Restore** — this creates a new project with the restored data.
+3. Click **Restore** - this creates a new project with the restored data.
 4. Update your connection strings and DNS/Vercel env vars to point at the restored project.
 5. Verify data integrity by running the integration test suite.
 
@@ -70,7 +70,7 @@
 1. Enumerate affected files using the Supabase Storage API or Dashboard.
 2. Download corresponding files from the off-platform storage backup (synced nightly alongside the pg_dump).
 3. Re-upload affected files via the Supabase Dashboard or Storage API.
-4. Re-generate signed URLs as needed — existing signed URLs will have expired.
+4. Re-generate signed URLs as needed - existing signed URLs will have expired.
 
 ---
 

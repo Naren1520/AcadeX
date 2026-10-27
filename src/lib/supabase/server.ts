@@ -28,7 +28,7 @@ export async function getSupabaseServerClient(): Promise<ReturnType<typeof creat
               cookieStore.set(name, value, options)
             );
           } catch {
-            // Server Components can't set cookies — expected behaviour.
+            // Server Components can't set cookies - expected behaviour.
           }
         },
       },

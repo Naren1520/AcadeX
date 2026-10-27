@@ -17,11 +17,11 @@ interface Props {
 
 export function FacultyAssignmentsClient({ initialAssignments, faculty, sections, departments }: Props) {
   const [assignments, setAssignments] = useState(initialAssignments);
-  const [showCreate, setShowCreate]   = useState(false);
-  const [facultyId, setFacultyId]     = useState("");
-  const [sectionId, setSectionId]     = useState("");
-  const [error, setError]             = useState<string | null>(null);
-  const [isLoading, setIsLoading]     = useState(false);
+  const [showCreate, setShowCreate] = useState(false);
+  const [facultyId, setFacultyId] = useState("");
+  const [sectionId, setSectionId] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Auto-derive department_id from selected section
   const selectedSection = sections.find((s) => s.id === sectionId);
@@ -37,20 +37,20 @@ export function FacultyAssignmentsClient({ initialAssignments, faculty, sections
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        faculty_id:    facultyId,
-        section_id:    sectionId,
+        faculty_id: facultyId,
+        section_id: sectionId,
         department_id: selectedSection.department_id,
       }),
     });
     const data = await res.json() as { assignment?: Assignment; error?: string };
     if (!res.ok) { setError(data.error ?? "Failed to create assignment."); setIsLoading(false); return; }
 
-    const fac  = faculty.find((f) => f.id === facultyId);
+    const fac = faculty.find((f) => f.id === facultyId);
     const dept = departments.find((d) => d.id === selectedSection.department_id);
     const newA = {
       ...data.assignment!,
-      profiles:    fac  ? { full_name: fac.full_name, email: fac.email } : null,
-      sections:    { label: selectedSection.label },
+      profiles: fac ? { full_name: fac.full_name, email: fac.email } : null,
+      sections: { label: selectedSection.label },
       departments: dept ? { name: dept.name, code: dept.code } : null,
     };
     setAssignments((prev) => [newA, ...prev]);
@@ -64,10 +64,10 @@ export function FacultyAssignmentsClient({ initialAssignments, faculty, sections
   }
 
   const columns = [
-    { key: "faculty",    header: "Faculty",    render: (r: Assignment) => r.profiles?.full_name ?? "—" },
-    { key: "email",      header: "Email",      render: (r: Assignment) => <span className="text-xs">{r.profiles?.email ?? "—"}</span> },
-    { key: "section",    header: "Section",    render: (r: Assignment) => r.sections?.label ?? "—" },
-    { key: "department", header: "Department", render: (r: Assignment) => r.departments ? `${r.departments.name} (${r.departments.code})` : "—" },
+    { key: "faculty", header: "Faculty", render: (r: Assignment) => r.profiles?.full_name ?? "-" },
+    { key: "email", header: "Email", render: (r: Assignment) => <span className="text-xs">{r.profiles?.email ?? "-"}</span> },
+    { key: "section", header: "Section", render: (r: Assignment) => r.sections?.label ?? "-" },
+    { key: "department", header: "Department", render: (r: Assignment) => r.departments ? `${r.departments.name} (${r.departments.code})` : "-" },
     {
       key: "actions", header: "Actions",
       render: (r: Assignment) => (
@@ -115,7 +115,7 @@ export function FacultyAssignmentsClient({ initialAssignments, faculty, sections
             onValueChange={setSectionId}
             options={sections.map((s) => ({
               value: s.id,
-              label: `${s.label} — ${s.dept_code} (${s.semester_label})`,
+              label: `${s.label} - ${s.dept_code} (${s.semester_label})`,
             }))}
             placeholder="Select section…"
           />

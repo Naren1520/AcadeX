@@ -26,10 +26,10 @@ async function requireManagePermission(facultyId: string, sectionId: string): Pr
 // ── POST: create a new student and place them in the section ──
 const createSchema = z.object({
   full_name: z.string().min(1).max(200),
-  email:     z.string().email(),
-  password:  z.string().min(8),
-  usn:       z.string().regex(/^[A-Za-z0-9]{10}$/, "USN must be exactly 10 alphanumeric characters."),
-  cgpa:      z.number().min(0).max(10),
+  email: z.string().email(),
+  password: z.string().min(8),
+  usn: z.string().regex(/^[A-Za-z0-9]{10}$/, "USN must be exactly 10 alphanumeric characters."),
+  cgpa: z.number().min(0).max(10),
 });
 
 export async function POST(
@@ -79,7 +79,7 @@ export async function POST(
       throw profileError;
     }
 
-    // Create student row — already assigned to this section
+    // Create student row - already assigned to this section
     const { error: studentError } = await service.from("students").insert({
       id: userId,
       usn: usn.toUpperCase(),

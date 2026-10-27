@@ -55,7 +55,7 @@ export async function checkSingleActiveProposal(
 }
 
 /**
- * Validates a milestone deadline — must be strictly in the future.
+ * Validates a milestone deadline - must be strictly in the future.
  */
 export function validateMilestoneDeadline(deadline: Date): {
   valid: boolean;

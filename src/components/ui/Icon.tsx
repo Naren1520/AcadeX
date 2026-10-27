@@ -1,7 +1,7 @@
 /**
  * Lightweight inline SVG icon set.
  * All icons are 16×16 by default, use className/style to resize.
- * All icons have aria-hidden="true" — pair with a visible label or aria-label on the parent.
+ * All icons have aria-hidden="true" - pair with a visible label or aria-label on the parent.
  */
 
 interface IconProps {

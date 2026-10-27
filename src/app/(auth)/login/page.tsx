@@ -27,7 +27,7 @@ function LoginForm() {
       return;
     }
 
-    // Let the server figure out the role — hard navigate to /dashboard
+    // Let the server figure out the role - hard navigate to /dashboard
     // which will redirect to the correct portal based on role
     window.location.href = redirectTo ?? "/dashboard";
   }

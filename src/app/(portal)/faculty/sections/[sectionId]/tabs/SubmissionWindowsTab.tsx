@@ -27,8 +27,8 @@ interface Props {
 export function SubmissionWindowsTab({ initialWindows, openMilestones }: Props) {
   const [windows, setWindows] = useState(initialWindows);
   const [showAdd, setShowAdd] = useState(false);
-  const [form, setForm]       = useState({ milestone_id: "", opens_at: "", closes_at: "" });
-  const [error, setError]     = useState<string | null>(null);
+  const [form, setForm] = useState({ milestone_id: "", opens_at: "", closes_at: "" });
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   function f(field: string, value: string) { setForm((p) => ({ ...p, [field]: value })); }
@@ -40,8 +40,8 @@ export function SubmissionWindowsTab({ initialWindows, openMilestones }: Props) 
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         milestone_id: form.milestone_id,
-        opens_at:     new Date(form.opens_at).toISOString(),
-        closes_at:    new Date(form.closes_at).toISOString(),
+        opens_at: new Date(form.opens_at).toISOString(),
+        closes_at: new Date(form.closes_at).toISOString(),
       }),
     });
     const data = await res.json() as { window?: SubmissionWindow; error?: string };
@@ -79,7 +79,7 @@ export function SubmissionWindowsTab({ initialWindows, openMilestones }: Props) 
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <p className="font-semibold text-neutral-900">{w.milestones?.name ?? "—"}</p>
+                      <p className="font-semibold text-neutral-900">{w.milestones?.name ?? "-"}</p>
                       <Badge variant={open ? "approved" : "neutral"}>{open ? "Open" : "Closed"}</Badge>
                     </div>
                     <div className="grid grid-cols-2 gap-x-6 gap-y-1 mt-2 text-xs text-neutral-500">

@@ -8,18 +8,18 @@ import { ValidationError } from "@/lib/errors";
 const slotSchema = z.object({
   cgpa_lower: z.number().min(0).max(10),
   cgpa_upper: z.number().min(0).max(10),
-  count:      z.number().int().min(1),
-  label:      z.string().max(100).default(""),
+  count: z.number().int().min(1),
+  label: z.string().max(100).default(""),
 }).refine((s) => s.cgpa_upper >= s.cgpa_lower, {
   message: "cgpa_upper must be >= cgpa_lower", path: ["cgpa_upper"],
 });
 
 const createRuleSchema = z.object({
   section_id: z.string().uuid(),
-  label:      z.string().min(1).max(100).default("Rule"),
-  team_size:  z.number().int().min(1),
-  max_teams:  z.number().int().min(1),
-  slots:      z.array(slotSchema).min(1, "At least one CGPA slot is required."),
+  label: z.string().min(1).max(100).default("Rule"),
+  team_size: z.number().int().min(1),
+  max_teams: z.number().int().min(1),
+  slots: z.array(slotSchema).min(1, "At least one CGPA slot is required."),
 }).refine((d) => {
   const total = d.slots.reduce((sum, s) => sum + s.count, 0);
   return total === d.team_size;
@@ -67,19 +67,19 @@ export async function POST(request: Request) {
 
     const { section_id, label, team_size, max_teams, slots } = parsed.data;
 
-    // Insert rule — keep legacy columns with placeholder values for compatibility
+    // Insert rule - keep legacy columns with placeholder values for compatibility
     const { data: rule, error: ruleError } = await supabase
       .from("team_formation_rules")
       .insert({
-        faculty_id:    userId,
+        faculty_id: userId,
         section_id,
         label,
         team_size,
         max_teams,
-        formed_count:  0,
-        // Legacy columns — kept for existing queries
-        cgpa_lower:    Math.min(...slots.map((s) => s.cgpa_lower)),
-        cgpa_upper:    Math.max(...slots.map((s) => s.cgpa_upper)),
+        formed_count: 0,
+        // Legacy columns - kept for existing queries
+        cgpa_lower: Math.min(...slots.map((s) => s.cgpa_lower)),
+        cgpa_upper: Math.max(...slots.map((s) => s.cgpa_upper)),
         min_team_size: team_size,
         max_team_size: team_size,
       })

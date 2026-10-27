@@ -100,7 +100,7 @@ export async function generateSignedUrl(
 }
 
 /**
- * Pure validation helper — useful for testing without storage side-effects.
+ * Pure validation helper - useful for testing without storage side-effects.
  */
 export function validateFileUpload(
   mimeType: string,

@@ -16,12 +16,12 @@ interface Props {
 }
 
 export function SemestersClient({ initialSemesters, academicYears }: Props) {
-  const [semesters, setSemesters]  = useState(initialSemesters);
+  const [semesters, setSemesters] = useState(initialSemesters);
   const [showCreate, setShowCreate] = useState(false);
-  const [label, setLabel]          = useState("");
-  const [yearId, setYearId]        = useState("");
-  const [error, setError]          = useState<string | null>(null);
-  const [isLoading, setIsLoading]  = useState(false);
+  const [label, setLabel] = useState("");
+  const [yearId, setYearId] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleCreate(e: React.FormEvent) {
     e.preventDefault();
@@ -50,7 +50,7 @@ export function SemestersClient({ initialSemesters, academicYears }: Props) {
     { key: "label", header: "Semester", sortable: true },
     {
       key: "academic_year", header: "Academic Year",
-      render: (r: Semester) => r.academic_years?.label ?? "—",
+      render: (r: Semester) => r.academic_years?.label ?? "-",
     },
     {
       key: "is_closed", header: "Status",

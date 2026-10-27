@@ -1,4 +1,4 @@
-// Auto-generated types — re-run `supabase gen types typescript --local > src/types/database.ts`
+// Auto-generated types - re-run `supabase gen types typescript --local > src/types/database.ts`
 // after any migration changes.
 
 export type Json =

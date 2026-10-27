@@ -3,7 +3,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 
 /**
- * Role router — reads the session server-side, looks up the user's role
+ * Role router - reads the session server-side, looks up the user's role
  * via service-role client (bypasses RLS), and redirects to the correct dashboard.
  */
 export default async function DashboardPage() {

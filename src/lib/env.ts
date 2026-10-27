@@ -14,7 +14,7 @@ const envSchema = z.object({
 const _env = envSchema.safeParse(process.env);
 
 if (!_env.success) {
-  // Zod v4 uses `.issues`, v3 used `.errors` — support both
+  // Zod v4 uses `.issues`, v3 used `.errors` - support both
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const issues: any[] = (_env.error as any).issues ?? (_env.error as any).errors ?? [];
   const missing = issues

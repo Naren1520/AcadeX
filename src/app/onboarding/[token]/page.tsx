@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { OnboardingClient } from "./OnboardingClient";
 
-export const metadata: Metadata = { title: "AcadeX — Student Onboarding" };
+export const metadata: Metadata = { title: "AcadeX - Student Onboarding" };
 
 export default async function OnboardingPage({
   params,

@@ -20,26 +20,26 @@ interface Props {
 type RoleTab = "faculty" | "student";
 
 export function UsersClient({ initialUsers, departments, sections }: Props) {
-  const [users, setUsers]           = useState(initialUsers);
-  const [showCreate, setShowCreate]   = useState(false);
-  const [showBulk, setShowBulk]       = useState(false);
-  const [tab, setTab]                 = useState<RoleTab>("faculty");
+  const [users, setUsers] = useState(initialUsers);
+  const [showCreate, setShowCreate] = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
+  const [tab, setTab] = useState<RoleTab>("faculty");
 
   // delete state
   const [deleteTarget, setDeleteTarget] = useState<UserRow | null>(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
-  const [deleteError, setDeleteError]     = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   // edit state
-  const [editTarget, setEditTarget]     = useState<UserRow | null>(null);
+  const [editTarget, setEditTarget] = useState<UserRow | null>(null);
   const [editFullName, setEditFullName] = useState("");
-  const [editEmail, setEditEmail]       = useState("");
+  const [editEmail, setEditEmail] = useState("");
   const [editPassword, setEditPassword] = useState("");
-  const [editUsn, setEditUsn]           = useState("");
-  const [editDeptId, setEditDeptId]     = useState("");
-  const [editCgpa, setEditCgpa]         = useState("");
-  const [editError, setEditError]       = useState<string | null>(null);
-  const [editLoading, setEditLoading]   = useState(false);
+  const [editUsn, setEditUsn] = useState("");
+  const [editDeptId, setEditDeptId] = useState("");
+  const [editCgpa, setEditCgpa] = useState("");
+  const [editError, setEditError] = useState<string | null>(null);
+  const [editLoading, setEditLoading] = useState(false);
 
   function openEdit(user: UserRow) {
     setEditTarget(user);
@@ -59,13 +59,13 @@ export function UsersClient({ initialUsers, departments, sections }: Props) {
 
     const body: Record<string, unknown> = {};
     if (editFullName !== editTarget.full_name) body.full_name = editFullName;
-    if (editEmail    !== editTarget.email)     body.email     = editEmail;
-    if (editPassword)                          body.password  = editPassword;
+    if (editEmail !== editTarget.email) body.email = editEmail;
+    if (editPassword) body.password = editPassword;
     if (editTarget.role === "student") {
-      if (editUsn    !== (editTarget.usn           ?? "")) body.usn           = editUsn;
+      if (editUsn !== (editTarget.usn ?? "")) body.usn = editUsn;
       if (editDeptId !== (editTarget.department_id ?? "")) body.department_id = editDeptId;
       const cgpaNum = parseFloat(editCgpa);
-      if (!isNaN(cgpaNum) && cgpaNum !== editTarget.cgpa)  body.cgpa          = cgpaNum;
+      if (!isNaN(cgpaNum) && cgpaNum !== editTarget.cgpa) body.cgpa = cgpaNum;
     }
 
     if (Object.keys(body).length === 0) { setEditTarget(null); setEditLoading(false); return; }
@@ -81,29 +81,29 @@ export function UsersClient({ initialUsers, departments, sections }: Props) {
     setUsers((prev) => prev.map((u) =>
       u.id === editTarget.id
         ? {
-            ...u,
-            full_name:     editFullName,
-            email:         editEmail,
-            usn:           editTarget.role === "student" ? editUsn || u.usn : u.usn,
-            department_id: editTarget.role === "student" ? editDeptId || u.department_id : u.department_id,
-            cgpa:          editTarget.role === "student" ? parseFloat(editCgpa) : u.cgpa,
-          }
+          ...u,
+          full_name: editFullName,
+          email: editEmail,
+          usn: editTarget.role === "student" ? editUsn || u.usn : u.usn,
+          department_id: editTarget.role === "student" ? editDeptId || u.department_id : u.department_id,
+          cgpa: editTarget.role === "student" ? parseFloat(editCgpa) : u.cgpa,
+        }
         : u
     ));
     setEditTarget(null); setEditLoading(false);
   }
-  const [error, setError]         = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // shared fields
-  const [fullName, setFullName]   = useState("");
-  const [email, setEmail]         = useState("");
-  const [password, setPassword]   = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   // student-only
-  const [usn, setUsn]             = useState("");
-  const [deptId, setDeptId]       = useState("");
+  const [usn, setUsn] = useState("");
+  const [deptId, setDeptId] = useState("");
   const [sectionId, setSectionId] = useState("");
-  const [cgpa, setCgpa]           = useState("");
+  const [cgpa, setCgpa] = useState("");
 
   function resetForm() {
     setFullName(""); setEmail(""); setPassword("");
@@ -354,7 +354,7 @@ export function UsersClient({ initialUsers, departments, sections }: Props) {
                   {filteredSections.map((s) => (
                     <option key={s.id} value={s.id}>
                       {s.label}
-                      {s.semesters ? ` — ${s.semesters.label} (${s.semesters.academic_years?.label})` : ""}
+                      {s.semesters ? ` - ${s.semesters.label} (${s.semesters.academic_years?.label})` : ""}
                     </option>
                   ))}
                 </select>
@@ -402,7 +402,7 @@ export function UsersClient({ initialUsers, departments, sections }: Props) {
       <Dialog
         open={!!editTarget}
         onOpenChange={(o) => { if (!o) setEditTarget(null); }}
-        title={`Edit ${editTarget?.role === "faculty" ? "Faculty" : "Student"} — ${editTarget?.full_name ?? ""}`}
+        title={`Edit ${editTarget?.role === "faculty" ? "Faculty" : "Student"} - ${editTarget?.full_name ?? ""}`}
       >
         {editTarget && (
           <form onSubmit={handleEdit} className="flex flex-col gap-4">

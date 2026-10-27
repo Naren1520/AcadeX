@@ -19,7 +19,7 @@ export default async function FacultyDashboard() {
     { data: { role: string; full_name: string } | null };
 
   if (!profile) redirect("/login");
-  if (profile.role === "admin")   redirect("/admin");
+  if (profile.role === "admin") redirect("/admin");
   if (profile.role === "student") redirect("/student");
   if (profile.role !== "faculty") redirect("/login");
 
@@ -89,7 +89,7 @@ export default async function FacultyDashboard() {
   const proposalTrend = monthLabels.map(({ key, label }) => ({
     month: label,
     submitted: (allProposals as unknown as RawP[] ?? []).filter((p) => p.submitted_at?.startsWith(key)).length,
-    approved:  (allProposals as unknown as RawP[] ?? []).filter((p) => p.submitted_at?.startsWith(key) && p.status === "approved").length,
+    approved: (allProposals as unknown as RawP[] ?? []).filter((p) => p.submitted_at?.startsWith(key) && p.status === "approved").length,
   }));
 
   // Milestone status
@@ -112,10 +112,10 @@ export default async function FacultyDashboard() {
   type RawS = { id: string; cgpa: number; section_id: string };
   const cgpaBands = [
     { range: "9–10", min: 9, max: 10, color: "#16a34a" },
-    { range: "8–9",  min: 8, max: 9,  color: "#22c55e" },
-    { range: "7–8",  min: 7, max: 8,  color: "#d97706" },
-    { range: "6–7",  min: 6, max: 7,  color: "#f59e0b" },
-    { range: "<6",   min: 0, max: 6,  color: "#dc2626" },
+    { range: "8–9", min: 8, max: 9, color: "#22c55e" },
+    { range: "7–8", min: 7, max: 8, color: "#d97706" },
+    { range: "6–7", min: 6, max: 7, color: "#f59e0b" },
+    { range: "<6", min: 0, max: 6, color: "#dc2626" },
   ].map((b) => ({
     range: b.range,
     count: (students as unknown as RawS[] ?? []).filter((s) => s.cgpa >= b.min && s.cgpa < b.max).length,
@@ -136,7 +136,7 @@ export default async function FacultyDashboard() {
     .slice(0, 5)
     .map((m) => ({ deadline: m.deadline }));
 
-  // Submission windows — currently open
+  // Submission windows - currently open
   type RawW = { id: string; opens_at: string; closes_at: string };
   const openWindowsCount = (allWindows as unknown as RawW[] ?? []).filter((w) => {
     const n = Date.now();
@@ -145,12 +145,12 @@ export default async function FacultyDashboard() {
 
   // Summary stats
   const stats = {
-    sections:         sectionIds.length,
-    students:         (students ?? []).length,
+    sections: sectionIds.length,
+    students: (students ?? []).length,
     pendingProposals: proposalsByStatus.find((p) => p.name === "Pending")?.value ?? 0,
-    teams:            (teams ?? []).length,
-    openMilestones:   milestoneStatus.find((m) => m.name === "Open")?.value ?? 0,
-    openWindows:      openWindowsCount,
+    teams: (teams ?? []).length,
+    openMilestones: milestoneStatus.find((m) => m.name === "Open")?.value ?? 0,
+    openWindows: openWindowsCount,
   };
 
   return (

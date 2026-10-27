@@ -6,13 +6,13 @@ import { requireRole } from "@/server/authorization";
 import { toErrorResponse } from "@/lib/errors/httpResponse";
 
 const querySchema = z.object({
-  page:        z.coerce.number().int().positive().default(1),
-  actor_id:    z.string().uuid().optional(),
+  page: z.coerce.number().int().positive().default(1),
+  actor_id: z.string().uuid().optional(),
   actor_email: z.string().optional(),
   action_type: z.string().optional(),
-  from:        z.string().datetime().optional(),
-  to:          z.string().datetime().optional(),
-  export:      z.enum(["csv"]).optional(),
+  from: z.string().datetime().optional(),
+  to: z.string().datetime().optional(),
+  export: z.enum(["csv"]).optional(),
 });
 
 const PAGE_SIZE = 50;
@@ -33,19 +33,19 @@ export async function GET(request: Request) {
     // Use service role so actor_email column is readable
     const service = getSupabaseServiceRoleClient();
 
-    // Build query — join profiles to get email if not stored directly
+    // Build query - join profiles to get email if not stored directly
     let query = service
       .from("audit_logs")
       .select("event_id, actor_id, actor_role, actor_email, action_type, target_table, target_record_id, previous_value, new_value, ip_address, user_agent, created_at", { count: "exact" })
       .order("created_at", { ascending: false });
 
-    if (actor_id)    query = query.eq("actor_id", actor_id);
+    if (actor_id) query = query.eq("actor_id", actor_id);
     if (actor_email) query = query.ilike("actor_email", `%${actor_email}%`);
     if (action_type) query = query.eq("action_type", action_type);
-    if (from)        query = query.gte("created_at", from);
-    if (to)          query = query.lte("created_at", to);
+    if (from) query = query.gte("created_at", from);
+    if (to) query = query.lte("created_at", to);
 
-    // CSV export — no pagination, max 5000 rows
+    // CSV export - no pagination, max 5000 rows
     if (exportFormat === "csv") {
       const { data, error } = await query.limit(5000);
       if (error) throw error;
@@ -72,7 +72,7 @@ export async function GET(request: Request) {
         status: 200,
         headers: {
           "Content-Type": "text/csv",
-          "Content-Disposition": `attachment; filename="audit_logs_${new Date().toISOString().slice(0,10)}.csv"`,
+          "Content-Disposition": `attachment; filename="audit_logs_${new Date().toISOString().slice(0, 10)}.csv"`,
         },
       });
     }

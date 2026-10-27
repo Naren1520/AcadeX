@@ -1,4 +1,4 @@
-# AcadeX — College Academic Project Management Platform
+# AcadeX - College Academic Project Management Platform
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.4.2-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.3.0-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://react.dev/)

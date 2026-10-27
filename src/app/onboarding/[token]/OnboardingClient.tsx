@@ -29,13 +29,13 @@ function fmt(iso: string) {
 
 // ── Main ─
 export function OnboardingClient({ token }: { token: string }) {
-  const [step, setStep]             = useState<Step>("loading");
+  const [step, setStep] = useState<Step>("loading");
   const [invitation, setInvitation] = useState<InvitationInfo | null>(null);
-  const [errorMsg, setErrorMsg]     = useState<string | null>(null);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [sessionToken, setSessionToken] = useState<string | null>(null);
 
   // Step 1: Passcode
-  const [passcode, setPasscode]     = useState("");
+  const [passcode, setPasscode] = useState("");
   const [verifyError, setVerifyError] = useState<string | null>(null);
   const [verifyLoading, setVerifyLoading] = useState(false);
   const [retryAfter, setRetryAfter] = useState<number>(0);
@@ -45,7 +45,7 @@ export function OnboardingClient({ token }: { token: string }) {
     full_name: "", email: "", password: "", usn: "", cgpa: "",
     github_url: "", skills: "",
   });
-  const [formError, setFormError]   = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   const [formLoading, setFormLoading] = useState(false);
 
   // ── Load invitation info 
@@ -100,11 +100,11 @@ export function OnboardingClient({ token }: { token: string }) {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         sessionToken,
-        full_name:  form.full_name.trim(),
-        email:      form.email.trim(),
-        password:   form.password,
-        usn:        form.usn.trim().toUpperCase(),
-        cgpa:       parseFloat(form.cgpa),
+        full_name: form.full_name.trim(),
+        email: form.email.trim(),
+        password: form.password,
+        usn: form.usn.trim().toUpperCase(),
+        cgpa: parseFloat(form.cgpa),
         github_url: form.github_url.trim() || undefined,
         skills,
       }),
@@ -259,7 +259,7 @@ export function OnboardingClient({ token }: { token: string }) {
                 onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))} />
 
               <Input label="Password" type="password" value={form.password ?? ""} required
-                placeholder="Min. 8 characters — you will use this to login"
+                placeholder="Min. 8 characters - you will use this to login"
                 hint="Choose a strong password. You can change it after logging in."
                 onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))} />
 

@@ -62,21 +62,27 @@ export function TeamFormationRulesClient({ initialRules, sections }: Props) {
   }
 
   const columns = [
-    { key: "section", header: "Section", render: (r: Rule) => {
-      const s = sections.find((sec) => sec.id === r.section_id);
-      return <span>{s ? `${s.label} — ${s.department}` : r.section_id}</span>;
-    }},
+    {
+      key: "section", header: "Section", render: (r: Rule) => {
+        const s = sections.find((sec) => sec.id === r.section_id);
+        return <span>{s ? `${s.label} - ${s.department}` : r.section_id}</span>;
+      }
+    },
     { key: "cgpa_lower", header: "CGPA Band", render: (r: Rule) => `${r.cgpa_lower} – ${r.cgpa_upper}` },
     { key: "min_team_size", header: "Team Size", render: (r: Rule) => `${r.min_team_size} – ${r.max_team_size}` },
     { key: "max_teams", header: "Max Teams", render: (r: Rule) => String(r.max_teams) },
-    { key: "is_enabled", header: "Status", render: (r: Rule) => (
-      <Badge variant={r.is_enabled ? "approved" : "neutral"}>{r.is_enabled ? "Active" : "Disabled"}</Badge>
-    )},
-    { key: "actions", header: "", render: (r: Rule) => (
-      r.is_enabled
-        ? <Button variant="ghost" size="sm" onClick={() => handleDelete(r.id)}>Delete</Button>
-        : null
-    )},
+    {
+      key: "is_enabled", header: "Status", render: (r: Rule) => (
+        <Badge variant={r.is_enabled ? "approved" : "neutral"}>{r.is_enabled ? "Active" : "Disabled"}</Badge>
+      )
+    },
+    {
+      key: "actions", header: "", render: (r: Rule) => (
+        r.is_enabled
+          ? <Button variant="ghost" size="sm" onClick={() => handleDelete(r.id)}>Delete</Button>
+          : null
+      )
+    },
   ];
 
   return (
@@ -96,7 +102,7 @@ export function TeamFormationRulesClient({ initialRules, sections }: Props) {
             <select value={form.section_id} onChange={(e) => updateForm("section_id", e.target.value)} required
               className="block w-full rounded px-3 py-2 text-sm" style={{ border: "1px solid #d1d5db" }}>
               <option value="">Select section…</option>
-              {sections.map((s) => <option key={s.id} value={s.id}>{s.label} — {s.department}</option>)}
+              {sections.map((s) => <option key={s.id} value={s.id}>{s.label} - {s.department}</option>)}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-3">

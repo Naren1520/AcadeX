@@ -27,25 +27,25 @@ export function SectionDetailClient({
   initialStudents, initialFaculty, studentOptions, facultyOptions,
 }: Props) {
   const [students, setStudents] = useState(initialStudents);
-  const [faculty, setFaculty]   = useState(initialFaculty);
+  const [faculty, setFaculty] = useState(initialFaculty);
 
   // ── Add student 
-  const [showAddStudent, setShowAddStudent]     = useState(false);
-  const [selectedStudent, setSelectedStudent]   = useState("");
-  const [studentError, setStudentError]         = useState<string | null>(null);
-  const [studentLoading, setStudentLoading]     = useState(false);
+  const [showAddStudent, setShowAddStudent] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState("");
+  const [studentError, setStudentError] = useState<string | null>(null);
+  const [studentLoading, setStudentLoading] = useState(false);
 
   // ── Assign faculty 
-  const [showAddFaculty, setShowAddFaculty]     = useState(false);
-  const [selectedFaculty, setSelectedFaculty]   = useState("");
-  const [facultyError, setFacultyError]         = useState<string | null>(null);
-  const [facultyLoading, setFacultyLoading]     = useState(false);
+  const [showAddFaculty, setShowAddFaculty] = useState(false);
+  const [selectedFaculty, setSelectedFaculty] = useState("");
+  const [facultyError, setFacultyError] = useState<string | null>(null);
+  const [facultyLoading, setFacultyLoading] = useState(false);
 
   // Available options (exclude already-added)
   const studentInSet = new Set(students.map((s) => s.id));
   const facultyInSet = new Set(faculty.map((f) => f.faculty_id));
   const availableStudents = studentOptions.filter((s) => !studentInSet.has(s.id));
-  const availableFaculty  = facultyOptions.filter((f) => !facultyInSet.has(f.id));
+  const availableFaculty = facultyOptions.filter((f) => !facultyInSet.has(f.id));
 
   // ────────
   async function handleAddStudent(e: React.FormEvent) {
@@ -121,10 +121,10 @@ export function SectionDetailClient({
       {/* Stats bar */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
         {[
-          { label: "Section",   value: sectionLabel,          bg: "#f8fafc", color: "#1e3a5f" },
-          { label: "Dept",      value: deptCode,               bg: "#f8fafc", color: "#1e3a5f" },
-          { label: "Students",  value: String(students.length), bg: "#f0fdf4", color: "#16a34a" },
-          { label: "Faculty",   value: String(faculty.length),  bg: "#eff6ff", color: "#1e3a5f" },
+          { label: "Section", value: sectionLabel, bg: "#f8fafc", color: "#1e3a5f" },
+          { label: "Dept", value: deptCode, bg: "#f8fafc", color: "#1e3a5f" },
+          { label: "Students", value: String(students.length), bg: "#f0fdf4", color: "#16a34a" },
+          { label: "Faculty", value: String(faculty.length), bg: "#eff6ff", color: "#1e3a5f" },
         ].map((stat) => (
           <div key={stat.label} className="rounded-xl px-5 py-4 text-center" style={{ backgroundColor: stat.bg, border: "1px solid #e5e7eb" }}>
             <p className="text-2xl font-bold" style={{ color: stat.color }}>{stat.value}</p>
@@ -307,7 +307,7 @@ export function SectionDetailClient({
             onValueChange={setSelectedStudent}
             options={availableStudents.map((s) => ({
               value: s.id,
-              label: `${s.full_name} (${s.usn}) — CGPA ${s.cgpa.toFixed(2)}${s.section_id ? " ⚠ in another section" : ""}`,
+              label: `${s.full_name} (${s.usn}) - CGPA ${s.cgpa.toFixed(2)}${s.section_id ? " ⚠ in another section" : ""}`,
             }))}
             placeholder="Select student…"
           />

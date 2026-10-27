@@ -33,7 +33,7 @@ export function Header({
       style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #e5e7eb", flexShrink: 0 }}
     >
       <div className="flex min-w-0 items-center gap-2">
-        {/* Hamburger — mobile only */}
+        {/* Hamburger - mobile only */}
         {onMenuToggle && (
           <button
             type="button"
@@ -47,7 +47,7 @@ export function Header({
           </button>
         )}
 
-        {/* Breadcrumbs — hide on very small screens, show from sm */}
+        {/* Breadcrumbs - hide on very small screens, show from sm */}
         <nav aria-label="Breadcrumb" className="min-w-0">
           <ol className="flex min-w-0 items-center gap-1 text-sm" role="list">
             {breadcrumbs.map((crumb, i) => (
@@ -105,7 +105,7 @@ export function Header({
             >
               {userFullName.charAt(0).toUpperCase()}
             </div>
-            {/* Name + role — hide on mobile */}
+            {/* Name + role - hide on mobile */}
             <div className="hidden flex-col sm:flex">
               <span className="text-sm font-medium leading-none text-neutral-900">{userFullName}</span>
               <Badge variant={roleVariant[role]} className="mt-0.5 self-start">

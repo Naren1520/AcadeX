@@ -57,9 +57,9 @@ function StudentPanel({ student, onClose }: { student: Student; onClose: () => v
 
           {/* Info rows */}
           {[
-            { label: "Email",   value: student.email },
-            { label: "USN",     value: student.usn },
-            { label: "CGPA",    value: student.cgpa.toFixed(2) },
+            { label: "Email", value: student.email },
+            { label: "USN", value: student.usn },
+            { label: "CGPA", value: student.cgpa.toFixed(2) },
           ].map((r) => (
             <div key={r.label}>
               <p className="text-xs font-semibold uppercase tracking-wide text-neutral-400">{r.label}</p>
@@ -123,18 +123,18 @@ function validateRows(rows: ParsedRow[]): PreviewRow[] {
     const r: PreviewRow = {
       row: i + 1,
       full_name: String(row.full_name ?? "").trim(),
-      email:     String(row.email     ?? "").trim(),
-      password:  String(row.password  ?? "").trim(),
-      usn:       String(row.usn       ?? "").trim().toUpperCase(),
-      cgpa:      String(row.cgpa      ?? "").trim(),
+      email: String(row.email ?? "").trim(),
+      password: String(row.password ?? "").trim(),
+      usn: String(row.usn ?? "").trim().toUpperCase(),
+      cgpa: String(row.cgpa ?? "").trim(),
       _valid: true, _errors: [],
     };
-    if (!r.full_name)                                             errors.push("full_name required");
+    if (!r.full_name) errors.push("full_name required");
     if (!r.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(r.email)) errors.push("invalid email");
-    if (!r.password || r.password.length < 8)                     errors.push("password ≥ 8 chars");
-    if (!r.usn || !/^[A-Za-z0-9]{10}$/.test(r.usn))              errors.push("USN: 10 alphanumeric");
+    if (!r.password || r.password.length < 8) errors.push("password ≥ 8 chars");
+    if (!r.usn || !/^[A-Za-z0-9]{10}$/.test(r.usn)) errors.push("USN: 10 alphanumeric");
     const n = parseFloat(r.cgpa);
-    if (r.cgpa === "" || isNaN(n) || n < 0 || n > 10)            errors.push("CGPA 0–10");
+    if (r.cgpa === "" || isNaN(n) || n < 0 || n > 10) errors.push("CGPA 0–10");
     r._errors = errors; r._valid = errors.length === 0;
     return r;
   });
@@ -147,22 +147,22 @@ export function StudentsTab({
   const [selectedStudent, setSelectedStudent] = useState<Student | null>(null);
 
   // Add single student
-  const [showAdd, setShowAdd]   = useState(false);
-  const [addForm, setAddForm]   = useState({ full_name: "", email: "", password: "", usn: "", cgpa: "" });
+  const [showAdd, setShowAdd] = useState(false);
+  const [addForm, setAddForm] = useState({ full_name: "", email: "", password: "", usn: "", cgpa: "" });
   const [addError, setAddError] = useState<string | null>(null);
   const [addLoading, setAddLoading] = useState(false);
 
   // Bulk upload
   const fileRef = useRef<HTMLInputElement>(null);
-  const [showBulk, setShowBulk]         = useState(false);
-  const [bulkStep, setBulkStep]         = useState<"upload" | "preview" | "results">("upload");
-  const [dragging, setDragging]         = useState(false);
-  const [fileName, setFileName]         = useState<string | null>(null);
-  const [parseError, setParseError]     = useState<string | null>(null);
-  const [previewRows, setPreviewRows]   = useState<PreviewRow[]>([]);
-  const [bulkResults, setBulkResults]   = useState<BulkStudentResult[]>([]);
-  const [bulkSummary, setBulkSummary]   = useState<{ success: number; error: number } | null>(null);
-  const [submitting, setSubmitting]     = useState(false);
+  const [showBulk, setShowBulk] = useState(false);
+  const [bulkStep, setBulkStep] = useState<"upload" | "preview" | "results">("upload");
+  const [dragging, setDragging] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
+  const [parseError, setParseError] = useState<string | null>(null);
+  const [previewRows, setPreviewRows] = useState<PreviewRow[]>([]);
+  const [bulkResults, setBulkResults] = useState<BulkStudentResult[]>([]);
+  const [bulkSummary, setBulkSummary] = useState<{ success: number; error: number } | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   function resetAdd() { setAddForm({ full_name: "", email: "", password: "", usn: "", cgpa: "" }); setAddError(null); }
 
@@ -257,7 +257,7 @@ export function StudentsTab({
           <table className="w-full text-sm">
             <thead>
               <tr style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
-                {["Student","USN","CGPA","GitHub",""].map((h) => (
+                {["Student", "USN", "CGPA", "GitHub", ""].map((h) => (
                   <th key={h} className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-neutral-500">{h}</th>
                 ))}
               </tr>
@@ -289,10 +289,10 @@ export function StudentsTab({
                   <td className="px-4 py-3">
                     {s.github_url
                       ? <a href={s.github_url} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-1 text-xs" style={{ color: "#1e3a5f" }}>
-                          <IconGitHub size={12} /> View
-                        </a>
-                      : <span className="text-xs text-neutral-300">—</span>}
+                        className="flex items-center gap-1 text-xs" style={{ color: "#1e3a5f" }}>
+                        <IconGitHub size={12} /> View
+                      </a>
+                      : <span className="text-xs text-neutral-300">-</span>}
                   </td>
                   <td className="px-4 py-3">
                     {canManage && (
@@ -341,7 +341,7 @@ export function StudentsTab({
 
       {/* ── Bulk upload dialog ── */}
       <Dialog open={showBulk} onOpenChange={(o) => { if (!o) setShowBulk(false); }}
-        title={`Bulk Upload — ${sectionLabel}`} size="xl"
+        title={`Bulk Upload - ${sectionLabel}`} size="xl"
         description="Download the template, fill it in, then upload.">
 
         {bulkStep === "upload" && (
@@ -360,7 +360,7 @@ export function StudentsTab({
                   const data: string[][] = [
                     [...HEADERS],
                     ["Alice Kumar", "alice@college.edu", "Password@123", "1CS21CS001", "8.50"],
-                    ["Bob Raj",    "bob@college.edu",   "Password@123", "1CS21CS002", "7.80"],
+                    ["Bob Raj", "bob@college.edu", "Password@123", "1CS21CS002", "7.80"],
                   ];
                   XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), "Students");
                   XLSX.writeFile(wb, "student_template.xlsx");
@@ -419,7 +419,7 @@ export function StudentsTab({
               <table className="w-full text-sm">
                 <thead>
                   <tr style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
-                    {["Row","Name","Email","USN","CGPA","Status"].map((h) => (
+                    {["Row", "Name", "Email", "USN", "CGPA", "Status"].map((h) => (
                       <th key={h} className="px-3 py-2 text-left text-xs font-semibold uppercase text-neutral-500">{h}</th>
                     ))}
                   </tr>
@@ -434,8 +434,8 @@ export function StudentsTab({
                       <td className="px-3 py-2 text-xs">{r.cgpa}</td>
                       <td className="px-3 py-2">
                         {r._valid
-                          ? <span className="flex items-center gap-1 text-xs" style={{ color: "#16a34a" }}><IconCheck size={11}/> Ready</span>
-                          : <span className="flex items-center gap-1 text-xs text-red-600" title={r._errors.join(", ")}><IconAlertCircle size={11}/> {r._errors[0]}</span>}
+                          ? <span className="flex items-center gap-1 text-xs" style={{ color: "#16a34a" }}><IconCheck size={11} /> Ready</span>
+                          : <span className="flex items-center gap-1 text-xs text-red-600" title={r._errors.join(", ")}><IconAlertCircle size={11} /> {r._errors[0]}</span>}
                       </td>
                     </tr>
                   ))}
@@ -469,7 +469,7 @@ export function StudentsTab({
               <table className="w-full text-sm">
                 <thead>
                   <tr style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}>
-                    {["Row","Email","Result"].map((h) => (
+                    {["Row", "Email", "Result"].map((h) => (
                       <th key={h} className="px-3 py-2 text-left text-xs font-semibold uppercase text-neutral-500">{h}</th>
                     ))}
                   </tr>
@@ -481,8 +481,8 @@ export function StudentsTab({
                       <td className="px-3 py-2 text-xs">{r.email}</td>
                       <td className="px-3 py-2">
                         {r.status === "success"
-                          ? <span className="flex items-center gap-1 text-xs" style={{ color: "#16a34a" }}><IconCheck size={11}/> Created</span>
-                          : <span className="flex items-center gap-1 text-xs text-red-600"><IconAlertCircle size={11}/> {r.error}</span>}
+                          ? <span className="flex items-center gap-1 text-xs" style={{ color: "#16a34a" }}><IconCheck size={11} /> Created</span>
+                          : <span className="flex items-center gap-1 text-xs text-red-600"><IconAlertCircle size={11} /> {r.error}</span>}
                       </td>
                     </tr>
                   ))}

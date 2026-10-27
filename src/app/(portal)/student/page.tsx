@@ -66,7 +66,7 @@ export default async function StudentDashboard() {
             <CardContent>
               <p className="text-sm text-neutral-500">USN</p>
               <p className="mt-1 text-lg font-semibold text-neutral-900">
-                {sr?.usn ?? "—"}
+                {sr?.usn ?? "-"}
               </p>
             </CardContent>
           </Card>
@@ -74,7 +74,7 @@ export default async function StudentDashboard() {
             <CardContent>
               <p className="text-sm text-neutral-500">CGPA</p>
               <p className="mt-1 text-3xl font-bold" style={{ color: "#1e3a5f" }}>
-                {sr?.cgpa?.toFixed(2) ?? "—"}
+                {sr?.cgpa?.toFixed(2) ?? "-"}
               </p>
             </CardContent>
           </Card>
@@ -100,8 +100,8 @@ export default async function StudentDashboard() {
                     <Badge
                       variant={
                         team.status === "confirmed" ? "confirmed"
-                        : team.status === "forming" ? "forming"
-                        : "neutral"
+                          : team.status === "forming" ? "forming"
+                            : "neutral"
                       }
                     >
                       {team.status}

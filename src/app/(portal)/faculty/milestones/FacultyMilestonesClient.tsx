@@ -58,16 +58,18 @@ export function FacultyMilestonesClient({ milestones: initial, proposals }: Prop
 
   const columns = [
     { key: "name", header: "Name", sortable: true },
-    { key: "proposal", header: "Proposal", render: (m: Milestone) => String((m.proposals as { title: string } | undefined)?.title ?? "—") },
+    { key: "proposal", header: "Proposal", render: (m: Milestone) => String((m.proposals as { title: string } | undefined)?.title ?? "-") },
     { key: "deadline", header: "Deadline", sortable: true, render: (m: Milestone) => formatDate(m.deadline) },
     { key: "status", header: "Status", render: (m: Milestone) => <Badge variant={statusVariant[m.status]}>{m.status}</Badge> },
-    { key: "actions", header: "", render: (m: Milestone) => (
-      m.status === "open" ? (
-        <Button variant="ghost" size="sm" onClick={() => { setEditingId(m.id); setEditDeadline(""); setError(null); }}>
-          Edit Deadline
-        </Button>
-      ) : null
-    )},
+    {
+      key: "actions", header: "", render: (m: Milestone) => (
+        m.status === "open" ? (
+          <Button variant="ghost" size="sm" onClick={() => { setEditingId(m.id); setEditDeadline(""); setError(null); }}>
+            Edit Deadline
+          </Button>
+        ) : null
+      )
+    },
   ];
 
   return (

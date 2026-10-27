@@ -1,7 +1,7 @@
 /**
  * PATCH /api/teams/[id]/invitations/[invitationId]
  * Invitee accepts or declines an invitation.
- * On accept — joinTeam() engine runs (CGPA/slot checks apply).
+ * On accept - joinTeam() engine runs (CGPA/slot checks apply).
  */
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -50,7 +50,7 @@ export async function PATCH(
       return NextResponse.json({ success: true, status: "declined" });
     }
 
-    // Accept — get section_id from team first
+    // Accept - get section_id from team first
     const { data: team } = await supabase
       .from("teams").select("section_id").eq("id", teamId).single();
     if (!team) throw new NotFoundError("Team not found.");

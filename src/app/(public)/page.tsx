@@ -50,7 +50,7 @@ export default function PublicHomePage() {
             <span style={{ color: "#1e3a5f" }}>simplified.</span>
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-neutral-500">
-            AcadeX manages the full academic workflow — from CGPA-based team
+            AcadeX manages the full academic workflow - from CGPA-based team
             formation and SDG-aligned project proposals to milestone tracking,
             artefact submissions, and a complete audit trail.
           </p>
@@ -128,10 +128,26 @@ export default function PublicHomePage() {
 
       {/* Footer */}
       <footer
-        className="px-6 py-4 text-center text-xs text-neutral-400"
+        className="px-6 py-8 text-center text-xs text-neutral-500"
         style={{ borderTop: "1px solid #e5e7eb" }}
       >
-        © 2026 AcadeX. College Academic Project Management Platform.
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 mb-3">
+          <Link href="/privacy" className="hover:text-neutral-900 transition-colors">
+            Privacy Policy
+          </Link>
+          <Link href="/terms" className="hover:text-neutral-900 transition-colors">
+            Terms of Service
+          </Link>
+          <Link href="/cookies" className="hover:text-neutral-900 transition-colors">
+            Cookie Policy
+          </Link>
+          <Link href="/acceptable-use" className="hover:text-neutral-900 transition-colors">
+            Acceptable Use
+          </Link>
+        </div>
+        <p className="text-neutral-400">
+          © 2026 AcadeX. College Academic Project Management Platform.
+        </p>
       </footer>
     </div>
   );

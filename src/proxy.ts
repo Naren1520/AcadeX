@@ -28,7 +28,7 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  // Refresh the session — this also rotates the token if needed
+  // Refresh the session - this also rotates the token if needed
   const { data: { session } } = await supabase.auth.getSession();
 
   const { pathname } = request.nextUrl;

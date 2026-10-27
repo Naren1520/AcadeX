@@ -4,7 +4,7 @@ interface RateLimitRecord {
   blockedUntil?: number;
 }
 
-// In-memory store — suitable for development and single-instance deploys.
+// In-memory store - suitable for development and single-instance deploys.
 // Replace with Vercel KV or Redis in production multi-instance environments.
 const store = new Map<string, RateLimitRecord>();
 
@@ -24,7 +24,7 @@ export function checkRateLimit(
     return { allowed: false, retryAfterSeconds };
   }
 
-  // No record or window has expired — start fresh
+  // No record or window has expired - start fresh
   if (!record || now - record.firstAttemptAt > WINDOW_MS) {
     store.set(ip, { attempts: 1, firstAttemptAt: now });
     return { allowed: true };

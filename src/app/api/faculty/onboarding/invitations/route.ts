@@ -9,25 +9,25 @@ import { ValidationError, ForbiddenError } from "@/lib/errors";
 import { createHash, randomBytes } from "crypto";
 
 // We hash the passcode with SHA-256 (fast, not bcrypt, since it's a short-lived code
-// and we never store the plaintext — bcrypt is reserved for long-lived passwords)
+// and we never store the plaintext - bcrypt is reserved for long-lived passwords)
 function hashPasscode(passcode: string): string {
   return createHash("sha256").update(passcode).digest("hex");
 }
 
 const createSchema = z.object({
-  section_id:    z.string().uuid(),
+  section_id: z.string().uuid(),
   department_id: z.string().uuid(),
-  label:         z.string().min(1).max(100).default("Student Onboarding"),
-  passcode:      z.string().min(6).max(32),
-  opens_at:      z.string().datetime(),
-  closes_at:     z.string().datetime(),
-  max_uses:      z.number().int().min(1).max(500).default(100),
+  label: z.string().min(1).max(100).default("Student Onboarding"),
+  passcode: z.string().min(6).max(32),
+  opens_at: z.string().datetime(),
+  closes_at: z.string().datetime(),
+  max_uses: z.number().int().min(1).max(500).default(100),
 }).refine((d) => new Date(d.closes_at) > new Date(d.opens_at), {
   message: "closes_at must be after opens_at",
   path: ["closes_at"],
 });
 
-// GET — list faculty's own invitations for a section
+// GET - list faculty's own invitations for a section
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -55,7 +55,7 @@ export async function GET(request: Request) {
   }
 }
 
-// POST — create a new invitation
+// POST - create a new invitation
 export async function POST(request: Request) {
   try {
     const supabase = await getSupabaseServerClient();
@@ -81,7 +81,7 @@ export async function POST(request: Request) {
     const { data, error } = await service
       .from("onboarding_invitations")
       .insert({
-        faculty_id:    userId,
+        faculty_id: userId,
         section_id,
         department_id,
         label,

@@ -8,10 +8,10 @@ import { Dialog } from "@/components/ui/Dialog";
 import { FormError } from "@/components/forms/FormError";
 
 interface TeamWithMentor {
-  team_id:     string;
-  team_name:   string;
+  team_id: string;
+  team_name: string;
   team_status: string;
-  mentor_id:   string | null;
+  mentor_id: string | null;
   mentor_name: string | null;
   mentor_email: string | null;
 }
@@ -19,19 +19,19 @@ interface TeamWithMentor {
 interface FacultyOption { id: string; full_name: string; email: string }
 
 interface Props {
-  sectionId:    string;
-  facultyId:    string;   // current user (cannot be their own mentor)
+  sectionId: string;
+  facultyId: string;   // current user (cannot be their own mentor)
   initialTeams: TeamWithMentor[];
-  facultyList:  FacultyOption[];
+  facultyList: FacultyOption[];
 }
 
 export function MentorTab({ sectionId, facultyId, initialTeams, facultyList }: Props) {
-  const [teams, setTeams]         = useState(initialTeams);
+  const [teams, setTeams] = useState(initialTeams);
   const [assigning, setAssigning] = useState<TeamWithMentor | null>(null);
   const [selectedFaculty, setSelectedFaculty] = useState("");
-  const [notes, setNotes]         = useState("");
-  const [error, setError]         = useState<string | null>(null);
-  const [loading, setLoading]     = useState(false);
+  const [notes, setNotes] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const availableFaculty = facultyList;
 
@@ -126,7 +126,7 @@ export function MentorTab({ sectionId, facultyId, initialTeams, facultyList }: P
       )}
 
       <Dialog open={!!assigning} onOpenChange={(o) => { if (!o) setAssigning(null); }}
-        title={`Assign Mentor — ${assigning?.team_name ?? ""}`}
+        title={`Assign Mentor - ${assigning?.team_name ?? ""}`}
         description="Select a faculty member to mentor this team. They will have read-only access to all team activity.">
         <form onSubmit={handleAssign} className="flex flex-col gap-4">
           <FormError message={error} />

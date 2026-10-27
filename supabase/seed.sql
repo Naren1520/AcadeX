@@ -1,5 +1,5 @@
 -- =============================================================
--- AcadeX Seed Data — Development / Testing
+-- AcadeX Seed Data - Development / Testing
 -- =============================================================
 -- Run order:
 --   1. Apply all migrations (supabase db reset  OR  supabase migration up)
@@ -28,7 +28,7 @@
 -- Student user: 55555555-0000-0000-0000-000000000001
 
 -- =============================================================
--- STEP 1 — Auth users
+-- STEP 1 - Auth users
 -- Creates rows in auth.users directly (works with Supabase local dev).
 -- Passwords are bcrypt hashes of the plaintext values above.
 -- =============================================================
@@ -128,7 +128,7 @@ INSERT INTO auth.identities (
 ON CONFLICT (id) DO NOTHING;
 
 -- =============================================================
--- STEP 2 — Departments
+-- STEP 2 - Departments
 -- =============================================================
 INSERT INTO departments (id, name, code) VALUES
   ('11111111-0000-0000-0000-000000000001', 'Computer Science and Engineering', 'CSE'),
@@ -136,7 +136,7 @@ INSERT INTO departments (id, name, code) VALUES
 ON CONFLICT DO NOTHING;
 
 -- =============================================================
--- STEP 3 — Academic year + semester + sections
+-- STEP 3 - Academic year + semester + sections
 -- =============================================================
 INSERT INTO academic_years (id, label) VALUES
   ('22222222-0000-0000-0000-000000000001', '2024-25')
@@ -152,7 +152,7 @@ INSERT INTO sections (id, semester_id, department_id, label) VALUES
 ON CONFLICT DO NOTHING;
 
 -- =============================================================
--- STEP 4 — Profiles (one per auth user)
+-- STEP 4 - Profiles (one per auth user)
 -- =============================================================
 INSERT INTO profiles (id, role, full_name, email) VALUES
   ('aaaaaaaa-0000-0000-0000-000000000001', 'admin',   'Dev Admin',   'admin@acadex.dev'),
@@ -161,7 +161,7 @@ INSERT INTO profiles (id, role, full_name, email) VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- =============================================================
--- STEP 5 — Student record (extends profile for role=student)
+-- STEP 5 - Student record (extends profile for role=student)
 -- =============================================================
 INSERT INTO students (id, usn, department_id, section_id, cgpa) VALUES
   (
@@ -174,7 +174,7 @@ INSERT INTO students (id, usn, department_id, section_id, cgpa) VALUES
 ON CONFLICT (id) DO NOTHING;
 
 -- =============================================================
--- STEP 6 — Faculty assignment (links faculty to section)
+-- STEP 6 - Faculty assignment (links faculty to section)
 -- =============================================================
 INSERT INTO faculty_assignments (faculty_id, section_id, department_id) VALUES
   (

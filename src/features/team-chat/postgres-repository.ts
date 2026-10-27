@@ -6,20 +6,20 @@ function shapeMessage(raw: Record<string, unknown>): ChatMessage {
   const reads = (raw.team_message_reads as { user_id: string }[] | null) ?? [];
   const replyMsg = raw.reply_to_message as { content: string; profiles: { full_name: string } | null } | null;
   return {
-    id:          String(raw.id),
-    team_id:     String(raw.team_id),
-    sender_id:   String(raw.sender_id),
+    id: String(raw.id),
+    team_id: String(raw.team_id),
+    sender_id: String(raw.sender_id),
     sender_name: (raw.profiles as { full_name: string } | null)?.full_name ?? "Unknown",
     sender_role: String(raw.sender_role ?? "student"),
-    content:     raw.is_deleted ? "This message was deleted." : String(raw.content),
+    content: raw.is_deleted ? "This message was deleted." : String(raw.content),
     reply_to_id: raw.reply_to_id ? String(raw.reply_to_id) : null,
-    reply_to:    replyMsg
+    reply_to: replyMsg
       ? { content: String(replyMsg.content), sender_name: replyMsg.profiles?.full_name ?? "" }
       : null,
-    is_deleted:  Boolean(raw.is_deleted),
-    edited_at:   raw.edited_at ? String(raw.edited_at) : null,
-    created_at:  String(raw.created_at),
-    read_by:     reads.map((r) => r.user_id),
+    is_deleted: Boolean(raw.is_deleted),
+    edited_at: raw.edited_at ? String(raw.edited_at) : null,
+    created_at: String(raw.created_at),
+    read_by: reads.map((r) => r.user_id),
   };
 }
 
@@ -52,10 +52,10 @@ export class PostgresChatRepository implements ChatRepository {
     const { data, error } = await this.db
       .from("team_messages")
       .insert({
-        id:          msg.id,
-        team_id:     msg.team_id,
-        sender_id:   msg.sender_id,
-        content:     msg.content,
+        id: msg.id,
+        team_id: msg.team_id,
+        sender_id: msg.sender_id,
+        content: msg.content,
         reply_to_id: msg.reply_to_id,
       })
       .select(SELECT)
@@ -101,7 +101,7 @@ export class PostgresChatRepository implements ChatRepository {
         .select("id").eq("team_id", teamId).eq("student_id", userId).maybeSingle();
       return !!data;
     }
-    // faculty — mentor or section faculty
+    // faculty - mentor or section faculty
     const { data: mentor } = await this.db.from("team_mentors")
       .select("id").eq("team_id", teamId).eq("mentor_id", userId).maybeSingle();
     if (mentor) return true;

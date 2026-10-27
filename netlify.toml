@@ -6,7 +6,7 @@
   NODE_VERSION = "20"
 
 # Required for Next.js on Netlify (App Router / SSR support)
-# The plugin auto-installs for new Next.js sites — this pins it explicitly.
+# The plugin auto-installs for new Next.js sites - this pins it explicitly.
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 

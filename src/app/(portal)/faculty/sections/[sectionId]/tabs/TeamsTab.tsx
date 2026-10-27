@@ -46,10 +46,10 @@ function fmtDate(iso: string) {
 
 function TeamCard({ team }: { team: Team }) {
   const [expanded, setExpanded] = useState(false);
-  const memberCount  = team.members.length;
-  const neededCount  = team.team_size;
+  const memberCount = team.members.length;
+  const neededCount = team.team_size;
   const pendingCount = team.pending_invites.length;
-  const fillPct      = neededCount > 0 ? Math.min((memberCount / neededCount) * 100, 100) : 0;
+  const fillPct = neededCount > 0 ? Math.min((memberCount / neededCount) * 100, 100) : 0;
 
   return (
     <div className="overflow-hidden rounded-xl" style={{ border: "1px solid #e5e7eb", backgroundColor: "#fff" }}>
@@ -64,7 +64,7 @@ function TeamCard({ team }: { team: Team }) {
           <span className="font-semibold text-neutral-900">{team.name}</span>
           <Badge variant={team.status}>{team.status}</Badge>
           <span className="text-xs text-neutral-500">
-            Rule: <strong>{team.rule_label || "—"}</strong>
+            Rule: <strong>{team.rule_label || "-"}</strong>
           </span>
         </div>
         <div className="flex items-center gap-4">
@@ -174,7 +174,7 @@ function TeamCard({ team }: { team: Team }) {
 }
 
 export function TeamsTab({ sectionId, initialTeams }: Props) {
-  const [teams, setTeams]     = useState<Team[]>(initialTeams);
+  const [teams, setTeams] = useState<Team[]>(initialTeams);
   const [loading, setLoading] = useState(initialTeams.length === 0);
 
   // Lazy-load on first render if not pre-fetched

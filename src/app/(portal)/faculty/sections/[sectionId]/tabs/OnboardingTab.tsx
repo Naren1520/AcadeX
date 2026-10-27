@@ -60,7 +60,7 @@ export function OnboardingTab({
 }: Props) {
   const [invitations, setInvitations] = useState(initialInvitations);
   const [submissions, setSubmissions] = useState(initialSubmissions);
-  const [subTab, setSubTab]           = useState<"invitations" | "submissions">("invitations");
+  const [subTab, setSubTab] = useState<"invitations" | "submissions">("invitations");
 
   // Create invitation
   const [showCreate, setShowCreate] = useState(false);
@@ -81,10 +81,10 @@ export function OnboardingTab({
   }
 
   // Review submission
-  const [reviewing, setReviewing]       = useState<Submission | null>(null);
-  const [rejectNote, setRejectNote]     = useState("");
+  const [reviewing, setReviewing] = useState<Submission | null>(null);
+  const [rejectNote, setRejectNote] = useState("");
   const [reviewLoading, setReviewLoading] = useState(false);
-  const [reviewError, setReviewError]   = useState<string | null>(null);
+  const [reviewError, setReviewError] = useState<string | null>(null);
 
   async function handleCreateInvitation(e: React.FormEvent) {
     e.preventDefault();
@@ -92,13 +92,13 @@ export function OnboardingTab({
     const res = await fetch("/api/faculty/onboarding/invitations", {
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        section_id:    sectionId,
+        section_id: sectionId,
         department_id: departmentId,
-        label:         createForm.label,
-        passcode:      createForm.passcode,
-        opens_at:      new Date(createForm.opens_at).toISOString(),
-        closes_at:     new Date(createForm.closes_at).toISOString(),
-        max_uses:      parseInt(createForm.max_uses),
+        label: createForm.label,
+        passcode: createForm.passcode,
+        opens_at: new Date(createForm.opens_at).toISOString(),
+        closes_at: new Date(createForm.closes_at).toISOString(),
+        max_uses: parseInt(createForm.max_uses),
       }),
     });
     const data = await res.json() as { invitation?: Invitation; error?: string };
@@ -156,7 +156,7 @@ export function OnboardingTab({
             className="cursor-pointer rounded-lg px-4 py-2 text-sm font-medium transition-all"
             style={{
               backgroundColor: subTab === t.id ? "#1e3a5f" : "#f3f4f6",
-              color:           subTab === t.id ? "#fff"    : "#374151",
+              color: subTab === t.id ? "#fff" : "#374151",
             }}>
             {t.label}
           </button>
@@ -316,17 +316,17 @@ export function OnboardingTab({
 
       {/* ── Review submission dialog ── */}
       <Dialog open={!!reviewing} onOpenChange={(o) => { if (!o) setReviewing(null); }}
-        title={`Review — ${reviewing?.full_name ?? ""}`}
+        title={`Review - ${reviewing?.full_name ?? ""}`}
         description="Approve to create the student account or reject with a reason.">
         {reviewing && (
           <div className="flex flex-col gap-4">
             <div className="rounded-xl p-4" style={{ backgroundColor: "#f9fafb", border: "1px solid #e5e7eb" }}>
               <div className="grid gap-2 text-sm">
                 {[
-                  ["Name",  reviewing.full_name],
+                  ["Name", reviewing.full_name],
                   ["Email", reviewing.email],
-                  ["USN",   reviewing.usn],
-                  ["CGPA",  reviewing.cgpa.toFixed(2)],
+                  ["USN", reviewing.usn],
+                  ["CGPA", reviewing.cgpa.toFixed(2)],
                 ].map(([k, v]) => (
                   <div key={k} className="flex justify-between">
                     <span className="text-neutral-400">{k}</span>

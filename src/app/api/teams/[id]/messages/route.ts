@@ -28,7 +28,7 @@ async function verifyTeamAccess(userId: string, teamId: string, role: string) {
   }
 }
 
-// GET — fetch messages (paginated, newest last)
+// GET - fetch messages (paginated, newest last)
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -37,8 +37,8 @@ export async function GET(
     const { id: teamId } = await params;
     const { searchParams } = new URL(request.url);
     const before = searchParams.get("before");
-    const after  = searchParams.get("after");
-    const limit  = Math.min(parseInt(searchParams.get("limit") ?? "50"), 100);
+    const after = searchParams.get("after");
+    const limit = Math.min(parseInt(searchParams.get("limit") ?? "50"), 100);
 
     const supabase = await getSupabaseServerClient();
     const { userId, role } = await requireRole(supabase, ["student", "faculty", "admin"]);
@@ -61,7 +61,7 @@ export async function GET(
       .limit(limit);
 
     if (before) query = query.lt("created_at", before);
-    if (after)  query = query.gt("created_at", after);
+    if (after) query = query.gt("created_at", after);
 
     const { data, error } = await query;
     if (error) throw error;
@@ -78,9 +78,9 @@ export async function GET(
   }
 }
 
-// POST — send a message
+// POST - send a message
 const sendSchema = z.object({
-  content:     z.string().min(1).max(2000).trim(),
+  content: z.string().min(1).max(2000).trim(),
   reply_to_id: z.string().uuid().optional(),
 });
 
@@ -108,9 +108,9 @@ export async function POST(
     const { data, error } = await service
       .from("team_messages")
       .insert({
-        team_id:     teamId,
-        sender_id:   userId,
-        content:     parsed.data.content,
+        team_id: teamId,
+        sender_id: userId,
+        content: parsed.data.content,
         reply_to_id: parsed.data.reply_to_id ?? null,
       })
       .select("id, content, is_deleted, edited_at, created_at, sender_id, reply_to_id, profiles!team_messages_sender_id_fkey(full_name), team_message_reads(user_id)")

@@ -23,9 +23,9 @@ export function SectionsClient({
 }: Props) {
   const router = useRouter();
   const [sections, setSections] = useState(initialSections);
-  const [showAdd, setShowAdd]   = useState(false);
-  const [label, setLabel]       = useState("");
-  const [error, setError]       = useState<string | null>(null);
+  const [showAdd, setShowAdd] = useState(false);
+  const [label, setLabel] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleAdd(e: React.FormEvent) {
@@ -48,7 +48,7 @@ export function SectionsClient({
     <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <p className="text-sm text-neutral-500">
-          <strong>{deptCode}</strong> — <strong>{semLabel}</strong>
+          <strong>{deptCode}</strong> - <strong>{semLabel}</strong>
         </p>
         {!isClosed && (
           <Button variant="primary" size="sm" onClick={() => { setLabel(""); setError(null); setShowAdd(true); }}>

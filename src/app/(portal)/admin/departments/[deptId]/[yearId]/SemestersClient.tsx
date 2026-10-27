@@ -18,11 +18,11 @@ interface Props {
 
 export function SemestersClient({ deptId, deptCode, yearId, initialSemesters }: Props) {
   const router = useRouter();
-  const [semesters, setSemesters]   = useState(initialSemesters);
-  const [showAdd, setShowAdd]       = useState(false);
-  const [label, setLabel]           = useState("");
-  const [error, setError]           = useState<string | null>(null);
-  const [isLoading, setIsLoading]   = useState(false);
+  const [semesters, setSemesters] = useState(initialSemesters);
+  const [showAdd, setShowAdd] = useState(false);
+  const [label, setLabel] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
@@ -65,7 +65,7 @@ export function SemestersClient({ deptId, deptCode, yearId, initialSemesters }: 
             className="rounded-xl overflow-hidden transition-shadow hover:shadow-md"
             style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}
           >
-            {/* Card top — clickable */}
+            {/* Card top - clickable */}
             <button
               type="button"
               onClick={() => router.push(`/admin/departments/${deptId}/${yearId}/${sem.id}`)}

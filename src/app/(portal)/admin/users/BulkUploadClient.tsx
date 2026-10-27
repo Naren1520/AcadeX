@@ -54,7 +54,7 @@ function downloadTemplate(type: "faculty" | "student", departments: DepartmentOp
     const data: string[][] = [
       [...STUDENT_HEADERS],
       ["Alice Kumar", "alice@college.edu", "Password@123", "1CS21CS001", "CSE", "8.50"],
-      ["Bob Raj",   "bob@college.edu",   "Password@123", "1CS21CS002", "CSE", "7.80"],
+      ["Bob Raj", "bob@college.edu", "Password@123", "1CS21CS002", "CSE", "7.80"],
     ];
     XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(data), "Students");
 
@@ -76,8 +76,8 @@ function parseFile(file: File): Promise<ParsedRow[]> {
     reader.onload = (e) => {
       try {
         const data = new Uint8Array(e.target!.result as ArrayBuffer);
-        const wb   = XLSX.read(data, { type: "array" });
-        const ws   = wb.Sheets[wb.SheetNames[0]];
+        const wb = XLSX.read(data, { type: "array" });
+        const ws = wb.Sheets[wb.SheetNames[0]];
         const rows = XLSX.utils.sheet_to_json<ParsedRow>(ws, { defval: "" });
         resolve(rows);
       } catch {
@@ -99,8 +99,8 @@ function validateRows(rows: ParsedRow[], role: "faculty" | "student", department
     const r: PreviewRow = {
       row: i + 1,
       full_name: String(row.full_name ?? "").trim(),
-      email:     String(row.email     ?? "").trim(),
-      password:  String(row.password  ?? "").trim(),
+      email: String(row.email ?? "").trim(),
+      password: String(row.password ?? "").trim(),
       role,
       _valid: true,
       _errors: [],
@@ -111,9 +111,9 @@ function validateRows(rows: ParsedRow[], role: "faculty" | "student", department
     if (!r.password || r.password.length < 8) errors.push("password ≥ 8 chars");
 
     if (role === "student") {
-      r.usn             = String(row.usn ?? "").trim().toUpperCase();
+      r.usn = String(row.usn ?? "").trim().toUpperCase();
       r.department_code = String(row.department_code ?? "").trim().toUpperCase();
-      r.cgpa            = String(row.cgpa ?? "").trim();
+      r.cgpa = String(row.cgpa ?? "").trim();
 
       if (!r.usn || !/^[A-Za-z0-9]{10}$/.test(r.usn)) errors.push("USN must be 10 alphanumeric chars");
 
@@ -133,7 +133,7 @@ function validateRows(rows: ParsedRow[], role: "faculty" | "student", department
     }
 
     r._errors = errors;
-    r._valid  = errors.length === 0;
+    r._valid = errors.length === 0;
     return r;
   });
 }
@@ -141,17 +141,17 @@ function validateRows(rows: ParsedRow[], role: "faculty" | "student", department
 // ── Main component 
 export function BulkUploadClient({ departments, onComplete, onClose }: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [role, setRole]           = useState<"faculty" | "student">("student");
-  const [dragging, setDragging]   = useState(false);
-  const [fileName, setFileName]   = useState<string | null>(null);
+  const [role, setRole] = useState<"faculty" | "student">("student");
+  const [dragging, setDragging] = useState(false);
+  const [fileName, setFileName] = useState<string | null>(null);
   const [parseError, setParseError] = useState<string | null>(null);
 
   // Steps: "upload" | "preview" | "results"
-  const [step, setStep]           = useState<"upload" | "preview" | "results">("upload");
+  const [step, setStep] = useState<"upload" | "preview" | "results">("upload");
   const [previewRows, setPreviewRows] = useState<PreviewRow[]>([]);
-  const [results, setResults]     = useState<BulkRowResult[]>([]);
+  const [results, setResults] = useState<BulkRowResult[]>([]);
   const [submitting, setSubmitting] = useState(false);
-  const [summary, setSummary]     = useState<{ success: number; error: number } | null>(null);
+  const [summary, setSummary] = useState<{ success: number; error: number } | null>(null);
 
   // ── File handling 
   async function processFile(file: File) {
@@ -187,16 +187,16 @@ export function BulkUploadClient({ departments, onComplete, onClose }: Props) {
     setSubmitting(true);
     const validRows = previewRows.filter((r) => r._valid);
     const payload = validRows.map((r) => ({
-      full_name:     r.full_name,
-      email:         r.email,
-      password:      r.password,
-      role:          r.role,
-      usn:           r.usn,
+      full_name: r.full_name,
+      email: r.email,
+      password: r.password,
+      role: r.role,
+      usn: r.usn,
       department_id: r.department_id,
-      cgpa:          r.cgpa ? parseFloat(r.cgpa) : undefined,
+      cgpa: r.cgpa ? parseFloat(r.cgpa) : undefined,
     }));
 
-    const res  = await fetch("/api/admin/users/bulk", {
+    const res = await fetch("/api/admin/users/bulk", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -212,17 +212,17 @@ export function BulkUploadClient({ departments, onComplete, onClose }: Props) {
       const newUsers: UserRow[] = (data.results ?? [])
         .filter((r) => r.status === "success")
         .map((r) => ({
-          id:         "",
-          role:       role as "faculty" | "student",
-          full_name:  validRows.find((v) => v.email === r.email)?.full_name ?? "",
-          email:      r.email,
+          id: "",
+          role: role as "faculty" | "student",
+          full_name: validRows.find((v) => v.email === r.email)?.full_name ?? "",
+          email: r.email,
           created_at: new Date().toISOString(),
         }));
       onComplete(newUsers);
     }
   }
 
-  const validCount   = previewRows.filter((r) => r._valid).length;
+  const validCount = previewRows.filter((r) => r._valid).length;
   const invalidCount = previewRows.length - validCount;
 
   // ── Render 
@@ -384,8 +384,8 @@ export function BulkUploadClient({ departments, onComplete, onClose }: Props) {
                       }}
                     >
                       <td className="px-3 py-2 text-xs text-neutral-400">{r.row}</td>
-                      <td className="px-3 py-2 font-medium text-neutral-800">{r.full_name || <span className="text-red-400">—</span>}</td>
-                      <td className="px-3 py-2 text-xs text-neutral-600">{r.email || <span className="text-red-400">—</span>}</td>
+                      <td className="px-3 py-2 font-medium text-neutral-800">{r.full_name || <span className="text-red-400">-</span>}</td>
+                      <td className="px-3 py-2 text-xs text-neutral-600">{r.email || <span className="text-red-400">-</span>}</td>
                       {role === "student" && (
                         <>
                           <td className="px-3 py-2 font-mono text-xs">{r.usn}</td>

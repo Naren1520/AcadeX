@@ -1,7 +1,7 @@
 /**
- * POST   /api/faculty/teams/[teamId]/mentor  — assign a mentor
- * DELETE /api/faculty/teams/[teamId]/mentor  — remove the mentor
- * GET    /api/faculty/teams/[teamId]/mentor  — get current mentor
+ * POST   /api/faculty/teams/[teamId]/mentor  - assign a mentor
+ * DELETE /api/faculty/teams/[teamId]/mentor  - remove the mentor
+ * GET    /api/faculty/teams/[teamId]/mentor  - get current mentor
  *
  * Only the faculty who owns the section the team belongs to can assign mentors.
  */
@@ -50,10 +50,10 @@ export async function GET(
   }
 }
 
-// ── POST — assign ─────────────────────────────────────────────
+// ── POST - assign ─────────────────────────────────────────────
 const assignSchema = z.object({
   mentor_id: z.string().uuid(),
-  notes:     z.string().max(500).optional(),
+  notes: z.string().max(500).optional(),
 });
 
 export async function POST(
@@ -83,7 +83,7 @@ export async function POST(
       throw new ValidationError("Mentor must be a faculty member.", { mentor_id: "Must be a faculty user." });
     }
 
-    // Upsert — one mentor per team
+    // Upsert - one mentor per team
     const { data, error } = await service
       .from("team_mentors")
       .upsert({ team_id: teamId, mentor_id: parsed.data.mentor_id, assigned_by: userId, notes: parsed.data.notes ?? null },
@@ -98,7 +98,7 @@ export async function POST(
   }
 }
 
-// ── DELETE — remove ───────────────────────────────────────────
+// ── DELETE - remove ───────────────────────────────────────────
 export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ teamId: string }> }

@@ -30,39 +30,39 @@ interface AuditEntry {
 const ACTION_OPTIONS = [
   { value: "", label: "All actions" },
   // Auth
-  { value: "user.login",            label: "Login" },
-  { value: "user.logout",           label: "Logout" },
+  { value: "user.login", label: "Login" },
+  { value: "user.logout", label: "Logout" },
   // User management
-  { value: "user.created",          label: "User Created" },
-  { value: "user.edited",           label: "User Edited" },
-  { value: "user.deleted",          label: "User Deleted" },
+  { value: "user.created", label: "User Created" },
+  { value: "user.edited", label: "User Edited" },
+  { value: "user.deleted", label: "User Deleted" },
   { value: "user.password_changed", label: "Password Changed" },
   // Structure
-  { value: "department.created",    label: "Department Created" },
-  { value: "department.updated",    label: "Department Updated" },
-  { value: "department.deactivated",label: "Department Deactivated" },
+  { value: "department.created", label: "Department Created" },
+  { value: "department.updated", label: "Department Updated" },
+  { value: "department.deactivated", label: "Department Deactivated" },
   { value: "academic_year.created", label: "Academic Year Created" },
-  { value: "academic_year.closed",  label: "Academic Year Closed" },
-  { value: "semester.created",      label: "Semester Created" },
-  { value: "semester.closed",       label: "Semester Closed" },
-  { value: "section.created",       label: "Section Created" },
-  { value: "faculty.assigned",      label: "Faculty Assigned" },
-  { value: "faculty.unassigned",    label: "Faculty Unassigned" },
+  { value: "academic_year.closed", label: "Academic Year Closed" },
+  { value: "semester.created", label: "Semester Created" },
+  { value: "semester.closed", label: "Semester Closed" },
+  { value: "section.created", label: "Section Created" },
+  { value: "faculty.assigned", label: "Faculty Assigned" },
+  { value: "faculty.unassigned", label: "Faculty Unassigned" },
   { value: "student.section_assigned", label: "Student Section Assigned" },
   // Academic
-  { value: "cgpa.updated",          label: "CGPA Updated" },
-  { value: "team.formed",           label: "Team Formed" },
-  { value: "team.member_added",     label: "Team Member Added" },
-  { value: "team.member_removed",   label: "Team Member Removed" },
-  { value: "proposal.submitted",    label: "Proposal Submitted" },
-  { value: "proposal.approved",     label: "Proposal Approved" },
-  { value: "proposal.rejected",     label: "Proposal Rejected" },
+  { value: "cgpa.updated", label: "CGPA Updated" },
+  { value: "team.formed", label: "Team Formed" },
+  { value: "team.member_added", label: "Team Member Added" },
+  { value: "team.member_removed", label: "Team Member Removed" },
+  { value: "proposal.submitted", label: "Proposal Submitted" },
+  { value: "proposal.approved", label: "Proposal Approved" },
+  { value: "proposal.rejected", label: "Proposal Rejected" },
   { value: "proposal.revision_requested", label: "Revision Requested" },
-  { value: "milestone.created",     label: "Milestone Created" },
+  { value: "milestone.created", label: "Milestone Created" },
   { value: "milestone.deadline_updated", label: "Milestone Deadline Updated" },
-  { value: "submission.uploaded",   label: "Submission Uploaded" },
-  { value: "file.uploaded",         label: "File Uploaded" },
-  { value: "file.accessed",         label: "File Accessed" },
+  { value: "submission.uploaded", label: "Submission Uploaded" },
+  { value: "file.uploaded", label: "File Uploaded" },
+  { value: "file.accessed", label: "File Accessed" },
 ];
 
 // ── Role badge variant 
@@ -73,17 +73,17 @@ function roleBadge(role: string) {
 
 // ── Action label chip 
 const ACTION_COLORS: Record<string, { bg: string; color: string }> = {
-  "user.login":             { bg: "#f0fdf4", color: "#16a34a" },
-  "user.logout":            { bg: "#f9fafb", color: "#6b7280" },
-  "user.created":           { bg: "#eff6ff", color: "#1e3a5f" },
-  "user.edited":            { bg: "#fefce8", color: "#ca8a04" },
-  "user.deleted":           { bg: "#fef2f2", color: "#dc2626" },
-  "user.password_changed":  { bg: "#fef3c7", color: "#b45309" },
-  "proposal.approved":      { bg: "#f0fdf4", color: "#16a34a" },
-  "proposal.rejected":      { bg: "#fef2f2", color: "#dc2626" },
+  "user.login": { bg: "#f0fdf4", color: "#16a34a" },
+  "user.logout": { bg: "#f9fafb", color: "#6b7280" },
+  "user.created": { bg: "#eff6ff", color: "#1e3a5f" },
+  "user.edited": { bg: "#fefce8", color: "#ca8a04" },
+  "user.deleted": { bg: "#fef2f2", color: "#dc2626" },
+  "user.password_changed": { bg: "#fef3c7", color: "#b45309" },
+  "proposal.approved": { bg: "#f0fdf4", color: "#16a34a" },
+  "proposal.rejected": { bg: "#fef2f2", color: "#dc2626" },
   "department.deactivated": { bg: "#fef2f2", color: "#dc2626" },
-  "academic_year.closed":   { bg: "#fef2f2", color: "#dc2626" },
-  "semester.closed":        { bg: "#fef2f2", color: "#dc2626" },
+  "academic_year.closed": { bg: "#fef2f2", color: "#dc2626" },
+  "semester.closed": { bg: "#fef2f2", color: "#dc2626" },
 };
 
 function actionChip(action: string) {
@@ -106,7 +106,7 @@ function fmt(iso: string) {
 
 // ── Parse user-agent to device hint 
 function deviceHint(ua: string | null) {
-  if (!ua) return "—";
+  if (!ua) return "-";
   if (/mobile/i.test(ua)) return "Mobile";
   if (/tablet|ipad/i.test(ua)) return "Tablet";
   return "Desktop";
@@ -114,26 +114,26 @@ function deviceHint(ua: string | null) {
 
 // ── Main component 
 export function AuditLogsClient() {
-  const [entries, setEntries]       = useState<AuditEntry[]>([]);
-  const [total, setTotal]           = useState(0);
-  const [page, setPage]             = useState(1);
-  const [isLoading, setIsLoading]   = useState(true);
+  const [entries, setEntries] = useState<AuditEntry[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
 
   // Filters
-  const [email, setEmail]           = useState("");
+  const [email, setEmail] = useState("");
   const [actionType, setActionType] = useState("");
-  const [fromDate, setFromDate]     = useState("");
-  const [toDate, setToDate]         = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   // Detail panel
-  const [selected, setSelected]     = useState<AuditEntry | null>(null);
+  const [selected, setSelected] = useState<AuditEntry | null>(null);
 
   function buildParams(extraPage?: number) {
     const params = new URLSearchParams({ page: String(extraPage ?? page) });
-    if (email)      params.set("actor_email", email);
+    if (email) params.set("actor_email", email);
     if (actionType) params.set("action_type", actionType);
-    if (fromDate)   params.set("from", new Date(fromDate).toISOString());
+    if (fromDate) params.set("from", new Date(fromDate).toISOString());
     if (toDate) {
       const t = new Date(toDate); t.setHours(23, 59, 59, 999);
       params.set("to", t.toISOString());
@@ -150,7 +150,7 @@ export function AuditLogsClient() {
       setTotal(data.total ?? 0);
     }
     setIsLoading(false);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, email, actionType, fromDate, toDate]);
 
   useEffect(() => { fetchLogs(); }, [fetchLogs]);
@@ -166,9 +166,9 @@ export function AuditLogsClient() {
     const res = await fetch(`/api/admin/audit-logs?${params}`);
     if (res.ok) {
       const blob = await res.blob();
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement("a");
-      a.href     = url;
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
       a.download = `audit_logs_${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
@@ -187,7 +187,7 @@ export function AuditLogsClient() {
       key: "actor_email", header: "User",
       render: (r: AuditEntry) => (
         <div>
-          <p className="text-xs font-medium text-neutral-800">{r.actor_email ?? "—"}</p>
+          <p className="text-xs font-medium text-neutral-800">{r.actor_email ?? "-"}</p>
           {roleBadge(r.actor_role)}
         </div>
       ),
@@ -209,7 +209,7 @@ export function AuditLogsClient() {
       key: "ip_address", header: "IP / Device",
       render: (r: AuditEntry) => (
         <div>
-          <p className="text-xs text-neutral-600">{r.ip_address ?? "—"}</p>
+          <p className="text-xs text-neutral-600">{r.ip_address ?? "-"}</p>
           <p className="text-xs text-neutral-400">{deviceHint(r.user_agent)}</p>
         </div>
       ),
@@ -345,7 +345,7 @@ export function AuditLogsClient() {
 
               {/* Who */}
               <Section label="Who">
-                <p className="font-medium text-neutral-800">{selected.actor_email ?? "—"}</p>
+                <p className="font-medium text-neutral-800">{selected.actor_email ?? "-"}</p>
                 <div className="mt-0.5">{roleBadge(selected.actor_role)}</div>
               </Section>
 
@@ -362,9 +362,9 @@ export function AuditLogsClient() {
 
               {/* Where */}
               <Section label="Device / Location">
-                <Row k="IP Address"  v={selected.ip_address ?? "—"} />
-                <Row k="Device"      v={deviceHint(selected.user_agent)} />
-                <Row k="User Agent"  v={selected.user_agent ?? "—"} mono />
+                <Row k="IP Address" v={selected.ip_address ?? "-"} />
+                <Row k="Device" v={deviceHint(selected.user_agent)} />
+                <Row k="User Agent" v={selected.user_agent ?? "-"} mono />
               </Section>
 
               {/* Before */}

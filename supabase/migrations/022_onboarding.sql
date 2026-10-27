@@ -79,4 +79,4 @@ CREATE TABLE onboarding_attempts (
 CREATE INDEX idx_oa_inv_ip ON onboarding_attempts(invitation_id, ip_address);
 
 ALTER TABLE onboarding_attempts ENABLE ROW LEVEL SECURITY;
--- No public access — all handled via service role in API
+-- No public access - all handled via service role in API

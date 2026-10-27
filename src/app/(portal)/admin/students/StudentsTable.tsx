@@ -12,9 +12,9 @@ export type StudentRow = {
   usn: string;
   cgpa: number;
   section_id: string | null;
-  profiles:    { full_name: string; email: string } | null;
+  profiles: { full_name: string; email: string } | null;
   departments: { name: string; code: string } | null;
-  sections:    { label: string } | null;
+  sections: { label: string } | null;
 };
 
 export type SectionOption = {
@@ -30,10 +30,10 @@ interface Props {
 }
 
 export function StudentsTable({ students, sections }: Props) {
-  const [rows, setRows]           = useState(students);
-  const [editing, setEditing]     = useState<StudentRow | null>(null);
+  const [rows, setRows] = useState(students);
+  const [editing, setEditing] = useState<StudentRow | null>(null);
   const [sectionId, setSectionId] = useState("");
-  const [error, setError]         = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   function openEdit(student: StudentRow) {
@@ -65,12 +65,12 @@ export function StudentsTable({ students, sections }: Props) {
   }
 
   const columns = [
-    { key: "usn",        header: "USN",        sortable: true },
-    { key: "full_name",  header: "Name",        render: (r: StudentRow) => r.profiles?.full_name ?? "—" },
-    { key: "email",      header: "Email",       render: (r: StudentRow) => <span className="text-xs">{r.profiles?.email ?? "—"}</span> },
-    { key: "department", header: "Department",  render: (r: StudentRow) => r.departments?.code ?? "—" },
-    { key: "section",    header: "Section",     render: (r: StudentRow) => r.sections?.label ?? <span className="text-xs text-neutral-400">Unassigned</span> },
-    { key: "cgpa",       header: "CGPA",        sortable: true, render: (r: StudentRow) => r.cgpa.toFixed(2) },
+    { key: "usn", header: "USN", sortable: true },
+    { key: "full_name", header: "Name", render: (r: StudentRow) => r.profiles?.full_name ?? "-" },
+    { key: "email", header: "Email", render: (r: StudentRow) => <span className="text-xs">{r.profiles?.email ?? "-"}</span> },
+    { key: "department", header: "Department", render: (r: StudentRow) => r.departments?.code ?? "-" },
+    { key: "section", header: "Section", render: (r: StudentRow) => r.sections?.label ?? <span className="text-xs text-neutral-400">Unassigned</span> },
+    { key: "cgpa", header: "CGPA", sortable: true, render: (r: StudentRow) => r.cgpa.toFixed(2) },
     {
       key: "actions", header: "",
       render: (r: StudentRow) => (
@@ -90,7 +90,7 @@ export function StudentsTable({ students, sections }: Props) {
       <Dialog
         open={!!editing}
         onOpenChange={(o) => { if (!o) setEditing(null); }}
-        title={editing?.section_id ? `Change Section — ${editing?.profiles?.full_name ?? ""}` : `Assign Section — ${editing?.profiles?.full_name ?? ""}`}
+        title={editing?.section_id ? `Change Section - ${editing?.profiles?.full_name ?? ""}` : `Assign Section - ${editing?.profiles?.full_name ?? ""}`}
       >
         <form onSubmit={handleSave} className="flex flex-col gap-4">
           <FormError message={error} />
@@ -105,7 +105,7 @@ export function StudentsTable({ students, sections }: Props) {
               { value: "", label: "No section (unassigned)" },
               ...sections.map((s) => ({
                 value: s.id,
-                label: `${s.label} — ${s.dept_code} (${s.semester_label})`,
+                label: `${s.label} - ${s.dept_code} (${s.semester_label})`,
               })),
             ]}
             placeholder="Select section…"

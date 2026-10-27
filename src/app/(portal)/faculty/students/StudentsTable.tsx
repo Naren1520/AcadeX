@@ -15,8 +15,8 @@ export type StudentRow = {
 export function StudentsTable({ students }: { students: StudentRow[] }) {
   const columns = [
     { key: "usn", header: "USN", sortable: true },
-    { key: "full_name", header: "Name", render: (r: StudentRow) => r.profiles?.full_name ?? "—" },
-    { key: "department", header: "Department", render: (r: StudentRow) => r.departments?.name ?? "—" },
+    { key: "full_name", header: "Name", render: (r: StudentRow) => r.profiles?.full_name ?? "-" },
+    { key: "department", header: "Department", render: (r: StudentRow) => r.departments?.name ?? "-" },
     { key: "cgpa", header: "CGPA", sortable: true, render: (r: StudentRow) => r.cgpa.toFixed(2) },
     {
       key: "github_url",
@@ -27,7 +27,7 @@ export function StudentsTable({ students }: { students: StudentRow[] }) {
             View
           </a>
         ) : (
-          <span className="text-xs text-neutral-400">—</span>
+          <span className="text-xs text-neutral-400">-</span>
         ),
     },
     {

@@ -16,12 +16,12 @@ interface Props {
 }
 
 export function SectionsClient({ initialSections, semesters, departments }: Props) {
-  const [sections, setSections]   = useState(initialSections);
+  const [sections, setSections] = useState(initialSections);
   const [showCreate, setShowCreate] = useState(false);
-  const [label, setLabel]         = useState("");
+  const [label, setLabel] = useState("");
   const [semesterId, setSemesterId] = useState("");
-  const [deptId, setDeptId]       = useState("");
-  const [error, setError]         = useState<string | null>(null);
+  const [deptId, setDeptId] = useState("");
+  const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   async function handleCreate(e: React.FormEvent) {
@@ -34,11 +34,11 @@ export function SectionsClient({ initialSections, semesters, departments }: Prop
     });
     const data = await res.json() as { section?: Section; error?: string };
     if (!res.ok) { setError(data.error ?? "Failed to create section."); setIsLoading(false); return; }
-    const sem  = semesters.find((s) => s.id === semesterId);
+    const sem = semesters.find((s) => s.id === semesterId);
     const dept = departments.find((d) => d.id === deptId);
     const newSection = {
       ...data.section!,
-      semesters:   sem  ? { label: sem.label, is_closed: false } : null,
+      semesters: sem ? { label: sem.label, is_closed: false } : null,
       departments: dept ? { name: dept.name, code: dept.code } : null,
     };
     setSections((prev) => [...prev, newSection]);
@@ -47,8 +47,8 @@ export function SectionsClient({ initialSections, semesters, departments }: Prop
 
   const columns = [
     { key: "label", header: "Section", sortable: true },
-    { key: "semester",   header: "Semester",   render: (r: Section) => r.semesters?.label   ?? "—" },
-    { key: "department", header: "Department", render: (r: Section) => r.departments ? `${r.departments.name} (${r.departments.code})` : "—" },
+    { key: "semester", header: "Semester", render: (r: Section) => r.semesters?.label ?? "-" },
+    { key: "department", header: "Department", render: (r: Section) => r.departments ? `${r.departments.name} (${r.departments.code})` : "-" },
   ];
 
   return (

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Centralized navigation configuration for all portal roles.
  * Import from here instead of defining nav arrays in each page.
  */
@@ -35,6 +35,7 @@ export const facultyNav: NavItem[] = [
   { label: "Submission Windows", href: "/faculty/submission-windows",      icon: <IconUpload size={16} /> },
   { label: "Students",           href: "/faculty/students",                icon: <IconUsers size={16} /> },
   { label: "Notifications",      href: "/faculty/notifications",           icon: <IconBell size={16} /> },
+  { label: "Guide",              href: "/faculty/guide",                   icon: <IconFileText size={16} /> },
 ];
 
 export const studentNav: NavItem[] = [
@@ -45,4 +46,5 @@ export const studentNav: NavItem[] = [
   { label: "Submissions",  href: "/student/submissions",  icon: <IconUpload size={16} /> },
   { label: "Profile",      href: "/student/profile",      icon: <IconSettings size={16} /> },
   { label: "Notifications", href: "/student/notifications", icon: <IconBell size={16} /> },
+  { label: "Guide",        href: "/student/guide",         icon: <IconFileText size={16} /> },
 ];

@@ -1,3 +1,3 @@
 // Feature: approvals
-// Faculty review UI for proposals — approve, reject, request revision.
-export {};
+// Faculty review UI for proposals - approve, reject, request revision.
+export { };

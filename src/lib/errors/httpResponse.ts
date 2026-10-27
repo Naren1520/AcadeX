@@ -26,7 +26,7 @@ export function toErrorResponse(error: unknown): NextResponse {
 
   if (error instanceof ZodError) {
     const fields: Record<string, string> = {};
-    // Zod v4 uses `.issues`, v3 used `.errors` — support both
+    // Zod v4 uses `.issues`, v3 used `.errors` - support both
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const issues: any[] = (error as any).issues ?? (error as any).errors ?? [];
     issues.forEach((e: { path: (string | number)[]; message: string }) => {

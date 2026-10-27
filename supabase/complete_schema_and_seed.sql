@@ -1,5 +1,5 @@
 -- =============================================================
--- AcadeX — Complete Schema + Seed (Clean Install)
+-- AcadeX - Complete Schema + Seed (Clean Install)
 -- Run this in Supabase Dashboard → SQL Editor
 --
 -- ⚠️  WARNING: Drops ALL existing tables and recreates from scratch!
@@ -24,7 +24,7 @@
 
 
 -- =============================================================
--- STEP 1 — DROP EVERYTHING (reverse dependency order)
+-- STEP 1 - DROP EVERYTHING (reverse dependency order)
 -- =============================================================
 
 DROP TABLE IF EXISTS email_retry_queue    CASCADE;
@@ -51,7 +51,7 @@ DROP FUNCTION IF EXISTS current_user_role() CASCADE;
 
 
 -- =============================================================
--- STEP 2 — UTILITY FUNCTION
+-- STEP 2 - UTILITY FUNCTION
 -- =============================================================
 
 CREATE FUNCTION update_updated_at()
@@ -64,7 +64,7 @@ $$ LANGUAGE plpgsql;
 
 
 -- =============================================================
--- STEP 3 — TABLES
+-- STEP 3 - TABLES
 -- =============================================================
 
 -- 001 profiles
@@ -397,7 +397,7 @@ ALTER TABLE email_retry_queue ENABLE ROW LEVEL SECURITY;
 
 
 -- =============================================================
--- STEP 4 — RLS HELPER + POLICIES
+-- STEP 4 - RLS HELPER + POLICIES
 -- =============================================================
 
 CREATE FUNCTION current_user_role()
@@ -547,7 +547,7 @@ CREATE POLICY "audit_admin_select"       ON audit_logs FOR SELECT USING (current
 
 
 -- =============================================================
--- STEP 5 — STORAGE BUCKET
+-- STEP 5 - STORAGE BUCKET
 -- =============================================================
 
 INSERT INTO storage.buckets (id, name, public)
@@ -556,7 +556,7 @@ ON CONFLICT (id) DO NOTHING;
 
 
 -- =============================================================
--- STEP 6 — SEED DATA
+-- STEP 6 - SEED DATA
 -- =============================================================
 --
 -- Admin login credentials:

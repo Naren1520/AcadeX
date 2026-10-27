@@ -37,7 +37,7 @@ Example: `020_add_attendance_table.sql`
 
 ## Code Style
 
-- TypeScript strict mode — zero `any` types.
+- TypeScript strict mode - zero `any` types.
 - All API route handlers validate input with Zod before touching the database.
 - All mutations write to the audit log (fire-and-forget via `writeAuditLog`).
 - Server Components by default; `"use client"` only where interactivity is required.
@@ -47,8 +47,8 @@ Example: `020_add_attendance_table.sql`
 
 ## Branch Strategy
 
-- `main` — production-ready, protected
-- `dev` — integration branch
+- `main` - production-ready, protected
+- `dev` - integration branch
 - Feature branches: `feat/<short-description>`
 - Bugfix branches: `fix/<short-description>`
 

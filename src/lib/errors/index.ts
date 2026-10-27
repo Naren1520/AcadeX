@@ -14,7 +14,7 @@ export class AppError extends Error {
   }
 }
 
-/** 401 — unauthenticated */
+/** 401 - unauthenticated */
 export class AuthError extends AppError {
   constructor(message = "Unauthenticated. Please sign in.") {
     super(message, 401);
@@ -22,7 +22,7 @@ export class AuthError extends AppError {
   }
 }
 
-/** 403 — authenticated but not authorised */
+/** 403 - authenticated but not authorised */
 export class ForbiddenError extends AppError {
   constructor(message = "You do not have permission to perform this action.") {
     super(message, 403);
@@ -30,7 +30,7 @@ export class ForbiddenError extends AppError {
   }
 }
 
-/** 404 — resource not found */
+/** 404 - resource not found */
 export class NotFoundError extends AppError {
   constructor(message = "Resource not found.") {
     super(message, 404);
@@ -38,7 +38,7 @@ export class NotFoundError extends AppError {
   }
 }
 
-/** 409 — state conflict */
+/** 409 - state conflict */
 export class ConflictError extends AppError {
   readonly field?: string;
 
@@ -49,7 +49,7 @@ export class ConflictError extends AppError {
   }
 }
 
-/** 422 — validation failure with per-field details */
+/** 422 - validation failure with per-field details */
 export class ValidationError extends AppError {
   readonly fields: Record<string, string>;
 

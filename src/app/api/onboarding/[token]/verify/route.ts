@@ -6,7 +6,7 @@
  *
  * Security:
  * - Progressive rate limiting per (token, IP)
- * - Generic error messages — does not reveal if invitation exists
+ * - Generic error messages - does not reveal if invitation exists
  * - Checks invitation window, active status, max_uses
  */
 import { NextResponse } from "next/server";
@@ -16,7 +16,7 @@ import { toErrorResponse } from "@/lib/errors/httpResponse";
 import { checkOnboardingRateLimit, resetOnboardingAttempts } from "@/lib/onboardingRateLimit";
 import { createHash, randomBytes } from "crypto";
 
-// Generic error — never reveal whether the token is valid
+// Generic error - never reveal whether the token is valid
 const GENERIC_ERROR = "Invalid or expired invitation. Please check the link and passcode.";
 
 function hashPasscode(p: string) { return createHash("sha256").update(p).digest("hex"); }
@@ -86,20 +86,20 @@ export async function POST(
       return NextResponse.json({ error: "This invitation has reached its maximum uses." }, { status: 403 });
     }
 
-    // Success — reset rate limit and issue a session token
+    // Success - reset rate limit and issue a session token
     await resetOnboardingAttempts(token, ip);
 
     // Session token: signed with timestamp for expiry validation in the submit step
     const sessionToken = randomBytes(32).toString("hex");
-    const expiresAt    = Date.now() + 60 * 60 * 1000; // 1 hour
+    const expiresAt = Date.now() + 60 * 60 * 1000; // 1 hour
 
     // Store session token in DB so the submit step can verify it
     await service.from("onboarding_attempts").upsert({
       invitation_id: token,
-      ip_address:    `session:${sessionToken}`,
-      attempts:      0,
+      ip_address: `session:${sessionToken}`,
+      attempts: 0,
       first_attempt: new Date().toISOString(),
-      last_attempt:  new Date(expiresAt).toISOString(), // reuse last_attempt as expiry
+      last_attempt: new Date(expiresAt).toISOString(), // reuse last_attempt as expiry
     }, { onConflict: "invitation_id,ip_address" });
 
     return NextResponse.json({ sessionToken, expiresAt });

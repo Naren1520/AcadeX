@@ -14,7 +14,7 @@ export default async function AdminDashboard() {
 
   const userId = session.user.id;
 
-  // Use service role to read profile — bypasses RLS
+  // Use service role to read profile - bypasses RLS
   const service = getSupabaseServiceRoleClient();
   const { data: profile } = await service
     .from("profiles")
@@ -22,7 +22,7 @@ export default async function AdminDashboard() {
     .eq("id", userId)
     .single() as { data: { role: string; full_name: string } | null };
 
-  // Wrong role — redirect to their dashboard
+  // Wrong role - redirect to their dashboard
   if (!profile) redirect("/login");
   if (profile.role === "faculty") redirect("/faculty");
   if (profile.role === "student") redirect("/student");

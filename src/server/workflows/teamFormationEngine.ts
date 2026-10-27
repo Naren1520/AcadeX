@@ -50,7 +50,7 @@ export function findMatchingSlot(
   slots: SlotDefinition[]
 ): SlotDefinition | null {
   return slots.find((s) => {
-    // Coerce to number — Postgres numeric can deserialize as string
+    // Coerce to number - Postgres numeric can deserialize as string
     const lower = Number(s.cgpa_lower);
     const upper = Number(s.cgpa_upper);
     return studentCgpa >= lower && studentCgpa <= upper;
@@ -95,7 +95,7 @@ export function validateSlots(
   return { valid: true };
 }
 
-/** Legacy band validation — kept for backward compat */
+/** Legacy band validation - kept for backward compat */
 export function validateRuleBands(
   cgpaLower: number,
   cgpaUpper: number
@@ -173,7 +173,7 @@ export async function formTeam(req: FormTeamRequest): Promise<{ id: string }> {
     }
   }
 
-  // Quota check — use formed_count for fast check
+  // Quota check - use formed_count for fast check
   if (rule.formed_count >= rule.max_teams) {
     throw new ValidationError(`Maximum teams (${rule.max_teams}) under this rule has been reached.`);
   }

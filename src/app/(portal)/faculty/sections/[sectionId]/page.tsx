@@ -69,8 +69,8 @@ export default async function SectionDashboardPage({
   };
   const a = assignment as unknown as RawAssignment;
   const sectionLabel = a.sections?.label ?? "";
-  const deptName     = a.sections?.departments?.name ?? "";
-  const deptCode     = a.sections?.departments?.code ?? "";
+  const deptName = a.sections?.departments?.name ?? "";
+  const deptCode = a.sections?.departments?.code ?? "";
 
   // Parallel data fetches
   const [
@@ -168,28 +168,28 @@ export default async function SectionDashboardPage({
     team_invitations: { id: string; invitee_id: string; status: string; created_at: string; profiles: { full_name: string; email: string } | null }[];
   };
   const teamsData = (rawAllTeams as unknown as RawTeam[] ?? []).map((t) => ({
-    id:         t.id,
-    name:       t.name,
-    status:     t.status as "forming" | "confirmed" | "dissolved",
-    rule_id:    t.rule_id,
+    id: t.id,
+    name: t.name,
+    status: t.status as "forming" | "confirmed" | "dissolved",
+    rule_id: t.rule_id,
     rule_label: t.team_formation_rules?.label ?? "",
-    team_size:  t.team_formation_rules?.team_size ?? 0,
-    slots:      t.team_formation_rules?.team_formation_slots ?? [],
-    members:    (t.team_members ?? []).map((m) => ({
+    team_size: t.team_formation_rules?.team_size ?? 0,
+    slots: t.team_formation_rules?.team_formation_slots ?? [],
+    members: (t.team_members ?? []).map((m) => ({
       student_id: m.student_id,
-      is_lead:    m.is_lead,
-      full_name:  m.students?.profiles?.full_name ?? "",
-      email:      m.students?.profiles?.email    ?? "",
-      usn:        m.students?.usn  ?? "",
-      cgpa:       m.students?.cgpa ?? 0,
+      is_lead: m.is_lead,
+      full_name: m.students?.profiles?.full_name ?? "",
+      email: m.students?.profiles?.email ?? "",
+      usn: m.students?.usn ?? "",
+      cgpa: m.students?.cgpa ?? 0,
     })),
     pending_invites: (t.team_invitations ?? [])
       .filter((i) => i.status === "pending")
       .map((i) => ({
-        id:         i.id,
+        id: i.id,
         invitee_id: i.invitee_id,
-        full_name:  i.profiles?.full_name ?? "",
-        email:      i.profiles?.email    ?? "",
+        full_name: i.profiles?.full_name ?? "",
+        email: i.profiles?.email ?? "",
         created_at: i.created_at,
       })),
   }));
@@ -201,10 +201,10 @@ export default async function SectionDashboardPage({
   });
 
   const stats = {
-    students:         students.length,
-    teams:            (teams ?? []).length,
+    students: students.length,
+    teams: (teams ?? []).length,
     pendingProposals: proposals.filter((p) => p.status === "pending").length,
-    openMilestones:   milestones.filter((m) => m.status === "open").length,
+    openMilestones: milestones.filter((m) => m.status === "open").length,
   };
 
   const facultyList = (rawFacultyList ?? []).map((f: { id: string; full_name: string; email: string }) => ({
@@ -215,12 +215,12 @@ export default async function SectionDashboardPage({
   const teamsWithMentors = (rawSectionTeams as unknown as RawST[] ?? []).map((t) => {
     const m = t.team_mentors?.[0] ?? null;
     return {
-      team_id:      t.id,
-      team_name:    t.name,
-      team_status:  t.status,
-      mentor_id:    m?.mentor_id    ?? null,
-      mentor_name:  m?.profiles?.full_name ?? null,
-      mentor_email: m?.profiles?.email    ?? null,
+      team_id: t.id,
+      team_name: t.name,
+      team_status: t.status,
+      mentor_id: m?.mentor_id ?? null,
+      mentor_name: m?.profiles?.full_name ?? null,
+      mentor_email: m?.profiles?.email ?? null,
     };
   });
 
@@ -229,9 +229,9 @@ export default async function SectionDashboardPage({
       role="faculty"
       navItems={facultyNav}
       breadcrumbs={[
-        { label: "Faculty",     href: "/faculty" },
+        { label: "Faculty", href: "/faculty" },
         { label: "My Sections", href: "/faculty/sections" },
-        { label: `${sectionLabel} — ${deptCode}` },
+        { label: `${sectionLabel} - ${deptCode}` },
       ]}
       userFullName={fullName}
     >

@@ -5,7 +5,7 @@ export const emailSchema = z
   .string()
   .email("Must be a valid email address.");
 
-/** USN — exactly 10 alphanumeric characters */
+/** USN - exactly 10 alphanumeric characters */
 export const usnSchema = z
   .string()
   .regex(
@@ -13,13 +13,13 @@ export const usnSchema = z
     "USN must be exactly 10 alphanumeric characters."
   );
 
-/** CGPA — numeric range [0.00, 10.00] */
+/** CGPA - numeric range [0.00, 10.00] */
 export const cgpaSchema = z
   .number()
   .min(0, "CGPA must be at least 0.00.")
   .max(10, "CGPA must not exceed 10.00.");
 
-/** GitHub profile URL — https://github.com/{username} */
+/** GitHub profile URL - https://github.com/{username} */
 export const githubProfileSchema = z
   .string()
   .regex(
@@ -27,7 +27,7 @@ export const githubProfileSchema = z
     "Must be a valid GitHub profile URL: https://github.com/{username}."
   );
 
-/** GitHub repository URL — https://github.com/{owner}/{repo} */
+/** GitHub repository URL - https://github.com/{owner}/{repo} */
 export const githubRepoSchema = z
   .string()
   .regex(
@@ -35,7 +35,7 @@ export const githubRepoSchema = z
     "Must be a valid GitHub repository URL: https://github.com/{owner}/{repo}."
   );
 
-/** Skills list — max 20 items, each ≤50 chars */
+/** Skills list - max 20 items, each ≤50 chars */
 export const skillsSchema = z
   .array(z.string().max(50, "Each skill must not exceed 50 characters."))
   .max(20, "Skills list must not exceed 20 items.");
@@ -46,7 +46,7 @@ export const paginationSchema = z.object({
   limit: z.coerce.number().int().positive().max(100).default(50),
 });
 
-/** SDG number — 1 through 17 */
+/** SDG number - 1 through 17 */
 export const sdgNumberSchema = z
   .number()
   .int()

@@ -20,7 +20,7 @@ export interface NotificationPayload {
 
 /**
  * Persists in-app notification records for all recipientIds.
- * Never throws — errors are captured in console.error.
+ * Never throws - errors are captured in console.error.
  */
 export async function sendInAppNotifications(
   payload: NotificationPayload
@@ -47,7 +47,7 @@ export async function sendInAppNotifications(
  * Sends email notifications via Resend.
  * On failure per recipient, queues for retry (exponential backoff: 30s, 60s, 120s).
  * Silently skips recipients with no email on record.
- * Never throws — errors are captured in console.error.
+ * Never throws - errors are captured in console.error.
  */
 export async function sendEmailNotifications(
   payload: NotificationPayload
@@ -67,7 +67,7 @@ export async function sendEmailNotifications(
     for (const profile of profiles) {
       if (!profile.email) continue;
 
-      const subject = `AcadeX — ${payload.message.slice(0, 60)}`;
+      const subject = `AcadeX - ${payload.message.slice(0, 60)}`;
       const bodyHtml = `
         <p>Hello ${profile.full_name},</p>
         <p>${payload.message}</p>
@@ -136,7 +136,7 @@ export async function processEmailRetryQueue(): Promise<void> {
         subject: item.subject,
         html: item.body_html,
       });
-      // Success — remove from queue
+      // Success - remove from queue
       await supabase.from("email_retry_queue").delete().eq("id", item.id);
     } catch {
       if (newAttemptCount >= 4) {

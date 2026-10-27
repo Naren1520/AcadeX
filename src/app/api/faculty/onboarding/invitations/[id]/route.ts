@@ -10,18 +10,18 @@ import { createHash } from "crypto";
 function hashPasscode(p: string) { return createHash("sha256").update(p).digest("hex"); }
 
 const patchSchema = z.object({
-  label:     z.string().min(1).max(100).optional(),
-  opens_at:  z.string().datetime().optional(),
+  label: z.string().min(1).max(100).optional(),
+  opens_at: z.string().datetime().optional(),
   closes_at: z.string().datetime().optional(),
-  max_uses:  z.number().int().min(1).max(500).optional(),
+  max_uses: z.number().int().min(1).max(500).optional(),
   is_active: z.boolean().optional(),
-  passcode:  z.string().min(6).max(32).optional(), // change the passcode
+  passcode: z.string().min(6).max(32).optional(), // change the passcode
 }).refine((d) => {
   if (d.opens_at && d.closes_at) return new Date(d.closes_at) > new Date(d.opens_at);
   return true;
 }, { message: "closes_at must be after opens_at", path: ["closes_at"] });
 
-// PATCH — update invitation settings
+// PATCH - update invitation settings
 export async function PATCH(
   request: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -67,7 +67,7 @@ export async function PATCH(
   }
 }
 
-// DELETE — deactivate invitation
+// DELETE - deactivate invitation
 export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }

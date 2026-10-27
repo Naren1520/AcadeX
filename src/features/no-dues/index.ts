@@ -1,5 +1,5 @@
 // Feature: no-dues (future module stub)
-// No Dues Certificate approval workflow — not yet implemented.
+// No Dues Certificate approval workflow - not yet implemented.
 // Add components, repositories, schemas, services, and types here
 // without modifying any existing feature modules.
 

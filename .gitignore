@@ -13,7 +13,7 @@ node_modules/
 /out/
 /build/
 
-#  Environment variables — NEVER commit real values 
+#  Environment variables - NEVER commit real values 
 .env
 .env.local
 .env.development.local
@@ -30,7 +30,7 @@ node_modules/
 *.sln
 *.sw?
 
-#  Kiro AI workspace files — local only, not for VCS 
+#  Kiro AI workspace files - local only, not for VCS 
 .kiro/
 
 #  OS-generated files 

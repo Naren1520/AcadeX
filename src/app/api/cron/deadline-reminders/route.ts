@@ -3,7 +3,7 @@ import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { sendInAppNotifications } from "@/server/notifications";
 import { processEmailRetryQueue } from "@/server/notifications";
 
-// Vercel Cron Job — runs every hour via vercel.json cron config
+// Vercel Cron Job - runs every hour via vercel.json cron config
 export async function GET(request: Request) {
   // Verify cron secret to prevent unauthorized triggering
   const authHeader = request.headers.get("authorization");

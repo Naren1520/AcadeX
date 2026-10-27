@@ -26,7 +26,7 @@ export async function POST(request: Request) {
 
     await supabase.auth.signOut();
 
-    // Redirect to login — cookies cleared by signOut are set on this response
+    // Redirect to login - cookies cleared by signOut are set on this response
     return response;
   } catch (err) {
     return toErrorResponse(err);

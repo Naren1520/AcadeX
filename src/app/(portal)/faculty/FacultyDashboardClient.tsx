@@ -17,12 +17,12 @@ interface Props {
     teams: number; openMilestones: number; openWindows: number;
   };
   proposalsByStatus: { name: string; value: number; color: string }[];
-  proposalTrend:     { month: string; submitted: number; approved: number }[];
-  milestoneStatus:   { name: string; value: number; color: string }[];
-  teamStatus:        { name: string; value: number; color: string }[];
-  cgpaBands:         { range: string; count: number; color: string }[];
-  studentsPerSection:{ section: string; students: number }[];
-  upcomingMilestones:{ deadline: string }[];
+  proposalTrend: { month: string; submitted: number; approved: number }[];
+  milestoneStatus: { name: string; value: number; color: string }[];
+  teamStatus: { name: string; value: number; color: string }[];
+  cgpaBands: { range: string; count: number; color: string }[];
+  studentsPerSection: { section: string; students: number }[];
+  upcomingMilestones: { deadline: string }[];
 }
 
 // ── Stat card 
@@ -82,12 +82,12 @@ export function FacultyDashboardClient({
 }: Props) {
 
   const statCards = [
-    { label: "Sections",         value: stats.sections,         icon: <IconClipboard size={22} />, color: "#1e3a5f", bg: "#eff6ff", border: "#bfdbfe", href: "/faculty/sections" },
-    { label: "Students",         value: stats.students,         icon: <IconUsers size={22} />,     color: "#16a34a", bg: "#f0fdf4", border: "#bbf7d0", href: "/faculty/sections" },
-    { label: "Pending Proposals",value: stats.pendingProposals, icon: <IconFileText size={22} />,  color: "#d97706", bg: "#fffbeb", border: "#fde68a", href: "/faculty/proposals" },
-    { label: "Teams",            value: stats.teams,            icon: <IconUsers size={22} />,     color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe", href: "/faculty/sections" },
-    { label: "Open Milestones",  value: stats.openMilestones,   icon: <IconFlag size={22} />,      color: "#0369a1", bg: "#f0f9ff", border: "#bae6fd", href: "/faculty/milestones" },
-    { label: "Open Windows",     value: stats.openWindows,      icon: <IconUpload size={22} />,    color: "#9333ea", bg: "#fdf4ff", border: "#e9d5ff", href: "/faculty/submission-windows" },
+    { label: "Sections", value: stats.sections, icon: <IconClipboard size={22} />, color: "#1e3a5f", bg: "#eff6ff", border: "#bfdbfe", href: "/faculty/sections" },
+    { label: "Students", value: stats.students, icon: <IconUsers size={22} />, color: "#16a34a", bg: "#f0fdf4", border: "#bbf7d0", href: "/faculty/sections" },
+    { label: "Pending Proposals", value: stats.pendingProposals, icon: <IconFileText size={22} />, color: "#d97706", bg: "#fffbeb", border: "#fde68a", href: "/faculty/proposals" },
+    { label: "Teams", value: stats.teams, icon: <IconUsers size={22} />, color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe", href: "/faculty/sections" },
+    { label: "Open Milestones", value: stats.openMilestones, icon: <IconFlag size={22} />, color: "#0369a1", bg: "#f0f9ff", border: "#bae6fd", href: "/faculty/milestones" },
+    { label: "Open Windows", value: stats.openWindows, icon: <IconUpload size={22} />, color: "#9333ea", bg: "#fdf4ff", border: "#e9d5ff", href: "/faculty/submission-windows" },
   ];
 
   const daysUntil = (iso: string) => {
@@ -106,16 +106,16 @@ export function FacultyDashboardClient({
       {/* ── Row 1: Proposal trend (wide) + Proposal status pie ── */}
       <div className="grid gap-5 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <ChartCard title="Proposal Activity — Last 6 Months">
+          <ChartCard title="Proposal Activity - Last 6 Months">
             <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={proposalTrend} margin={{ top: 4, right: 8, bottom: 0, left: -20 }}>
                 <defs>
                   <linearGradient id="gradSubmit" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#1e3a5f" stopOpacity={0.3} />
+                    <stop offset="5%" stopColor="#1e3a5f" stopOpacity={0.3} />
                     <stop offset="95%" stopColor="#1e3a5f" stopOpacity={0} />
                   </linearGradient>
                   <linearGradient id="gradApprove" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%"  stopColor="#16a34a" stopOpacity={0.3} />
+                    <stop offset="5%" stopColor="#16a34a" stopOpacity={0.3} />
                     <stop offset="95%" stopColor="#16a34a" stopOpacity={0} />
                   </linearGradient>
                 </defs>
@@ -125,7 +125,7 @@ export function FacultyDashboardClient({
                 <Tooltip content={<ChartTooltip />} />
                 <Legend iconType="circle" iconSize={8} wrapperStyle={{ fontSize: 11 }} />
                 <Area type="monotone" dataKey="submitted" name="Submitted" stroke="#1e3a5f" strokeWidth={2.5} fill="url(#gradSubmit)" dot={{ r: 3, fill: "#1e3a5f" }} activeDot={{ r: 5 }} />
-                <Area type="monotone" dataKey="approved"  name="Approved"  stroke="#16a34a" strokeWidth={2.5} fill="url(#gradApprove)" dot={{ r: 3, fill: "#16a34a" }} activeDot={{ r: 5 }} />
+                <Area type="monotone" dataKey="approved" name="Approved" stroke="#16a34a" strokeWidth={2.5} fill="url(#gradApprove)" dot={{ r: 3, fill: "#16a34a" }} activeDot={{ r: 5 }} />
               </AreaChart>
             </ResponsiveContainer>
           </ChartCard>
@@ -261,9 +261,9 @@ export function FacultyDashboardClient({
         <p className="mb-3 text-sm font-semibold text-neutral-700">Quick Actions</p>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            { label: "Review Proposals",    href: "/faculty/proposals",          color: "#d97706", bg: "#fffbeb" },
-            { label: "My Sections",          href: "/faculty/sections",           color: "#1e3a5f", bg: "#eff6ff" },
-            { label: "Create Milestone",     href: "/faculty/milestones",         color: "#7c3aed", bg: "#f5f3ff" },
+            { label: "Review Proposals", href: "/faculty/proposals", color: "#d97706", bg: "#fffbeb" },
+            { label: "My Sections", href: "/faculty/sections", color: "#1e3a5f", bg: "#eff6ff" },
+            { label: "Create Milestone", href: "/faculty/milestones", color: "#7c3aed", bg: "#f5f3ff" },
             { label: "Open Submission Window", href: "/faculty/submission-windows", color: "#9333ea", bg: "#fdf4ff" },
           ].map((a) => (
             <Link key={a.href} href={a.href}

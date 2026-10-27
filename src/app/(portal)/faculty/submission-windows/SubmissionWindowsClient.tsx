@@ -38,13 +38,15 @@ export function SubmissionWindowsClient({ windows: initial, milestones }: Props)
   }
 
   const columns = [
-    { key: "milestone", header: "Milestone", render: (w: Window_) => String(w.milestones?.name ?? "—") },
+    { key: "milestone", header: "Milestone", render: (w: Window_) => String(w.milestones?.name ?? "-") },
     { key: "opens_at", header: "Opens", render: (w: Window_) => formatDateTime(w.opens_at) },
     { key: "closes_at", header: "Closes", render: (w: Window_) => formatDateTime(w.closes_at) },
-    { key: "status", header: "Status", render: (w: Window_) => {
-      const open = isWindowOpen(new Date(w.opens_at), new Date(w.closes_at));
-      return <Badge variant={open ? "approved" : "neutral"}>{open ? "Open" : "Closed"}</Badge>;
-    }},
+    {
+      key: "status", header: "Status", render: (w: Window_) => {
+        const open = isWindowOpen(new Date(w.opens_at), new Date(w.closes_at));
+        return <Badge variant={open ? "approved" : "neutral"}>{open ? "Open" : "Closed"}</Badge>;
+      }
+    },
   ];
 
   return (

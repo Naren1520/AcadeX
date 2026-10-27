@@ -3,7 +3,7 @@
 -- Each slot defines how many members must come from a specific CGPA band.
 --
 -- Example rule:
---   Rule: "Mixed A" — team_size=4, max_teams=8
+--   Rule: "Mixed A" - team_size=4, max_teams=8
 --     Slot 1: cgpa_lower=8.5, cgpa_upper=10.0, count=1  (1 member above 8.5)
 --     Slot 2: cgpa_lower=6.0, cgpa_upper=8.49, count=3  (3 members 6.0–8.4)
 --
@@ -16,7 +16,7 @@ ALTER TABLE team_formation_rules
   ADD COLUMN IF NOT EXISTS team_size    integer CHECK (team_size >= 1),
   ADD COLUMN IF NOT EXISTS formed_count integer NOT NULL DEFAULT 0;
 
--- team_formation_slots — one row per CGPA band within a rule
+-- team_formation_slots - one row per CGPA band within a rule
 CREATE TABLE IF NOT EXISTS team_formation_slots (
   id          uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   rule_id     uuid NOT NULL REFERENCES team_formation_rules(id) ON DELETE CASCADE,

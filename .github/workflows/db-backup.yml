@@ -40,7 +40,7 @@ jobs:
 
           # Upload to off-platform bucket
           # Supports s3://, gs://, or r2:// depending on your cloud provider.
-          # Example below uses AWS CLI — swap for gsutil / rclone as needed.
+          # Example below uses AWS CLI - swap for gsutil / rclone as needed.
           aws s3 cp "$FILENAME" "${BACKUP_BUCKET}/${FILENAME}" \
             --storage-class STANDARD_IA
 

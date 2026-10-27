@@ -10,7 +10,7 @@ export default function ForgotPasswordPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setIsLoading(true);
-    // Supabase password reset — handled via server action in a full implementation
+    // Supabase password reset - handled via server action in a full implementation
     // Show success regardless to avoid email enumeration
     setTimeout(() => {
       setSubmitted(true);
