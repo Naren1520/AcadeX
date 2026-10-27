@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { IconArrowRight } from "@/components/ui/Icon";
 
 export function LandingHeader({
@@ -27,19 +28,22 @@ export function LandingHeader({
         }`}
         style={{ borderBottom: "1px solid #e5e7eb" }}
       >
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="flex items-center gap-2.5">
-            <div
-              className="flex h-9 w-9 items-center justify-center rounded text-white"
-              style={{ backgroundColor: "#1e3a5f" }}
-            >
-              <span className="text-base font-bold tracking-tight">A</span>
-            </div>
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/images/sahyadrilogo.png"
+              alt="Sahyadri College of Engineering & Management"
+              width={200}
+              height={40}
+              className="h-8 sm:h-9 w-auto object-contain"
+              priority
+            />
+            <div className="h-6 w-[1px] bg-neutral-200 hidden sm:block" />
             <div className="flex flex-col">
-              <span className="text-lg font-bold leading-tight" style={{ color: "#1e3a5f" }}>
+              <span className="text-base sm:text-lg font-bold leading-tight" style={{ color: "#1e3a5f" }}>
                 AcadeX
               </span>
-              <span className="text-[10px] uppercase tracking-wider text-neutral-400 font-medium">
+              <span className="text-[9px] sm:text-[10px] uppercase tracking-wider text-neutral-400 font-medium">
                 Academic Platform
               </span>
             </div>

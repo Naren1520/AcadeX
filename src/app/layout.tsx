@@ -13,6 +13,11 @@ export const metadata: Metadata = {
   title: "AcadeX",
   description:
     "Manage academic project teams, approvals, milestones, and submissions.",
+  icons: {
+    icon: "/images/sahyadrilogo1.png",
+    shortcut: "/images/sahyadrilogo1.png",
+    apple: "/images/sahyadrilogo1.png",
+  },
 };
 
 export default function RootLayout({
