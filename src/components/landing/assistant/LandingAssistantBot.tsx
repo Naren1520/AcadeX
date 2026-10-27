@@ -248,16 +248,11 @@ export function LandingAssistantBot() {
               </div>
 
               <div>
-                <div className="flex items-center gap-1.5">
-                  <h3 className="text-xs sm:text-sm font-semibold text-white tracking-tight">
-                    AcadeX Assistant
-                  </h3>
-                  <span className="px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-[#38bdf8]/20 text-[#38bdf8] rounded border border-[#38bdf8]/30">
-                    Offline
-                  </span>
-                </div>
+                <h3 className="text-xs sm:text-sm font-semibold text-white tracking-tight">
+                  AcadeX Assistant
+                </h3>
                 <p className="text-[11px] text-neutral-300 font-normal">
-                  Sahyadri ISE • Capstone Project Guide
+                  Sahyadri ISE
                 </p>
               </div>
             </div>
