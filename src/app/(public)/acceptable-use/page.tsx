@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import {
-  LegalLayout, LegalToc, LegalH2, LegalH3,
+  LegalLayout, LegalToc, LegalH2,
   LegalP, LegalUl, LegalCallout,
-  EFFECTIVE_DATE, CONTACT_EMAIL, ORG_NAME, ORG_FULL,
+  EFFECTIVE_DATE, CONTACT_EMAIL, PRINCIPAL_EMAIL, ORG_NAME, ORG_FULL, COLLEGE_NAME, DEPT_NAME,
 } from "@/components/legal/LegalLayout";
 
 export const metadata: Metadata = {
   title: "Acceptable Use Policy — AcadeX",
   description:
-    "Standards of conduct and acceptable use requirements for students, faculty, and administrators using AcadeX.",
+    "Standards of conduct and acceptable academic use requirements for students and faculty at Sahyadri College of Engineering & Management.",
 };
 
 const toc = [
@@ -26,9 +26,9 @@ export default function AcceptableUsePage() {
   return (
     <LegalLayout title="Acceptable Use Policy" lastUpdated={EFFECTIVE_DATE}>
       <LegalCallout type="info">
-        This Acceptable Use Policy (&quot;AUP&quot;) defines the rules and standards of
-        conduct required of all users — including students, faculty advisors, department
-        coordinators, and administrators — accessing {ORG_FULL}.
+        This Acceptable Use Policy (&quot;AUP&quot;) defines the standards of
+        conduct and academic ethics required of all users — including students, faculty mentors,
+        review committee evaluators, and administrators — accessing {ORG_FULL}.
       </LegalCallout>
 
       <LegalToc entries={toc} />
@@ -36,29 +36,28 @@ export default function AcceptableUsePage() {
       {/* 1 */}
       <LegalH2 id="purpose-scope">1. Purpose and Scope</LegalH2>
       <LegalP>
-        {ORG_NAME} is an academic platform provided to streamline project allocation,
-        mentorship, milestone tracking, and grading for .
-        To maintain a fair, secure, and constructive learning environment, all users must
-        comply with this policy whenever interacting with {ORG_NAME}.
+        {ORG_NAME} is the dedicated academic governance platform engineered for {COLLEGE_NAME} to streamline project allocation,
+        faculty guide mentorship, continuous milestone tracking, and grading across engineering departments.
+        To maintain an authentic, ethical, and constructive academic environment, all registered students and faculty must
+        comply with this policy whenever interacting with the system.
       </LegalP>
       <LegalP>
-        This policy supplements institutional academic honor codes and disciplinary
-        guidelines. In the event of a conflict between this policy and your
-        institution&apos;s regulations, institutional guidelines take precedence.
+        This policy operates in full alignment with the official Sahyadri College Academic Honor Code, Student Disciplinary Regulations,
+        and autonomous curriculum guidelines. In all academic evaluations, autonomous college regulations take precedence.
       </LegalP>
 
       {/* 2 */}
       <LegalH2 id="academic-integrity">2. Academic Integrity</LegalH2>
       <LegalP>
-        Academic honesty is central to the mission of {ORG_NAME}. All users must adhere
+        Academic honesty and originality are paramount. All users must adhere
         to rigorous ethical standards:
       </LegalP>
       <LegalUl
         items={[
-          "Authenticity: All project proposals, code repositories, documentation, and milestone deliverables submitted through AcadeX must be the authentic work of the registered team members.",
-          "Attribution: Any external libraries, open-source code, third-party frameworks, research papers, or AI-assisted tools utilized must be explicitly cited and acknowledged in compliance with institutional guidelines.",
-          "No Plagiarism or Ghostwriting: Purchasing project code, contracting third-party developers, or presenting another student's work as your own is strictly prohibited.",
-          "Accurate Reporting: Falsifying project metrics, test results, survey data, or faculty meeting records is an academic integrity violation.",
+          "Authenticity: All project proposals, software repositories, circuit schematics, reports, and milestone deliverables submitted through AcadeX must be the original, authentic work of the registered team members.",
+          "Attribution: Any external libraries, open-source code, third-party frameworks, research papers, or AI-assisted tools utilized must be explicitly cited in IEEE/departmental format in compliance with Sahyadri College academic guidelines.",
+          "No Plagiarism or Ghostwriting: Purchasing project code, commissioning third-party agencies, or submitting another team's work as your own is strictly prohibited and constitutes gross academic misconduct.",
+          "Accurate Reporting: Fabricating project metrics, test results, hardware execution logs, or faculty guide meeting records is an academic integrity violation.",
         ]}
       />
 
@@ -72,8 +71,8 @@ export default function AcceptableUsePage() {
         items={[
           "Do not share passwords, magic links, or multi-factor authentication codes with anyone, including project teammates or student peers.",
           "Do not attempt to log in using another user's credentials, regardless of whether permission was granted.",
-          "Always sign out after accessing AcadeX from shared workstations, lab computers, or library terminals.",
-          "Notify your institutional administrator or contact us immediately if you suspect unauthorized access to your account.",
+          "Always sign out after accessing AcadeX from shared campus computers, departmental lab terminals, or library systems.",
+          "Notify the Department of Information Science & Engineering administration immediately if you suspect unauthorized access to your account.",
         ]}
       />
 
@@ -85,7 +84,7 @@ export default function AcceptableUsePage() {
       </LegalP>
       <LegalUl
         items={[
-          "Probing or Scanning: Do not conduct vulnerability assessments, port scanning, penetration testing, or stress tests against AcadeX infrastructure without prior written authorization from the administration.",
+          "Probing or Scanning: Do not conduct vulnerability assessments, port scanning, penetration testing, or stress tests against AcadeX infrastructure without prior written authorization from the college administration.",
           "Bypassing Controls: Do not attempt to evade authentication checks, role-based access restrictions, or Row-Level Security (RLS) policies.",
           "Automated Scraping: Do not use automated scrapers, bots, crawlers, or unauthorized scripts to extract platform data or student/faculty records.",
           "Denial of Service: Do not flood, spam, or overload our servers, APIs, or database connections.",
@@ -96,7 +95,7 @@ export default function AcceptableUsePage() {
       {/* 5 */}
       <LegalH2 id="content-standards">5. Content and Collaboration Standards</LegalH2>
       <LegalP>
-        {ORG_NAME} provides communication tools, feedback remarks, project descriptions,
+        {ORG_NAME} provides communication tools, review remarks, project synopses,
         and team workspaces. All content submitted must remain professional and respectful:
       </LegalP>
       <LegalUl
@@ -110,7 +109,7 @@ export default function AcceptableUsePage() {
       {/* 6 */}
       <LegalH2 id="resource-quotas">6. Resource Usage and File Uploads</LegalH2>
       <LegalP>
-        To ensure fair resource distribution for all departments and batches:
+        To ensure fair resource distribution for all engineering batches:
       </LegalP>
       <LegalUl
         items={[
@@ -123,7 +122,7 @@ export default function AcceptableUsePage() {
       {/* 7 */}
       <LegalH2 id="enforcement">7. Violations and Enforcement</LegalH2>
       <LegalP>
-        {ORG_NAME} administrators and institutional department heads monitor adherence
+        {ORG_NAME} administrators and departmental review committees monitor adherence
         to this policy. In case of suspected violations, the following actions may be
         taken:
       </LegalP>
@@ -131,8 +130,8 @@ export default function AcceptableUsePage() {
         items={[
           "Temporary suspension or restriction of platform access during ongoing investigations.",
           "Rejection or nullification of affected milestone submissions or proposal approvals.",
-          "Formal escalation to the department academic disciplinary committee or institutional dean.",
-          "Permanent account termination and referral to law enforcement where required by applicable legal statutes.",
+          "Formal escalation to the Head of Department (HoD) and the Sahyadri College Academic Disciplinary Committee.",
+          "Permanent account termination and referral for institutional disciplinary review under college autonomous regulations.",
         ]}
       />
 
@@ -143,20 +142,28 @@ export default function AcceptableUsePage() {
         policy, please report it promptly to:
       </LegalP>
       <div
-        className="rounded-xl p-5 text-sm text-neutral-700 mt-3"
+        className="rounded-xl p-5 text-sm text-neutral-700 mt-3 space-y-1.5"
         style={{ backgroundColor: "#f9fafb", border: "1px solid #e5e7eb" }}
       >
-        <p className="font-semibold text-neutral-900 mb-1">AcadeX Compliance &amp; Honor Code</p>
-        <p>
-          Email:{" "}
-          <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: "#1e3a5f" }}>
-            {CONTACT_EMAIL}
-          </a>
-        </p>
-        <p className="mt-1 text-xs text-neutral-400">
-          Inquiries are handled confidentially and reviewed by our compliance team.
-        </p>
+        <p className="font-bold text-neutral-900">{DEPT_NAME}</p>
+        <p className="text-xs text-neutral-600">{COLLEGE_NAME}</p>
+        <p className="text-xs text-neutral-500">Sahyadri Campus, Adyar, Mangaluru, Karnataka, India - 575007</p>
+        <div className="pt-2 text-xs border-t border-neutral-200/80 space-y-1">
+          <p>
+            General Inquiries:{" "}
+            <a href={`mailto:${CONTACT_EMAIL}`} className="font-medium hover:underline" style={{ color: "#1e3a5f" }}>
+              {CONTACT_EMAIL}
+            </a>
+          </p>
+          <p>
+            Principal Office:{" "}
+            <a href={`mailto:${PRINCIPAL_EMAIL}`} className="font-medium hover:underline" style={{ color: "#1e3a5f" }}>
+              {PRINCIPAL_EMAIL}
+            </a>
+          </p>
+        </div>
       </div>
     </LegalLayout>
   );
 }
+

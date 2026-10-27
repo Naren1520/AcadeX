@@ -13,9 +13,12 @@ import {
 } from "@/components/ui/Icon";
 
 export const EFFECTIVE_DATE = "27 October 2026";
-export const CONTACT_EMAIL = "legal@acadex.edu.in";
+export const CONTACT_EMAIL = "info@sahyadri.edu.in";
+export const PRINCIPAL_EMAIL = "principal@sahyadri.edu.in";
 export const ORG_NAME = "AcadeX";
-export const ORG_FULL = "AcadeX College Academic Management Platform";
+export const ORG_FULL = "AcadeX — Sahyadri College of Engineering & Management";
+export const COLLEGE_NAME = "Sahyadri College of Engineering & Management (Autonomous), Mangaluru";
+export const DEPT_NAME = "Department of Information Science & Engineering";
 
 const legalLinks = [
   { label: "Privacy Policy", href: "/privacy", icon: IconShield },
