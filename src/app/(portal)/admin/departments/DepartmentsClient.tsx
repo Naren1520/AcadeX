@@ -97,7 +97,7 @@ export function DepartmentsClient({ initialDepartments }: Props) {
       <Dialog open={showCreate} onOpenChange={setShowCreate} title="Add Department">
         <form onSubmit={handleCreate} className="flex flex-col gap-4">
           <FormError message={error} />
-          <Input label="Department Name" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Computer Science and Engineering" />
+          <Input label="Department Name" value={name} onChange={(e) => setName(e.target.value)} required placeholder="Information Science  and Engineering" />
           <Input label="Department Code" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} required placeholder="CSE" maxLength={20} />
           <div className="flex justify-end gap-2">
             <Button variant="ghost" type="button" onClick={() => setShowCreate(false)}>Cancel</Button>

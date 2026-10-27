@@ -12,14 +12,14 @@ export const metadata: Metadata = {
 };
 
 const toc = [
-  { id: "purpose-scope",     label: "Purpose and scope" },
+  { id: "purpose-scope", label: "Purpose and scope" },
   { id: "academic-integrity", label: "Academic integrity" },
-  { id: "account-security",  label: "Account credentials and security" },
-  { id: "system-security",   label: "System and platform security" },
+  { id: "account-security", label: "Account credentials and security" },
+  { id: "system-security", label: "System and platform security" },
   { id: "content-standards", label: "Content and collaboration" },
-  { id: "resource-quotas",   label: "Resource usage and file uploads" },
-  { id: "enforcement",       label: "Violations and enforcement" },
-  { id: "reporting",         label: "Reporting and contact" },
+  { id: "resource-quotas", label: "Resource usage and file uploads" },
+  { id: "enforcement", label: "Violations and enforcement" },
+  { id: "reporting", label: "Reporting and contact" },
 ];
 
 export default function AcceptableUsePage() {
@@ -37,7 +37,7 @@ export default function AcceptableUsePage() {
       <LegalH2 id="purpose-scope">1. Purpose and Scope</LegalH2>
       <LegalP>
         {ORG_NAME} is an academic platform provided to streamline project allocation,
-        mentorship, milestone tracking, and grading for higher education institutions.
+        mentorship, milestone tracking, and grading for .
         To maintain a fair, secure, and constructive learning environment, all users must
         comply with this policy whenever interacting with {ORG_NAME}.
       </LegalP>

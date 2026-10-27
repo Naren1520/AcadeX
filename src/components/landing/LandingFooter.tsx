@@ -59,7 +59,7 @@ export function LandingFooter() {
           style={{ borderColor: "#e5e7eb" }}
         >
           <p>© 2026 AcadeX. College Academic Project Management Platform.</p>
-          <p className="text-[11px]">Department of Computer Science &amp; Higher Education Institutions</p>
+          <p className="text-[11px]">Department of Information Science  &amp; Engineering</p>
         </div>
       </div>
     </footer>

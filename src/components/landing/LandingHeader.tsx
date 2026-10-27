@@ -4,6 +4,13 @@ import Link from "next/link";
 import Image from "next/image";
 import { IconArrowRight } from "@/components/ui/Icon";
 
+const tickerSentences = [
+  "AcadeX — College Academic Project Management & Governance Platform",
+  "Sahyadri College of Engineering & Management (Autonomous), Mangaluru",
+  "Enforcing CGPA Balanced Teams, SDG Alignments, Milestone Verification & Tamper-Resistant Audit Logs",
+  "Department of Information Science & Engineering • Department of Computer Science & Engineering • Department of Computer Science & Engineering(AIML) • Department of Electronics & Communication Engineering  • Department of Mechanical Engineering  • Department of Robotics & Automation Engineering",
+];
+
 export function LandingHeader({
   scrolled,
   scrollProgress,
@@ -13,6 +20,25 @@ export function LandingHeader({
 }) {
   return (
     <>
+      <style>{`
+        @keyframes tickerRtl {
+          0% {
+            transform: translateX(0%);
+          }
+          100% {
+            transform: translateX(-50%);
+          }
+        }
+        .animate-ticker-rtl {
+          display: flex;
+          width: max-content;
+          animation: tickerRtl 45s linear infinite;
+        }
+        .animate-ticker-rtl:hover {
+          animation-play-state: paused;
+        }
+      `}</style>
+
       <div
         className="fixed top-0 left-0 h-[3px] z-50 transition-all duration-150"
         style={{
@@ -22,10 +48,33 @@ export function LandingHeader({
         aria-hidden="true"
       />
 
+      {/* Institutional Top Ticker Bar (Scrolls with page, sentences moving right-to-left) */}
+      <div
+        className="w-full overflow-hidden text-neutral-200 select-none py-2.5 sm:py-3"
+        style={{ backgroundColor: "#132840", borderBottom: "1px solid #1e3a5f" }}
+      >
+        <div className="animate-ticker-rtl flex items-center gap-10 text-xs tracking-wide">
+          {/* First set */}
+          {tickerSentences.map((sentence, idx) => (
+            <div key={`s1-${idx}`} className="flex items-center gap-8 shrink-0">
+              <span className="text-neutral-200 font-medium">{sentence}</span>
+              <span className="text-amber-400 text-[10px]">◆</span>
+            </div>
+          ))}
+          {/* Second set for seamless looping */}
+          {tickerSentences.map((sentence, idx) => (
+            <div key={`s2-${idx}`} className="flex items-center gap-8 shrink-0">
+              <span className="text-neutral-200 font-medium">{sentence}</span>
+              <span className="text-amber-400 text-[10px]">◆</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Main Navbar (Sticky when scrolling) */}
       <header
-        className={`sticky top-0 z-40 w-full bg-white transition-shadow ${
-          scrolled ? "shadow-sm" : ""
-        }`}
+        className={`sticky top-0 z-40 w-full bg-white transition-shadow ${scrolled ? "shadow-sm" : ""
+          }`}
         style={{ borderBottom: "1px solid #e5e7eb" }}
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
