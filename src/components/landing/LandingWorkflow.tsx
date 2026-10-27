@@ -9,8 +9,17 @@ export function LandingWorkflow() {
   const currentStage = lifecycleStages[activeStage];
 
   return (
-    <section id="workflow" className="py-20 max-w-7xl mx-auto px-6">
-      <div className="text-center max-w-2xl mx-auto mb-14">
+    <section
+      id="workflow"
+      className="w-full py-16 sm:py-20"
+      style={{
+        backgroundColor: "#f1f5f9",
+        borderTop: "1px solid #e2e8f0",
+        borderBottom: "1px solid #e2e8f0",
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-14">
         <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
           Structured Project Governance
         </h2>
@@ -126,6 +135,7 @@ export function LandingWorkflow() {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }

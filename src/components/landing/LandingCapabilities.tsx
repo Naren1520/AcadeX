@@ -19,8 +19,9 @@ function CapabilityIcon({ type }: { type: Capability["iconType"] }) {
 
 export function LandingCapabilities() {
   return (
-    <section id="features" className="py-20 max-w-7xl mx-auto px-6">
-      <div className="text-center max-w-2xl mx-auto mb-14">
+    <section id="features" className="w-full bg-white py-16 sm:py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-2xl mx-auto mb-14">
         <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
           Institutional Excellence
         </h2>
@@ -50,6 +51,7 @@ export function LandingCapabilities() {
           </div>
         ))}
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }

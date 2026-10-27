@@ -35,7 +35,7 @@ export const projectMeta = {
 };
 
 export const mentorData: MentorInfo = {
-  name: "Dr. Rithesh Pakkala",
+  name: "Dr. Rithesh Pakkala P",
   role: "Project Mentor & Guide",
   designation: "Head of the Department (HoD)",
   department: "Department of Information Science & Engineering",
@@ -60,11 +60,19 @@ export const teamMembers: TeamMember[] = [
     name: "Yaksha Shetty",
     role: "Team Member &  Developer",
     image: "/images/team/image.png",
+    socials: {
+      github: "https://github.com/yakshaganapayyais24-rgb",
+      linkedin: "https://www.linkedin.com/in/yaksha-shetty-4a03ab37b/",
+    },
   },
   {
     name: "Ananya Naik",
     role: "Team Member & Developer",
     image: "/images/team/image.png",
+    socials: {
+      github: "https://github.com/ananyanaik1505-crypto",
+      linkedin: "https://www.linkedin.com/in/ananya-naik-8789883a9",
+    },
   },
   {
     name: "Vaishnavi Naik",

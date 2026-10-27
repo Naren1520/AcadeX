@@ -5,14 +5,14 @@ export function LandingGuidesBanner() {
   return (
     <section
       id="guides"
-      className="py-16"
+      className="w-full py-16 sm:py-20"
       style={{
-        backgroundColor: "#f9fafb",
-        borderTop: "1px solid #e5e7eb",
-        borderBottom: "1px solid #e5e7eb",
+        backgroundColor: "#f1f5f9",
+        borderTop: "1px solid #e2e8f0",
+        borderBottom: "1px solid #e2e8f0",
       }}
     >
-      <div className="mx-auto max-w-7xl px-6">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
             Official User Documentation

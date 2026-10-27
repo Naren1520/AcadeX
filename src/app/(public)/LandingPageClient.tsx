@@ -5,6 +5,7 @@ import {
   LandingHeader,
   LandingHero,
   LandingStats,
+  LandingWorkspacePreview,
   LandingWorkflow,
   LandingCapabilities,
   LandingGuidesBanner,
@@ -35,6 +36,7 @@ export function LandingPageClient() {
       <main>
         <LandingHero />
         <LandingStats />
+        <LandingWorkspacePreview />
         <LandingWorkflow />
         <LandingCapabilities />
         <LandingGuidesBanner />

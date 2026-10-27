@@ -8,8 +8,9 @@ export function LandingFaq() {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-20 max-w-4xl mx-auto px-6">
-      <div className="text-center mb-12">
+    <section id="faq" className="w-full bg-white py-16 sm:py-20">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6">
+        <div className="text-center mb-12">
         <h2 className="text-xs font-bold uppercase tracking-wider text-neutral-500">
           Platform Clarifications
         </h2>
@@ -50,6 +51,7 @@ export function LandingFaq() {
           );
         })}
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }

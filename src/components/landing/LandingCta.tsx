@@ -2,8 +2,15 @@ import Link from "next/link";
 
 export function LandingCta() {
   return (
-    <section className="py-20 max-w-5xl mx-auto px-6">
-      <div
+    <section
+      className="w-full py-16 sm:py-20"
+      style={{
+        backgroundColor: "#f1f5f9",
+        borderTop: "1px solid #e2e8f0",
+      }}
+    >
+      <div className="max-w-5xl mx-auto px-4 sm:px-6">
+        <div
         className="rounded-2xl p-8 sm:p-12 text-center"
         style={{
           backgroundColor: "#1e3a5f",
@@ -31,6 +38,7 @@ export function LandingCta() {
           </Link>
         </div>
       </div>
-    </section>
-  );
+    </div>
+  </section>
+);
 }

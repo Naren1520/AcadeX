@@ -1,164 +1,72 @@
 import Link from "next/link";
-import { IconArrowRight, IconCheck } from "@/components/ui/Icon";
+import Image from "next/image";
+import { IconArrowRight } from "@/components/ui/Icon";
+import { PixelRunnerLoader } from "./PixelRunnerLoader";
 
 export function LandingHero() {
   return (
-    <section className="relative mx-auto max-w-7xl px-6 pt-16 pb-20 md:pt-24 md:pb-28">
-      <div className="mx-auto max-w-3xl text-center">
-        <h1
-          className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl leading-[1.12]"
-          style={{ color: "#111827" }}
-        >
-          Academic Project Management,{" "}
-          <span style={{ color: "#1e3a5f" }}>simplified.</span>
-        </h1>
-
-        <p className="mt-6 text-lg sm:text-xl text-neutral-600 leading-relaxed max-w-2xl mx-auto">
-          AcadeX coordinates the complete university capstone lifecycle — from
-          rule-based team formation and SDG-aligned proposals to milestone
-          enforcement, code verification, and audit-ready academic compliance.
-        </p>
-
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3.5">
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 rounded px-6 py-3.5 text-sm font-semibold text-white shadow-sm transition-opacity hover:opacity-95"
-            style={{ backgroundColor: "#1e3a5f" }}
-          >
-            Access Your Dashboard
-            <IconArrowRight size={16} />
-          </Link>
-          <a
-            href="#workflow"
-            className="inline-flex items-center gap-2 rounded px-6 py-3.5 text-sm font-semibold text-neutral-700 hover:bg-neutral-50 transition-colors"
-            style={{ border: "1px solid #d1d5db" }}
-          >
-            Explore Workflow
-          </a>
-        </div>
-
-        <div className="mt-5 flex items-center justify-center gap-6 text-xs text-neutral-500">
-          <span className="flex items-center gap-1.5">
-            <IconCheck size={14} style={{ color: "#1e3a5f" }} />
-            Role-Based Portals
-          </span>
-          <span className="flex items-center gap-1.5">
-            <IconCheck size={14} style={{ color: "#1e3a5f" }} />
-            Zero Spreadsheets
-          </span>
-          <span className="flex items-center gap-1.5">
-            <IconCheck size={14} style={{ color: "#1e3a5f" }} />
-            Immutable Audit Log
-          </span>
-        </div>
+    <section className="relative w-full overflow-hidden bg-white">
+      {/* Sahyadri Campus Aerial Photograph Background (z-0, above bg-white) */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <Image
+          src="/images/hero-bg.jpeg"
+          alt="Sahyadri College Campus Aerial View"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        {/* Soft light gradient overlay for contrast while keeping the campus and river beautifully visible */}
+        <div className="absolute inset-0 bg-white/75 sm:bg-white/70 lg:bg-gradient-to-r lg:from-white/92 lg:via-white/80 lg:to-white/50" />
       </div>
 
-      {/* Simulated Live Workspace UI Preview */}
-      <div className="mt-14 mx-auto max-w-5xl">
-        <div
-          className="rounded-xl overflow-hidden bg-white shadow-sm"
-          style={{ border: "1px solid #e5e7eb" }}
-        >
-          <div
-            className="flex items-center justify-between px-4 py-3"
-            style={{ backgroundColor: "#f9fafb", borderBottom: "1px solid #e5e7eb" }}
-          >
-            <div className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded-full bg-neutral-300" />
-              <span className="h-3 w-3 rounded-full bg-neutral-300" />
-              <span className="h-3 w-3 rounded-full bg-neutral-300" />
-              <span className="ml-2 text-xs font-mono text-neutral-500">
-                acadex.edu.in/portal/overview
-              </span>
-            </div>
-            <span
-              className="rounded px-2.5 py-0.5 text-[11px] font-semibold text-neutral-700"
-              style={{ backgroundColor: "#e5e7eb" }}
+      {/* Main Single-Desktop-Height Container (z-10, sits cleanly above the background) */}
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 min-h-[calc(100vh-105px)] flex items-center py-8 lg:py-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 xl:gap-12 items-center w-full">
+
+          {/* Left Column: Heading, Subtitle, Actions */}
+          <div className="lg:col-span-7 xl:col-span-7 flex flex-col justify-center text-center lg:text-left items-center lg:items-start">
+            {/* Headline */}
+            <h1
+              className="text-3xl sm:text-4xl lg:text-5xl xl:text-[3.35rem] font-black tracking-tight leading-[1.12]"
+              style={{ color: "#111827" }}
             >
-              Live Workspace
-            </span>
+              Academic Project Management,{" "}
+              <span style={{ color: "#1e3a5f" }}>simplified.</span>
+            </h1>
+
+            {/* Subtitle */}
+            <p className="mt-4 sm:mt-5 text-sm sm:text-base lg:text-lg text-neutral-700 leading-relaxed max-w-xl font-medium">
+              AcadeX coordinates the complete university capstone lifecycle from
+              rule-based team formation and SDG-aligned proposals to milestone
+              enforcement, code verification, and audit-ready academic compliance.
+            </p>
+
+            {/* Action Button */}
+            <div className="mt-6 sm:mt-8 flex items-center justify-center lg:justify-start">
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold text-white shadow-xs transition-all hover:opacity-95 hover:shadow-sm"
+                style={{ backgroundColor: "#1e3a5f" }}
+              >
+                <span>Access Your Dashboard</span>
+                <IconArrowRight size={15} />
+              </Link>
+            </div>
           </div>
 
-          <div className="p-6 md:p-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-              <div className="rounded p-4" style={{ backgroundColor: "#f9fafb", border: "1px solid #e5e7eb" }}>
-                <p className="text-xs font-medium text-neutral-500">Active Teams</p>
-                <p className="text-2xl font-bold mt-1" style={{ color: "#1e3a5f" }}>48</p>
-                <p className="text-[11px] text-neutral-500 mt-0.5">100% Verified Members</p>
-              </div>
-              <div className="rounded p-4" style={{ backgroundColor: "#f9fafb", border: "1px solid #e5e7eb" }}>
-                <p className="text-xs font-medium text-neutral-500">Proposals Approved</p>
-                <p className="text-2xl font-bold mt-1" style={{ color: "#16a34a" }}>42</p>
-                <p className="text-[11px] text-neutral-500 mt-0.5">6 Under Revision</p>
-              </div>
-              <div className="rounded p-4" style={{ backgroundColor: "#f9fafb", border: "1px solid #e5e7eb" }}>
-                <p className="text-xs font-medium text-neutral-500">Active Window</p>
-                <p className="text-2xl font-bold mt-1" style={{ color: "#d97706" }}>M-2</p>
-                <p className="text-[11px] text-neutral-500 mt-0.5">SRS & Architecture</p>
-              </div>
-              <div className="rounded p-4" style={{ backgroundColor: "#f9fafb", border: "1px solid #e5e7eb" }}>
-                <p className="text-xs font-medium text-neutral-500">Audit Events</p>
-                <p className="text-2xl font-bold mt-1" style={{ color: "#111827" }}>1,492</p>
-                <p className="text-[11px] text-neutral-500 mt-0.5">Zero discrepancies</p>
-              </div>
-            </div>
-
-            <div
-              className="rounded-lg p-5"
-              style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}
-            >
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b" style={{ borderColor: "#f3f4f6" }}>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-neutral-900 text-sm">
-                      Team: Autonomous Solar UAV
-                    </span>
-                    <span
-                      className="rounded px-2 py-0.5 text-xs font-medium"
-                      style={{ backgroundColor: "#eff6ff", color: "#1e3a5f" }}
-                    >
-                      CSE-SEM7-SEC-A
-                    </span>
-                  </div>
-                  <p className="text-xs text-neutral-500 mt-0.5">
-                    Supervisor: Dr. S. Narayanan • Milestone 2 Submissions Verified
-                  </p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span
-                    className="rounded px-2.5 py-1 text-xs font-medium"
-                    style={{ backgroundColor: "#dcfce7", color: "#15803d" }}
-                  >
-                    Proposal Approved
-                  </span>
-                  <span
-                    className="rounded px-2.5 py-1 text-xs font-medium"
-                    style={{ backgroundColor: "#f3f4f6", color: "#374151" }}
-                  >
-                    SDG 7 &amp; 9
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid sm:grid-cols-3 gap-3 text-xs text-neutral-600">
-                <div className="p-3 rounded" style={{ backgroundColor: "#f9fafb" }}>
-                  <p className="text-neutral-400 font-medium">Repository Sync</p>
-                  <p className="font-mono text-neutral-800 mt-1 truncate">github.com/acadex/uav-core</p>
-                  <p className="text-neutral-500 text-[11px] mt-0.5">Latest commit: 42 mins ago</p>
-                </div>
-                <div className="p-3 rounded" style={{ backgroundColor: "#f9fafb" }}>
-                  <p className="text-neutral-400 font-medium">SRS Document</p>
-                  <p className="font-medium text-neutral-800 mt-1 truncate">Architecture_Spec_v2.pdf</p>
-                  <p className="text-neutral-500 text-[11px] mt-0.5">4.8 MB • Hash Verified</p>
-                </div>
-                <div className="p-3 rounded" style={{ backgroundColor: "#f9fafb" }}>
-                  <p className="text-neutral-400 font-medium">Internal Evaluation</p>
-                  <p className="font-semibold text-neutral-900 mt-1">29 / 30 Rubric Marks</p>
-                  <p className="text-neutral-500 text-[11px] mt-0.5">Guide feedback submitted</p>
+          {/* Right Column: Frame containing the Pixel Animated Loader (Light white shade, no shadow) */}
+          <div className="lg:col-span-5 xl:col-span-5 flex justify-center lg:justify-end w-full">
+            <div className="relative w-full max-w-[360px] sm:max-w-[380px] lg:max-w-[370px] xl:max-w-[400px]">
+              {/* Card Container Frame */}
+              <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-neutral-200/90 bg-white/95 backdrop-blur-md p-2 sm:p-2.5">
+                <div className="relative w-full aspect-[4/3.8] rounded-xl sm:rounded-2xl overflow-hidden bg-[#f8fafc]/90 border border-neutral-100 flex items-center justify-center">
+                  <PixelRunnerLoader />
                 </div>
               </div>
             </div>
           </div>
+
         </div>
       </div>
     </section>

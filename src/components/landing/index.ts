@@ -8,3 +8,4 @@ export { LandingGuidesBanner } from "./LandingGuidesBanner";
 export { LandingFaq } from "./LandingFaq";
 export { LandingCta } from "./LandingCta";
 export { LandingFooter } from "./LandingFooter";
+export { LandingWorkspacePreview } from "./LandingWorkspacePreview";
