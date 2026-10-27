@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LandingFooter } from "@/components/landing/LandingFooter";
 
 export const EFFECTIVE_DATE = "27 October 2026";
 export const CONTACT_EMAIL = "legal@acadex.edu.in";
@@ -6,10 +7,10 @@ export const ORG_NAME = "AcadeX";
 export const ORG_FULL = "AcadeX College Academic Management Platform";
 
 const legalLinks = [
-  { label: "Privacy Policy",   href: "/privacy" },
+  { label: "Privacy Policy", href: "/privacy" },
   { label: "Terms of Service", href: "/terms" },
-  { label: "Cookie Policy",    href: "/cookies" },
-  { label: "Acceptable Use",   href: "/acceptable-use" },
+  { label: "Cookie Policy", href: "/cookies" },
+  { label: "Acceptable Use", href: "/acceptable-use" },
 ];
 
 // ── Prose section heading ─────────────────────────────────────────────────────
@@ -160,25 +161,7 @@ export function LegalLayout({
       </main>
 
       {/* ── Footer ── */}
-      <footer
-        className="px-6 py-8 text-center"
-        style={{ borderTop: "1px solid #e5e7eb", backgroundColor: "#f9fafb" }}
-      >
-        <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 mb-4">
-          {legalLinks.map((l) => (
-            <Link
-              key={l.href}
-              href={l.href}
-              className="text-xs text-neutral-500 hover:underline"
-            >
-              {l.label}
-            </Link>
-          ))}
-        </div>
-        <p className="text-xs text-neutral-400">
-          © {new Date().getFullYear()} AcadeX. All rights reserved.
-        </p>
-      </footer>
+      <LandingFooter />
     </div>
   );
 }

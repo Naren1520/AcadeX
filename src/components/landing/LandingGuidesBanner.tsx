@@ -47,7 +47,7 @@ export function LandingGuidesBanner() {
             </p>
             <Link
               href="/student/guide"
-              className="inline-flex items-center gap-2 text-xs font-semibold hover:underline"
+              className="inline-flex items-center gap-2 text-xs font-semibold hover:opacity-80 transition-opacity"
               style={{ color: "#1e3a5f" }}
             >
               Read Student Guide
@@ -76,7 +76,7 @@ export function LandingGuidesBanner() {
             </p>
             <Link
               href="/faculty/guide"
-              className="inline-flex items-center gap-2 text-xs font-semibold hover:underline"
+              className="inline-flex items-center gap-2 text-xs font-semibold hover:opacity-80 transition-opacity"
               style={{ color: "#1e3a5f" }}
             >
               Read Faculty Guide

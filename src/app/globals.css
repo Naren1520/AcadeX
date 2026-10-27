@@ -43,9 +43,12 @@
 
   a {
     color: var(--color-navy);
+    text-decoration: none;
+    transition: color 150ms ease, opacity 150ms ease;
   }
 
   a:hover {
-    text-decoration: underline;
+    color: var(--color-navy-light);
+    text-decoration: none;
   }
 }
