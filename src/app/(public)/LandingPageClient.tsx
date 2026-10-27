@@ -12,6 +12,7 @@ import {
   LandingFaq,
   LandingCta,
   LandingFooter,
+  LandingAssistantBot,
 } from "@/components/landing";
 
 export function LandingPageClient() {
@@ -44,6 +45,7 @@ export function LandingPageClient() {
         <LandingCta />
       </main>
       <LandingFooter />
+      <LandingAssistantBot />
     </div>
   );
 }

@@ -9,3 +9,5 @@ export { LandingFaq } from "./LandingFaq";
 export { LandingCta } from "./LandingCta";
 export { LandingFooter } from "./LandingFooter";
 export { LandingWorkspacePreview } from "./LandingWorkspacePreview";
+export { RetroCodeCard } from "./RetroCodeCard";
+export { LandingAssistantBot, TaskBot } from "./assistant";

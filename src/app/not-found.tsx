@@ -164,7 +164,7 @@ export default function NotFound() {
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-10">
               <Link
                 href="/"
-                className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition-all hover:opacity-95 hover:shadow-sm"
+                className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold text-white shadow-xs transition-all hover:opacity-95 hover:shadow-sm cursor-pointer"
                 style={{ backgroundColor: "#1e3a5f" }}
               >
                 <IconHome size={15} />
@@ -173,7 +173,7 @@ export default function NotFound() {
 
               <Link
                 href="/login"
-                className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold bg-white border border-neutral-300 text-neutral-800 shadow-2xs hover:bg-neutral-50 transition-colors"
+                className="inline-flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-semibold bg-white border border-neutral-300 text-neutral-800 shadow-2xs hover:bg-neutral-50 transition-colors cursor-pointer"
               >
                 <span>Access Portal Login</span>
                 <IconArrowRight size={14} />
@@ -232,7 +232,7 @@ export default function NotFound() {
                     <Link
                       key={item.title}
                       href={item.href}
-                      className="group p-4 rounded-xl border border-neutral-200/80 hover:border-[#1e3a5f]/40 hover:bg-neutral-50/60 transition-all flex flex-col justify-between"
+                      className="group p-4 rounded-xl border border-neutral-200/80 hover:border-[#1e3a5f]/40 hover:bg-neutral-50/60 transition-all flex flex-col justify-between cursor-pointer"
                     >
                       <div>
                         <div className="flex items-center justify-between mb-3">
@@ -278,7 +278,7 @@ export default function NotFound() {
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="text-xs font-semibold text-[#1e3a5f] hover:underline"
+                  className="text-xs font-semibold text-[#1e3a5f] hover:underline cursor-pointer"
                 >
                   Clear search query
                 </button>
@@ -308,7 +308,7 @@ export default function NotFound() {
                     Need assistance?{" "}
                     <a
                       href="mailto:info@sahyadri.edu.in"
-                      className="font-semibold hover:underline"
+                      className="font-semibold hover:underline cursor-pointer"
                       style={{ color: "#1e3a5f" }}
                     >
                       info@sahyadri.edu.in

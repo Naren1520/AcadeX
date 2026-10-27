@@ -108,7 +108,7 @@ export function LandingWorkspacePreview() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
                     <span className="font-semibold text-neutral-900 text-xs sm:text-sm truncate">
-                      Team: AlgoVectors
+                      Team: Naren and team
                     </span>
                     <span
                       className="rounded px-1.5 sm:px-2 py-0.5 text-[9px] sm:text-xs font-medium shrink-0"
