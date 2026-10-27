@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
@@ -38,7 +39,15 @@ function LoginForm() {
         className="w-full max-w-sm rounded bg-white p-8"
         style={{ border: "1px solid #e5e7eb" }}
       >
-        <div className="mb-6 text-center">
+        <div className="mb-6 text-center flex flex-col items-center">
+          <Image
+            src="/images/sahyadrilogo1.png"
+            alt="Sahyadri Logo"
+            width={44}
+            height={44}
+            className="h-11 w-auto object-contain mb-2.5"
+            priority
+          />
           <h1 className="text-2xl font-bold" style={{ color: "#1e3a5f" }}>AcadeX</h1>
           <p className="mt-1 text-sm text-neutral-500">Sign in to your account</p>
         </div>

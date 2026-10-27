@@ -16,7 +16,7 @@
 
 ## Overview
 
-**AcadeX** is an enterprise-grade, institutional Academic Project Management Platform designed for colleges and universities. It centralizes academic project lifecycles, rule-driven team formations based on CGPA bands, UN Sustainable Development Goal (SDG) mappings, multi-stage proposal workflows, milestone deliverables, and strict role-based access control (RBAC).
+**AcadeX** is an institutional Academic Project Management Platform designed for colleges and universities. It centralizes academic project lifecycles, rule-driven team formations based on CGPA bands, UN Sustainable Development Goal (SDG) mappings, multi-stage proposal workflows, milestone deliverables, and strict role-based access control (RBAC).
 
 ---
 

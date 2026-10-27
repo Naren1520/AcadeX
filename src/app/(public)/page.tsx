@@ -4,7 +4,7 @@ import { LandingPageClient } from "./LandingPageClient";
 export const metadata: Metadata = {
   title: "AcadeX",
   description:
-    "Enterprise academic project governance coordinating CGPA team formation, SDG-aligned proposal defenses, milestone reviews, GitHub artifact verification, and audit logs.",
+    " academic project governance coordinating CGPA team formation, SDG-aligned proposal defenses, milestone reviews, GitHub artifact verification, and audit logs.",
   icons: {
     icon: "/images/sahyadrilogo1.png",
     shortcut: "/images/sahyadrilogo1.png",

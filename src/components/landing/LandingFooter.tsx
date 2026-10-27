@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export function LandingFooter() {
   return (
@@ -9,13 +10,14 @@ export function LandingFooter() {
       <div className="mx-auto max-w-7xl">
         <div className="grid grid-cols-2 md:grid-cols-5 gap-8 mb-10">
           <div className="col-span-2">
-            <div className="flex items-center gap-2 mb-3">
-              <div
-                className="flex h-7 w-7 items-center justify-center rounded text-white"
-                style={{ backgroundColor: "#1e3a5f" }}
-              >
-                <span className="text-xs font-bold">A</span>
-              </div>
+            <div className="flex items-center gap-2.5 mb-3">
+              <Image
+                src="/images/sahyadrilogo1.png"
+                alt="Sahyadri Logo"
+                width={28}
+                height={28}
+                className="h-7 w-auto object-contain"
+              />
               <span className="font-bold text-neutral-900 text-sm">AcadeX</span>
             </div>
             <p className="text-xs text-neutral-500 max-w-sm leading-relaxed">

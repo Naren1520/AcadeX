@@ -16,8 +16,9 @@ export interface MentorInfo {
   designation: string;
   department: string;
   institution: string;
-  description: string;
+  description?: string;
   image?: string;
+  linkedin?: string;
 }
 
 export const projectMeta = {
@@ -39,9 +40,8 @@ export const mentorData: MentorInfo = {
   designation: "Head of the Department (HoD)",
   department: "Department of Information Science & Engineering",
   institution: "Sahyadri College of Engineering & Management (Autonomous), Mangaluru",
-  description:
-    "Providing strategic academic direction, structural oversight, and rigorous engineering guidance for the architecture and deployment of the AcadeX academic governance platform.",
-  image: "/images/team/image.png",
+  image: "/images/team/hod.png",
+  linkedin: "https://www.linkedin.com/in/dr-rithesh-pakkala-permanki-guthu-537b073b/",
 };
 
 export const teamMembers: TeamMember[] = [
