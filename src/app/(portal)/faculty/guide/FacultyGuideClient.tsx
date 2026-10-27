@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-// ── Shared sub-components (same pattern as student guide) ─────────────────────
+// ── Shared sub-components (same pattern as student guide) ─
 function Step({ num, title, children }: { num: number; title: string; children: React.ReactNode }) {
   return (
     <div className="flex gap-4 mb-6">
@@ -22,9 +22,9 @@ function Step({ num, title, children }: { num: number; title: string; children: 
 
 function InfoBox({ type, children }: { type: "note" | "warning" | "tip"; children: React.ReactNode }) {
   const styles = {
-    note:    { bg: "#eff6ff", border: "#bfdbfe", label: "Note",    labelColor: "#1e3a5f" },
+    note: { bg: "#eff6ff", border: "#bfdbfe", label: "Note", labelColor: "#1e3a5f" },
     warning: { bg: "#fef3c7", border: "#fde68a", label: "Warning", labelColor: "#92400e" },
-    tip:     { bg: "#f0fdf4", border: "#bbf7d0", label: "Tip",     labelColor: "#15803d" },
+    tip: { bg: "#f0fdf4", border: "#bbf7d0", label: "Tip", labelColor: "#15803d" },
   }[type];
   return (
     <div className="rounded-lg px-4 py-3 mb-4" style={{ backgroundColor: styles.bg, border: `1px solid ${styles.border}` }}>
@@ -102,7 +102,7 @@ function GuideTable({ headers, rows }: { headers: string[]; rows: string[][] }) 
   );
 }
 
-// ── Sections ──────────────────────────────────────────────────────────────────
+// ── Sections ─────────
 interface Section { id: string; title: string; content: React.ReactNode; }
 
 export function FacultyGuideClient() {

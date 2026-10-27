@@ -12,7 +12,7 @@ import { checkEligibility, findMatchingSlot } from "@/server/workflows/teamForma
 import type { TeamFormationRule, SlotDefinition } from "@/server/workflows/teamFormationEngine";
 import { IconUsers, IconCheck, IconAlertCircle } from "@/components/ui/Icon";
 
-// ── Types ─────────────────────────────────────────────────────
+// ── Types 
 interface Invitation {
   id: string;
   team_id: string;
@@ -59,7 +59,7 @@ interface Props {
   sentInvitations: SentInvitation[];
 }
 
-// ── Pending invitations inbox ─────────────────────────────────
+// ── Pending invitations inbox 
 function InvitationsInbox({ invitations }: { invitations: Invitation[] }) {
   const [list, setList] = useState(invitations);
   const [loading, setLoading] = useState<{ id: string; action: "accept" | "decline" } | null>(null);
@@ -121,7 +121,7 @@ function InvitationsInbox({ invitations }: { invitations: Invitation[] }) {
   );
 }
 
-// ── My Team Card ──────────────────────────────────────────────
+// ── My Team Card 
 function MyTeamCard({
   membership, studentId, sectionmates, teamId,
   initialMembers, initialSentInvitations,
@@ -288,7 +288,7 @@ function MyTeamCard({
   );
 }
 
-// ── Main component ────────────────────────────────────────────
+// ── Main component 
 export function TeamsClient({
   studentId, studentCgpa, sectionId,
   currentMembership, sectionTeams, rules,
@@ -331,7 +331,7 @@ export function TeamsClient({
     window.location.reload();
   }
 
-  // ── Already in a team ─────────────────────────────────────
+  // ── Already in a team 
   if (team) {
     return (
       <div className="flex flex-col gap-6">
@@ -348,7 +348,7 @@ export function TeamsClient({
     );
   }
 
-  // ── Not in a team ─────────────────────────────────────────
+  // ── Not in a team ─
   const typedRules = rules as unknown as TeamFormationRule[];
 
   return (

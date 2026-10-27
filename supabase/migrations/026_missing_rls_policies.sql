@@ -1,7 +1,7 @@
 -- Migration 026: fix missing RLS INSERT policies
 -- These were omitted from the original 019_rls_policies.sql migration.
 
--- ── proposals: student INSERT ──────────────────────────────────
+-- ── proposals: student INSERT ─
 CREATE POLICY "proposals_student_insert" ON proposals
   FOR INSERT WITH CHECK (
     current_user_role() = 'student' AND
@@ -12,7 +12,7 @@ CREATE POLICY "proposals_student_insert" ON proposals
     )
   );
 
--- ── proposal_sdgs: student INSERT ─────────────────────────────
+-- ── proposal_sdgs: student INSERT ─────────
 -- Already added in a hotfix but included here for completeness.
 -- Use IF NOT EXISTS equivalent via DO block.
 DO $$

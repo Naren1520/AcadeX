@@ -47,7 +47,7 @@ CREATE POLICY "tm_update_own" ON team_messages
 CREATE POLICY "tm_admin_all" ON team_messages
   FOR ALL USING (current_user_role() = 'admin');
 
--- ── Message read receipts ─────────────────────────────────────
+-- ── Message read receipts 
 CREATE TABLE team_message_reads (
   message_id uuid NOT NULL REFERENCES team_messages(id) ON DELETE CASCADE,
   user_id    uuid NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,

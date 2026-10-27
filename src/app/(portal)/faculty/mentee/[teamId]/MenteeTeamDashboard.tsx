@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/Badge";
 import { IconUsers, IconFileText, IconFlag, IconUpload, IconCheck, IconChat } from "@/components/ui/Icon";
 import { ChatPanel } from "@/app/(portal)/student/teams/[teamId]/chat/ChatPanel";
 
-// ── Types ─────────────────────────────────────────────────────
+// ── Types 
 interface TeamInfo {
   id: string; name: string; status: string;
   section: string; dept: string; dept_code: string;
@@ -28,7 +28,7 @@ interface Props {
   currentUserId: string;
 }
 
-// ── Tooltip ───────────────────────────────────────────────────
+// ── Tooltip 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function ChartTooltip({ active, payload, label }: any) {
   if (!active || !payload?.length) return null;
@@ -42,7 +42,7 @@ function ChartTooltip({ active, payload, label }: any) {
   );
 }
 
-// ── Stat card ─────────────────────────────────────────────────
+// ── Stat card ─
 function Stat({ label, value, color, bg }: { label: string; value: string | number; color: string; bg: string }) {
   return (
     <div className="rounded-xl px-5 py-4 text-center" style={{ backgroundColor: bg, border: "1px solid #e5e7eb" }}>
@@ -52,7 +52,7 @@ function Stat({ label, value, color, bg }: { label: string; value: string | numb
   );
 }
 
-// ── Main ──────────────────────────────────────────────────────
+// ── Main ─
 export function MenteeTeamDashboard({
   team, members, avgCgpa, proposals, milestones, submissions,
   mentorshipNotes, assignedBy, currentUserId,

@@ -26,7 +26,7 @@ async function verifyTeamOwnership(facultyId: string, teamId: string) {
   return team;
 }
 
-// ── GET ───────────────────────────────────────────────────────
+// ── GET 
 export async function GET(
   _req: Request,
   { params }: { params: Promise<{ teamId: string }> }
@@ -50,7 +50,7 @@ export async function GET(
   }
 }
 
-// ── POST - assign ─────────────────────────────────────────────
+// ── POST - assign ─
 const assignSchema = z.object({
   mentor_id: z.string().uuid(),
   notes: z.string().max(500).optional(),
@@ -98,7 +98,7 @@ export async function POST(
   }
 }
 
-// ── DELETE - remove ───────────────────────────────────────────
+// ── DELETE - remove 
 export async function DELETE(
   _req: Request,
   { params }: { params: Promise<{ teamId: string }> }

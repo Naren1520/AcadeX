@@ -12,12 +12,12 @@ const tickerSentences = [
 ];
 
 export function LandingHeader({
-  scrolled,
-  scrollProgress,
+  scrolled = false,
+  scrollProgress = 0,
 }: {
-  scrolled: boolean;
-  scrollProgress: number;
-}) {
+  scrolled?: boolean;
+  scrollProgress?: number;
+} = {}) {
   return (
     <>
       <style>{`

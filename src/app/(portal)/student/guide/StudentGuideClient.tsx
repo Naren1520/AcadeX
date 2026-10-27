@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 
-// ── Types ──────────────────────────────────────────────────────────────────────
+// ── Types ─────────────
 interface Section {
   id: string;
   title: string;
   content: React.ReactNode;
 }
 
-// ── Step component ─────────────────────────────────────────────────────────────
+// ── Step component ────
 function Step({ num, title, children }: { num: number; title: string; children: React.ReactNode }) {
   return (
     <div className="flex gap-4 mb-6">
@@ -27,7 +27,7 @@ function Step({ num, title, children }: { num: number; title: string; children: 
   );
 }
 
-// ── Info box ──────────────────────────────────────────────────────────────────
+// ── Info box ─────────
 function InfoBox({ type, children }: { type: "note" | "warning" | "tip"; children: React.ReactNode }) {
   const styles = {
     note: { bg: "#eff6ff", border: "#bfdbfe", label: "Note", labelColor: "#1e3a5f" },
@@ -56,7 +56,7 @@ function UiButton({ children }: { children: React.ReactNode }) {
   );
 }
 
-// ── Badge visual ──────────────────────────────────────────────────────────────
+// ── Badge visual ─────
 function StatusBadge({ label, color, bg }: { label: string; color: string; bg: string }) {
   return (
     <span className="inline-block rounded-full px-2 py-0.5 text-xs font-semibold mr-1" style={{ backgroundColor: bg, color }}>
@@ -65,7 +65,7 @@ function StatusBadge({ label, color, bg }: { label: string; color: string; bg: s
   );
 }
 
-// ── Flow diagram row ──────────────────────────────────────────────────────────
+// ── Flow diagram row ─
 function FlowRow({ steps }: { steps: string[] }) {
   return (
     <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 my-4">
@@ -86,7 +86,7 @@ function FlowRow({ steps }: { steps: string[] }) {
   );
 }
 
-// ── Table ─────────────────────────────────────────────────────────────────────
+// ── Table ────────────
 function GuideTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
   return (
     <div className="rounded overflow-x-auto mb-4" style={{ border: "1px solid #e5e7eb", WebkitOverflowScrolling: "touch" }}>
@@ -116,7 +116,7 @@ function GuideTable({ headers, rows }: { headers: string[]; rows: string[][] }) 
   );
 }
 
-// ── Main guide client ─────────────────────────────────────────────────────────
+// ── Main guide client 
 export function StudentGuideClient() {
   const [activeSection, setActiveSection] = useState("login");
 

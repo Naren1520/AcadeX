@@ -15,7 +15,7 @@ function fmtTime(iso: string) {
   const yesterday = new Date(now); yesterday.setDate(now.getDate() - 1);
   const isYesterday = d.toDateString() === yesterday.toDateString();
   const time = d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" });
-  if (isToday)     return time;
+  if (isToday) return time;
   if (isYesterday) return `Yesterday ${time}`;
   return `${d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" })} ${time}`;
 }
@@ -29,7 +29,7 @@ function fmtDay(iso: string) {
   return d.toLocaleDateString("en-IN", { day: "2-digit", month: "long", year: "numeric" });
 }
 
-// ── Read receipt ──────────────────────────────────────────────
+// ── Read receipt 
 function ReadReceipts({ readBy, currentUserId, memberCount }: { readBy: string[] | undefined; currentUserId: string; memberCount: number }) {
   const others = (readBy ?? []).filter((id) => id !== currentUserId);
   if (others.length === 0) return null;
@@ -40,11 +40,11 @@ function ReadReceipts({ readBy, currentUserId, memberCount }: { readBy: string[]
   );
 }
 
-// ── Message bubble ────────────────────────────────────────────
+// ── Message bubble 
 function MessageBubble({ msg, isOwn, onReply, onEdit, onDelete, memberCount, currentUserId }: {
   msg: ChatMessage; isOwn: boolean; memberCount: number; currentUserId: string;
   onReply: (m: ChatMessage) => void;
-  onEdit:  (m: ChatMessage) => void;
+  onEdit: (m: ChatMessage) => void;
   onDelete: (id: string) => void;
 }) {
   const [hover, setHover] = useState(false);
@@ -83,10 +83,10 @@ function MessageBubble({ msg, isOwn, onReply, onEdit, onDelete, memberCount, cur
         <div className="rounded-2xl px-4 py-2.5 text-sm shadow-sm"
           style={{
             backgroundColor: isOwn ? "#1e3a5f" : "#ffffff",
-            color:           isOwn ? "#ffffff" : "#111827",
-            border:          isOwn ? "none" : "1px solid #e5e7eb",
+            color: isOwn ? "#ffffff" : "#111827",
+            border: isOwn ? "none" : "1px solid #e5e7eb",
             borderBottomRightRadius: isOwn ? 4 : undefined,
-            borderBottomLeftRadius:  isOwn ? undefined : 4,
+            borderBottomLeftRadius: isOwn ? undefined : 4,
           }}>
           <p style={{ wordBreak: "break-word" }}>{msg.content}</p>
           {msg.edited_at && <span className="ml-2 text-xs opacity-60">(edited)</span>}
@@ -129,29 +129,29 @@ function DateSep({ label }: { label: string }) {
   );
 }
 
-// ── Main ──────────────────────────────────────────────────────
+// ── Main ─
 export function ChatPanel({ teamId, currentUserId }: Props) {
-  const [messages, setMessages]     = useState<ChatMessage[]>([]);
-  const [loaded, setLoaded]         = useState(false);
-  const [error, setError]           = useState<string | null>(null);
-  const [sending, setSending]       = useState(false);
-  const [input, setInput]           = useState("");
-  const [replyTo, setReplyTo]       = useState<ChatMessage | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
+  const [input, setInput] = useState("");
+  const [replyTo, setReplyTo] = useState<ChatMessage | null>(null);
   const [editingMsg, setEditingMsg] = useState<ChatMessage | null>(null);
-  const [search, setSearch]         = useState("");
+  const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [memberCount, setMemberCount] = useState(2);
-  const [hasMore, setHasMore]       = useState(false);
+  const [hasMore, setHasMore] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
-  const inputRef  = useRef<HTMLTextAreaElement>(null);
-  const pollRef   = useRef<NodeJS.Timeout | null>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const pollRef = useRef<NodeJS.Timeout | null>(null);
   const latestRef = useRef<string | undefined>(undefined);
 
   const fetchMessages = useCallback(async (opts?: { before?: string; after?: string; initial?: boolean }) => {
     const params = new URLSearchParams({ limit: "50" });
     if (opts?.before) params.set("before", opts.before);
-    if (opts?.after)  params.set("after",  opts.after);
+    if (opts?.after) params.set("after", opts.after);
     const res = await fetch(`/api/teams/${teamId}/messages?${params}`);
     if (!res.ok) { setError("Failed to load messages."); return; }
     const d = await res.json() as { messages: ChatMessage[] };
@@ -199,7 +199,7 @@ export function ChatPanel({ teamId, currentUserId }: Props) {
   useEffect(() => {
     messages.forEach((m) => {
       if (m.sender_id !== currentUserId && !m.read_by.includes(currentUserId)) {
-        fetch(`/api/teams/${teamId}/messages/${m.id}/read`, { method: "POST" }).catch(() => {});
+        fetch(`/api/teams/${teamId}/messages/${m.id}/read`, { method: "POST" }).catch(() => { });
       }
     });
   }, [messages, currentUserId, teamId]);

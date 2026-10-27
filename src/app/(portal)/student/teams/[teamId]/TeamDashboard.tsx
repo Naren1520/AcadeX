@@ -21,11 +21,11 @@ interface Props {
 }
 
 const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
-  { id: "overview",   label: "Overview",   icon: <IconClipboard size={14} /> },
-  { id: "members",    label: "Members",    icon: <IconUsers size={14} /> },
-  { id: "proposals",  label: "Proposals",  icon: <IconFileText size={14} /> },
+  { id: "overview", label: "Overview", icon: <IconClipboard size={14} /> },
+  { id: "members", label: "Members", icon: <IconUsers size={14} /> },
+  { id: "proposals", label: "Proposals", icon: <IconFileText size={14} /> },
   { id: "milestones", label: "Milestones", icon: <IconFlag size={14} /> },
-  { id: "chat",       label: "Group Chat", icon: <IconChat size={14} /> },
+  { id: "chat", label: "Group Chat", icon: <IconChat size={14} /> },
 ];
 
 export function TeamDashboard({
@@ -33,8 +33,8 @@ export function TeamDashboard({
   members, mentor, proposals, milestones, ruleLabel, teamSize, slots,
 }: Props) {
   const [tab, setTab] = useState<Tab>("overview");
-  const pendingCount  = proposals.filter((p) => p.status === "pending").length;
-  const openCount     = milestones.filter((m) => m.status === "open").length;
+  const pendingCount = proposals.filter((p) => p.status === "pending").length;
+  const openCount = milestones.filter((m) => m.status === "open").length;
 
   return (
     <div className="flex flex-col gap-6">
@@ -49,8 +49,8 @@ export function TeamDashboard({
                 className="relative flex cursor-pointer items-center gap-1.5 rounded-lg px-4 py-2 text-sm font-medium transition-all"
                 style={{
                   backgroundColor: tab === t.id ? "#ffffff" : "transparent",
-                  color:           tab === t.id ? "#1e3a5f" : "#6b7280",
-                  boxShadow:       tab === t.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
+                  color: tab === t.id ? "#1e3a5f" : "#6b7280",
+                  boxShadow: tab === t.id ? "0 1px 3px rgba(0,0,0,0.1)" : "none",
                 }}>
                 {t.icon} {t.label}
                 {badge && (
@@ -80,7 +80,7 @@ export function TeamDashboard({
   );
 }
 
-// ── Overview ──────────────────────────────────────────────────
+// ── Overview 
 function OverviewTab({ teamStatus, ruleLabel, teamSize, slots, memberCount, mentor, pendingProposals, openMilestones, proposalCount, onNavigate }: {
   teamStatus: string; ruleLabel: string; teamSize: number;
   slots: { cgpa_lower: number; cgpa_upper: number; count: number; label: string }[];
@@ -124,10 +124,10 @@ function OverviewTab({ teamStatus, ruleLabel, teamSize, slots, memberCount, ment
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
-          { label: "Members",   value: memberCount,       color: "#16a34a", bg: "#f0fdf4", tab: "members"    as Tab },
-          { label: "Proposals",  value: proposalCount,     color: "#1e3a5f", bg: "#eff6ff", tab: "proposals"  as Tab },
-          { label: "Milestones",value: openMilestones,    color: "#7c3aed", bg: "#f5f3ff", tab: "milestones" as Tab },
-          { label: "Chat",      value: "→",               color: "#0369a1", bg: "#f0f9ff", tab: "chat"       as Tab },
+          { label: "Members", value: memberCount, color: "#16a34a", bg: "#f0fdf4", tab: "members" as Tab },
+          { label: "Proposals", value: proposalCount, color: "#1e3a5f", bg: "#eff6ff", tab: "proposals" as Tab },
+          { label: "Milestones", value: openMilestones, color: "#7c3aed", bg: "#f5f3ff", tab: "milestones" as Tab },
+          { label: "Chat", value: "→", color: "#0369a1", bg: "#f0f9ff", tab: "chat" as Tab },
         ].map((s) => (
           <button key={s.label} type="button" onClick={() => onNavigate(s.tab)}
             className="cursor-pointer rounded-xl px-4 py-4 text-center transition-all hover:shadow-md"
@@ -141,7 +141,7 @@ function OverviewTab({ teamStatus, ruleLabel, teamSize, slots, memberCount, ment
   );
 }
 
-// ── Members ───────────────────────────────────────────────────
+// ── Members 
 function MembersTab({ members, currentUserId, isLead, mentor }: {
   members: TeamPageMember[]; currentUserId: string; isLead: boolean; mentor: TeamPageMentor | null;
 }) {
@@ -192,7 +192,7 @@ function MembersTab({ members, currentUserId, isLead, mentor }: {
   );
 }
 
-// ── Proposals ─────────────────────────────────────────────────
+// ── Proposals ─
 function ProposalsTab({ proposals }: { proposals: TeamPageProposal[] }) {
   const sv: Record<string, "pending" | "approved" | "rejected" | "revision"> = {
     pending: "pending", approved: "approved", rejected: "rejected", revision_requested: "revision",
@@ -218,7 +218,7 @@ function ProposalsTab({ proposals }: { proposals: TeamPageProposal[] }) {
   );
 }
 
-// ── Milestones ────────────────────────────────────────────────
+// ── Milestones 
 function MilestonesTab({ milestones }: { milestones: TeamPageMilestone[] }) {
   return (
     <div className="flex flex-col gap-3">
