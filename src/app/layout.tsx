@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
-import "@/lib/env"; // validates all required env vars at startup
+import "@/lib/env";
+import { NavigationProgress } from "@/components/layout/NavigationProgress";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -28,6 +30,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen bg-white font-sans text-neutral-900 antialiased">
+        <Suspense>
+          <NavigationProgress />
+        </Suspense>
         {children}
       </body>
     </html>
