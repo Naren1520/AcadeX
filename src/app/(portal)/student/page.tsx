@@ -3,10 +3,8 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { Shell } from "@/components/layout/Shell";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { Card, CardContent } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { IconArrowRight } from "@/components/ui/Icon";
 import { studentNav } from "@/config/navigation";
+import { StudentDashboardClient } from "./StudentDashboardClient";
 
 export default async function StudentDashboard() {
   const supabase = await getSupabaseServerClient();
@@ -14,8 +12,8 @@ export default async function StudentDashboard() {
   if (!session) redirect("/login");
 
   const userId = session.user.id;
-
   const service = getSupabaseServiceRoleClient();
+
   const { data: profile } = await service
     .from("profiles")
     .select("role, full_name")
@@ -27,7 +25,10 @@ export default async function StudentDashboard() {
   if (profile.role === "faculty") redirect("/faculty");
   if (profile.role !== "student") redirect("/login");
 
-  const [{ data: studentRecord }, { data: teamMembership }] = await Promise.all([
+  const [
+    { data: studentRecord },
+    { data: teamMembership },
+  ] = await Promise.all([
     service.from("students").select("cgpa, usn").eq("id", userId).single(),
     service
       .from("team_members")
@@ -37,17 +38,55 @@ export default async function StudentDashboard() {
   ]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const membershipAny = teamMembership as any;
-  const team = membershipAny?.teams ?? null;
+  const m = teamMembership as any;
+  const teamId: string | null = m?.team_id ?? null;
+  const team = m?.teams ?? null;
 
-  const { count: proposalCount } = await service
-    .from("proposals")
-    .select("id", { count: "exact", head: true })
-    .eq("team_id", membershipAny?.team_id ?? "00000000-0000-0000-0000-000000000000")
-    .in("status", ["pending", "approved"]);
+  const [
+    { data: proposals },
+    { data: milestones },
+    { data: submissions },
+  ] = await Promise.all([
+    teamId
+      ? service.from("proposals").select("id, status").eq("team_id", teamId)
+      : Promise.resolve({ data: [] }),
+    teamId
+      ? service
+          .from("milestones")
+          .select("id, name, deadline, status, proposal_id")
+          .in("proposal_id",
+            await service.from("proposals").select("id").eq("team_id", teamId)
+              .then(({ data }) => (data ?? []).map((p: { id: string }) => p.id))
+          )
+          .order("deadline")
+      : Promise.resolve({ data: [] }),
+    teamId
+      ? service.from("submissions").select("id").eq("team_id", teamId)
+      : Promise.resolve({ data: [] }),
+  ]);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sr = studentRecord as any;
+  const proposalList = proposals ?? [];
+  const milestoneList = milestones ?? [];
+
+  const approvedProposals = proposalList.filter((p: { status: string }) => p.status === "approved").length;
+  const pendingProposals  = proposalList.filter((p: { status: string }) => p.status === "pending").length;
+
+  const completedMilestones = milestoneList.filter((m: { status: string }) => m.status === "completed").length;
+  const openMilestones      = milestoneList.filter((m: { status: string }) => m.status === "open").length;
+  const missedMilestones    = milestoneList.filter((m: { status: string }) => m.status === "missed").length;
+
+  const upcoming = milestoneList
+    .filter((m: { status: string; deadline: string }) =>
+      m.status === "open" && new Date(m.deadline) > new Date()
+    )
+    .slice(0, 5)
+    .map((m: { name: string; deadline: string; status: string }) => ({
+      name: m.name,
+      deadline: m.deadline,
+      status: m.status,
+    }));
 
   return (
     <Shell
@@ -58,94 +97,25 @@ export default async function StudentDashboard() {
     >
       <PageWrapper
         title="Student Dashboard"
-        description="Track your team, proposals, and submissions."
+        description="Your academic project overview."
       >
-        {/* Student info cards */}
-        <div className="mb-6 grid gap-4 sm:grid-cols-3">
-          <Card>
-            <CardContent>
-              <p className="text-sm text-neutral-500">USN</p>
-              <p className="mt-1 text-lg font-semibold text-neutral-900">
-                {sr?.usn ?? "-"}
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <p className="text-sm text-neutral-500">CGPA</p>
-              <p className="mt-1 text-3xl font-bold" style={{ color: "#1e3a5f" }}>
-                {sr?.cgpa?.toFixed(2) ?? "-"}
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent>
-              <p className="text-sm text-neutral-500">Active Proposals</p>
-              <p className="mt-1 text-3xl font-bold" style={{ color: "#1e3a5f" }}>
-                {proposalCount ?? 0}
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Team status */}
-        <Card className="mb-6">
-          <CardContent>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-neutral-500">Current Team</p>
-                {team ? (
-                  <div className="mt-1 flex items-center gap-2">
-                    <p className="font-semibold text-neutral-900">{team.name}</p>
-                    <Badge
-                      variant={
-                        team.status === "confirmed" ? "confirmed"
-                          : team.status === "forming" ? "forming"
-                            : "neutral"
-                      }
-                    >
-                      {team.status}
-                    </Badge>
-                    {membershipAny?.is_lead && <Badge variant="neutral">Team Lead</Badge>}
-                  </div>
-                ) : (
-                  <p className="mt-1 text-sm text-neutral-500">Not in a team yet.</p>
-                )}
-              </div>
-              {!team && (
-                <a
-                  href="/student/teams"
-                  className="rounded px-4 py-2 text-sm font-medium text-white"
-                  style={{ backgroundColor: "#1e3a5f" }}
-                >
-                  Find a Team
-                </a>
-              )}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Quick actions */}
-        <h2 className="mb-3 text-base font-semibold text-neutral-900">Quick Actions</h2>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { label: "View My Team", href: "/student/teams" },
-            { label: "Submit a Proposal", href: "/student/proposals" },
-            { label: "View Milestones", href: "/student/milestones" },
-            { label: "Upload Submissions", href: "/student/submissions" },
-            { label: "Edit Profile", href: "/student/profile" },
-          ].map((action) => (
-            <a
-              key={action.href}
-              href={action.href}
-              className="flex items-center justify-between rounded p-4 text-sm font-medium text-neutral-900"
-              style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}
-            >
-              {action.label}
-              <IconArrowRight size={16} style={{ color: "#1e3a5f", flexShrink: 0 }} />
-            </a>
-          ))}
-        </div>
+        <StudentDashboardClient
+          fullName={profile.full_name}
+          usn={sr?.usn ?? "-"}
+          cgpa={sr?.cgpa ?? 0}
+          teamName={team?.name ?? null}
+          teamStatus={team?.status ?? null}
+          isLead={m?.is_lead ?? false}
+          proposalCount={proposalList.length}
+          approvedProposals={approvedProposals}
+          pendingProposals={pendingProposals}
+          totalMilestones={milestoneList.length}
+          completedMilestones={completedMilestones}
+          openMilestones={openMilestones}
+          missedMilestones={missedMilestones}
+          totalSubmissions={(submissions ?? []).length}
+          upcomingDeadlines={upcoming}
+        />
       </PageWrapper>
     </Shell>
   );
