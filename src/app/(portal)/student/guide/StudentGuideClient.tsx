@@ -1,306 +1,140 @@
 "use client";
 
-import { useState } from "react";
+import {
+  GuideShell, StepList, InfoBox, RuleTable,
+  SectionHeading, StatusPill, VerticalTimeline, LabelledFlow,
+} from "@/components/guide/GuideComponents";
+import {
+  IconDashboard, IconUsers, IconFileText,
+  IconFlag, IconUpload, IconSettings, IconBell, IconCheck,
+} from "@/components/ui/Icon";
 
-// ── Types ─────────────
-interface Section {
-  id: string;
-  title: string;
-  content: React.ReactNode;
-}
-
-// ── Step component ────
-function Step({ num, title, children }: { num: number; title: string; children: React.ReactNode }) {
+function IconClipboard({ size = 14 }: { size?: number }) {
   return (
-    <div className="flex gap-4 mb-6">
-      <div
-        className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-sm font-bold text-white"
-        style={{ backgroundColor: "#1e3a5f" }}
-      >
-        {num}
-      </div>
-      <div className="flex-1">
-        <p className="font-semibold text-neutral-900 mb-1">{title}</p>
-        <div className="text-sm text-neutral-600">{children}</div>
-      </div>
-    </div>
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round"
+      aria-hidden="true">
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+    </svg>
   );
 }
 
-// ── Info box ─────────
-function InfoBox({ type, children }: { type: "note" | "warning" | "tip"; children: React.ReactNode }) {
-  const styles = {
-    note: { bg: "#eff6ff", border: "#bfdbfe", label: "Note", labelColor: "#1e3a5f" },
-    warning: { bg: "#fef3c7", border: "#fde68a", label: "Warning", labelColor: "#92400e" },
-    tip: { bg: "#f0fdf4", border: "#bbf7d0", label: "Tip", labelColor: "#15803d" },
-  }[type];
-  return (
-    <div className="rounded-lg px-4 py-3 mb-4" style={{ backgroundColor: styles.bg, border: `1px solid ${styles.border}` }}>
-      <span className="text-xs font-bold uppercase tracking-wide mr-2" style={{ color: styles.labelColor }}>
-        {styles.label}:
-      </span>
-      <span className="text-sm" style={{ color: styles.labelColor }}>{children}</span>
-    </div>
-  );
-}
-
-// ── Button pill (visual only, describes a button in the UI) ───────────────────
-function UiButton({ children }: { children: React.ReactNode }) {
-  return (
-    <span
-      className="inline-block rounded px-2 py-0.5 text-xs font-semibold"
-      style={{ backgroundColor: "#1e3a5f", color: "#ffffff" }}
-    >
-      {children}
-    </span>
-  );
-}
-
-// ── Badge visual ─────
-function StatusBadge({ label, color, bg }: { label: string; color: string; bg: string }) {
-  return (
-    <span className="inline-block rounded-full px-2 py-0.5 text-xs font-semibold mr-1" style={{ backgroundColor: bg, color }}>
-      {label}
-    </span>
-  );
-}
-
-// ── Flow diagram row ─
-function FlowRow({ steps }: { steps: string[] }) {
-  return (
-    <div className="flex flex-col sm:flex-row sm:flex-wrap items-start sm:items-center gap-2 my-4">
-      {steps.map((s, i) => (
-        <div key={i} className="flex items-center gap-2">
-          <span
-            className="rounded-lg px-3 py-1.5 text-xs font-medium text-white"
-            style={{ backgroundColor: i === steps.length - 1 ? "#16a34a" : "#1e3a5f" }}
-          >
-            {s}
-          </span>
-          {i < steps.length - 1 && (
-            <span className="hidden sm:inline text-neutral-400 text-sm">→</span>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ── Table ────────────
-function GuideTable({ headers, rows }: { headers: string[]; rows: string[][] }) {
-  return (
-    <div className="rounded overflow-x-auto mb-4" style={{ border: "1px solid #e5e7eb", WebkitOverflowScrolling: "touch" }}>
-      <table className="text-sm" style={{ minWidth: "100%", width: "max-content" }}>
-        <thead style={{ backgroundColor: "#f9fafb" }}>
-          <tr>
-            {headers.map((h) => (
-              <th key={h} className="px-4 py-2 text-left text-xs font-semibold text-neutral-600 uppercase tracking-wide border-b whitespace-nowrap" style={{ borderColor: "#e5e7eb" }}>
-                {h}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={i} style={{ backgroundColor: i % 2 === 0 ? "#ffffff" : "#f9fafb" }}>
-              {row.map((cell, j) => (
-                <td key={j} className="px-4 py-2 text-neutral-700 text-xs border-b" style={{ borderColor: "#e5e7eb", minWidth: j === 0 ? "130px" : "160px" }}>
-                  {cell}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-// ── Main guide client 
 export function StudentGuideClient() {
-  const [activeSection, setActiveSection] = useState("login");
-
-  const sections: Section[] = [
+  const sections = [
     {
-      id: "login",
-      title: "Login & Authentication",
+      id: "overview",
+      title: "Overview",
+      icon: <IconDashboard size={14} />,
       content: (
-        <div>
-          <p className="text-sm text-neutral-600 mb-4">
-            AcadeX uses a secure email-and-password login system. Your account is created by the administrator - you do not self-register.
+        <div className="flex flex-col gap-6">
+          <p className="text-sm text-neutral-600">
+            The Student portal takes you through the full project lifecycle — forming a team, submitting a proposal, tracking milestones, and uploading deliverables.
           </p>
 
-          <h3 className="font-semibold text-neutral-800 mb-3">How to log in</h3>
-          <Step num={1} title="Navigate to the login page">
-            Go to <span className="font-mono text-xs bg-neutral-100 px-1 py-0.5 rounded">/login</span>. You will see an email and password field.
-          </Step>
-          <Step num={2} title="Enter your credentials">
-            Type the email address and password provided by your administrator. Credentials are sent to your registered email.
-          </Step>
-          <Step num={3} title='Click "Sign In"'>
-            Press <UiButton>Sign In</UiButton>. If credentials are correct you are redirected to your Student Dashboard at <span className="font-mono text-xs bg-neutral-100 px-1 py-0.5 rounded">/student</span>.
-          </Step>
-          <Step num={4} title="Role-based redirect">
-            The system reads your role from your profile. Students are always sent to <code className="text-xs">/student</code>. If your role is faculty or admin you would be redirected to those dashboards instead.
-          </Step>
+          <div>
+            <SectionHeading>Your journey at a glance</SectionHeading>
+            <div className="mt-3">
+              <VerticalTimeline nodes={[
+                { label: "Login",             sublabel: "Use credentials from admin or onboarding",       color: "#1e3a5f", bg: "#eff6ff" },
+                { label: "Join or Form Team", sublabel: "Browse existing teams or create your own",       color: "#0369a1", bg: "#f0f9ff" },
+                { label: "Team Confirmed",    sublabel: "Faculty locks the team",                         color: "#d97706", bg: "#fffbeb" },
+                { label: "Submit Proposal",   sublabel: "Choose a supervisor, pick SDGs",                 color: "#7c3aed", bg: "#f5f3ff" },
+                { label: "Proposal Approved", sublabel: "Faculty approves",                               color: "#16a34a", bg: "#f0fdf4" },
+                { label: "Track Milestones",  sublabel: "Deadlines set by faculty",                       color: "#0369a1", bg: "#f0f9ff" },
+                { label: "Upload Deliverables", sublabel: "PPT + Report + GitHub within submission windows", color: "#16a34a", bg: "#f0fdf4",
+                  icon: <IconCheck size={12} style={{ color: "#fff" }} /> },
+              ]} />
+            </div>
+          </div>
 
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-6">Forgot password</h3>
-          <Step num={1} title='Click "Forgot password?"'>
-            Below the Sign In button on the login page, click the forgot-password link.
-          </Step>
-          <Step num={2} title="Enter your email">
-            Type your registered email and submit. A password-reset email is sent.
-          </Step>
-          <Step num={3} title="Reset via email link">
-            Open the email and click the reset link. Set a new password and log in again.
-          </Step>
-
-          <InfoBox type="warning">
-            If you do not receive a reset email, check your spam folder or contact your department administrator.
+          <InfoBox type="note">
+            Student accounts are created by your administrator or through a faculty onboarding invitation link. You cannot self-register directly.
           </InfoBox>
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-2">Edge cases</h3>
-          <GuideTable
-            headers={["Situation", "What happens"]}
-            rows={[
-              ["Wrong email / password", "Error message shown; account is not locked."],
-              ["Account not yet created by admin", "Login fails. Contact your administrator."],
-              ["Session expires", "You are redirected to /login automatically."],
-              ["Non-student role tries /student", "Redirected to the correct portal (/faculty or /admin)."],
-            ]}
-          />
         </div>
       ),
     },
     {
-      id: "dashboard",
-      title: "Student Dashboard",
+      id: "login",
+      title: "Login",
+      icon: <IconClipboard size={14} />,
       content: (
-        <div>
-          <p className="text-sm text-neutral-600 mb-4">
-            The dashboard (<code className="text-xs">/student</code>) is your home screen. It gives you a snapshot of your academic status.
-          </p>
+        <div className="flex flex-col gap-6">
+          <StepList steps={[
+            { title: "Go to /login", body: "Open the AcadeX login page." },
+            { title: "Enter your email and password", body: "Use the credentials provided by your administrator or set during onboarding." },
+            { title: "Click Sign In", body: "You are redirected to /student (the Student Dashboard)." },
+            { title: "Forgot password", body: "Click the forgot-password link. A reset email is sent to your registered address." },
+          ]} />
 
-          <h3 className="font-semibold text-neutral-800 mb-3">Dashboard cards</h3>
-          <GuideTable
-            headers={["Card", "What it shows"]}
+          <RuleTable
+            headers={["Situation", "Result"]}
             rows={[
-              ["USN", "Your University Seat Number pulled from the student record."],
-              ["CGPA", "Your current CGPA as entered by the administrator."],
-              ["Active Proposals", "Number of proposals with status Pending or Approved."],
-              ["Current Team", "Team name and status badge (forming / confirmed). Shows 'Not in a team yet' if unassigned."],
+              ["Wrong credentials",         "Error shown — account not locked."],
+              ["Account not created",       "Login fails. Contact your faculty or admin."],
+              ["Student visits /faculty",   "Redirected to /student automatically."],
+              ["Session expires",           "Redirected to /login automatically."],
             ]}
           />
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">Quick Actions</h3>
-          <p className="text-sm text-neutral-600 mb-3">
-            A row of shortcut cards at the bottom links to each major feature:
-          </p>
-          <GuideTable
-            headers={["Button", "Destination", "When to use"]}
-            rows={[
-              ["View My Team", "/student/teams", "Check team members, invite teammates, see team status."],
-              ["Submit a Proposal", "/student/proposals", "Create or review project proposals."],
-              ["View Milestones", "/student/milestones", "See milestone timeline and deadlines."],
-              ["Upload Submissions", "/student/submissions", "Upload PPT, report, and GitHub link."],
-              ["Edit Profile", "/student/profile", "Update personal information."],
-            ]}
-          />
-
-          <InfoBox type="note">
-            If you are not yet in a team, a <UiButton>Find a Team</UiButton> button appears inside the Current Team card. Click it to go directly to the Teams page.
-          </InfoBox>
         </div>
       ),
     },
     {
       id: "teams",
       title: "My Team",
+      icon: <IconUsers size={14} />,
       content: (
-        <div>
-          <p className="text-sm text-neutral-600 mb-4">
-            The Teams page (<code className="text-xs">/student/teams</code>) handles everything related to team formation. The view changes depending on whether you are already in a team.
+        <div className="flex flex-col gap-6">
+          <p className="text-sm text-neutral-600">
+            You must be in a confirmed team before you can submit proposals. The Teams page handles everything from forming a team to accepting invitations.
           </p>
 
-          <h3 className="font-semibold text-neutral-800 mb-3">System flow - joining a team</h3>
-          <FlowRow steps={["Not in a team", "Join existing OR Form new", "In team (forming)", "Team confirmed", "Can submit proposals"]} />
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-2">When you are NOT in a team</h3>
-          <p className="text-sm text-neutral-600 mb-3">You see two panels side by side:</p>
-
-          <div className="mb-4 rounded p-4" style={{ border: "1px solid #e5e7eb", backgroundColor: "#f9fafb" }}>
-            <p className="font-semibold text-neutral-800 text-sm mb-2">Panel A - Available Teams</p>
-            <p className="text-sm text-neutral-600 mb-2">Lists all existing teams in your section that are still <StatusBadge label="forming" color="#92400e" bg="#fef3c7" /> and have open slots.</p>
-            <ul className="text-sm text-neutral-600 space-y-1 list-disc list-inside">
-              <li>Each card shows the team name, formation rule, and CGPA slot requirements.</li>
-              <li>If your CGPA does not fit any slot, the <UiButton>Join</UiButton> button is disabled and a red message appears.</li>
-              <li>If eligible, click <UiButton>Join</UiButton> - page reloads and you are now a member.</li>
-            </ul>
+          <div>
+            <SectionHeading>Two ways to join a team</SectionHeading>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl p-4" style={{ backgroundColor: "#eff6ff", border: "1px solid #bfdbfe" }}>
+                <p className="text-sm font-semibold mb-2" style={{ color: "#1e3a5f" }}>Join an existing team</p>
+                <LabelledFlow steps={[
+                  { label: "Browse teams", color: "#1e3a5f" },
+                  { label: "CGPA check", color: "#1e3a5f" },
+                  { label: "Click Join", color: "#16a34a" },
+                ]} />
+                <p className="mt-2 text-xs text-neutral-500">The Join button is active only if your CGPA fits an open slot.</p>
+              </div>
+              <div className="rounded-xl p-4" style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0" }}>
+                <p className="text-sm font-semibold mb-2" style={{ color: "#16a34a" }}>Form a new team</p>
+                <LabelledFlow steps={[
+                  { label: "Pick a rule", color: "#16a34a" },
+                  { label: "Name the team", color: "#16a34a" },
+                  { label: "You're the Lead", color: "#16a34a" },
+                ]} />
+                <p className="mt-2 text-xs text-neutral-500">As Lead you can invite section mates.</p>
+              </div>
+            </div>
           </div>
 
-          <div className="mb-4 rounded p-4" style={{ border: "1px solid #e5e7eb", backgroundColor: "#f9fafb" }}>
-            <p className="font-semibold text-neutral-800 text-sm mb-2">Panel B - Form a New Team</p>
-            <ul className="text-sm text-neutral-600 space-y-1 list-disc list-inside">
-              <li>Enter a <strong>Team Name</strong> (max 100 characters).</li>
-              <li>Select a <strong>Formation Rule</strong> from the dropdown. Rules set the team size and CGPA composition.</li>
-              <li>If a rule has CGPA slots, a composition preview is shown (e.g., "2× CGPA 8–10, 1× CGPA 6–8").</li>
-              <li>Ineligible or quota-full rules are shown as disabled options.</li>
-              <li>Click <UiButton>Form Team</UiButton> - you become the Team Lead of the new team.</li>
-            </ul>
+          <div>
+            <SectionHeading>Team status lifecycle</SectionHeading>
+            <div className="mt-3">
+              <LabelledFlow steps={[
+                { label: "forming",   sublabel: "assembling members", color: "#1e3a8a" },
+                { label: "confirmed", sublabel: "locked by faculty",  color: "#16a34a" },
+                { label: "dissolved", sublabel: "disbanded",          color: "#6b7280" },
+              ]} />
+            </div>
           </div>
 
-          <InfoBox type="tip">
-            As the student who forms a team, you automatically become the <strong>Team Lead</strong>. Only the lead can invite others.
-          </InfoBox>
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">When you ARE in a team</h3>
-          <p className="text-sm text-neutral-600 mb-3">You see your team card with members and a pending-invitations inbox (if any).</p>
-          <GuideTable
-            headers={["Section", "What it shows"]}
-            rows={[
-              ["Team name & status badge", "Team name with forming / confirmed / dissolved badge."],
-              ["Team Lead badge", "Visible next to your name if you are the lead."],
-              ["Members list", "All joined members with USN and CGPA. Your row has '(you)'."],
-              ["Invited - Awaiting Response", "Students invited but not yet responded. Visible to lead."],
-              ["Invite a Student button", "Only visible to Team Lead when team is 'forming'. Opens a dialog."],
-            ]}
-          />
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">Inviting a student (Team Lead only)</h3>
-          <Step num={1} title='Click "Invite a Student"'>
-            The button is only shown when you are the lead and the team is still forming. If all eligible section mates are already invited, the button is disabled.
-          </Step>
-          <Step num={2} title="Select a student from the dropdown">
-            The dropdown shows only section mates who are: (a) not already in your team, (b) not already invited, (c) in your section.
-          </Step>
-          <Step num={3} title='Click "Send Invitation"'>
-            The invitation is sent. The student appears in the "Invited - Awaiting Response" list with a <span className="text-xs font-medium" style={{ color: "#d97706" }}>Pending…</span> label.
-          </Step>
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">Receiving an invitation (non-lead)</h3>
-          <p className="text-sm text-neutral-600 mb-3">
-            If another team lead invites you, an <strong>Team Invitations</strong> banner appears at the top of the Teams page.
-          </p>
-          <GuideTable
-            headers={["Button", "Effect"]}
-            rows={[
-              ["Accept (green)", "You join that team. The page reloads showing your new team."],
-              ["Decline (red)", "Invitation is removed. You remain un-teamed."],
-            ]}
-          />
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">Team status meanings</h3>
-          <GuideTable
-            headers={["Status", "Meaning"]}
-            rows={[
-              ["forming", "Team is being assembled; slots are still open."],
-              ["confirmed", "Team is locked by faculty. Proposals can now be submitted."],
-              ["dissolved", "Team was disbanded. Members are no longer grouped."],
-            ]}
-          />
+          <div>
+            <SectionHeading>Inviting students (Team Lead only)</SectionHeading>
+            <StepList steps={[
+              { title: "Click Invite a Student", body: "Only shown when you are the lead and the team is in forming status." },
+              { title: "Pick a section mate from the dropdown", body: "Only eligible, uninvited section mates appear." },
+              { title: "Click Send Invitation", body: "The student sees an accept/decline banner on their Teams page." },
+            ]} />
+          </div>
 
           <InfoBox type="warning">
-            You can only be in one team at a time. Accepting one invitation automatically cancels all other pending invitations for you.
+            You can only be in one team at a time. Accepting an invitation cancels all other pending invitations you have.
           </InfoBox>
         </div>
       ),
@@ -308,67 +142,60 @@ export function StudentGuideClient() {
     {
       id: "proposals",
       title: "Proposals",
+      icon: <IconFileText size={14} />,
       content: (
-        <div>
-          <p className="text-sm text-neutral-600 mb-4">
-            The Proposals page (<code className="text-xs">/student/proposals</code>) lets your team submit and track project proposals.
+        <div className="flex flex-col gap-6">
+          <p className="text-sm text-neutral-600">
+            Once your team is confirmed you can submit a project proposal to a faculty supervisor.
           </p>
 
-          <h3 className="font-semibold text-neutral-800 mb-3">Pre-conditions to submit</h3>
-          <ul className="text-sm text-neutral-600 space-y-1 list-disc list-inside mb-4">
-            <li>You must be in a team.</li>
-            <li>Your team status must be <StatusBadge label="confirmed" color="#15803d" bg="#f0fdf4" />.</li>
-            <li>You must not already have an active proposal (<StatusBadge label="pending" color="#92400e" bg="#fef3c7" /> or <StatusBadge label="revision requested" color="#c2410c" bg="#fff7ed" />).</li>
-          </ul>
+          <div>
+            <SectionHeading>Pre-conditions checklist</SectionHeading>
+            <div className="mt-3 flex flex-col gap-2">
+              {[
+                "You must be in a team",
+                "Team status must be confirmed",
+                "No active proposal in pending or revision_requested state",
+              ].map((r, i) => (
+                <div key={i} className="flex items-center gap-2 rounded-lg px-3 py-2"
+                  style={{ backgroundColor: "#f0fdf4", border: "1px solid #bbf7d0" }}>
+                  <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full text-white"
+                    style={{ backgroundColor: "#16a34a" }}>
+                    <IconCheck size={10} />
+                  </span>
+                  <span className="text-sm text-neutral-700">{r}</span>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          <InfoBox type="note">
-            If the team is not yet confirmed, the page shows "Your team must be confirmed before submitting proposals." The <UiButton>New Proposal</UiButton> button is hidden.
-          </InfoBox>
+          <div>
+            <SectionHeading>Proposal lifecycle</SectionHeading>
+            <div className="mt-3">
+              <VerticalTimeline nodes={[
+                { label: "Submit proposal",       sublabel: "status: pending",                 color: "#d97706", bg: "#fffbeb" },
+                { label: "Faculty reviews",       sublabel: "approve / reject / request revision", color: "#1e3a5f", bg: "#eff6ff" },
+                { label: "Approved",              sublabel: "milestones become visible",       color: "#16a34a", bg: "#f0fdf4",
+                  icon: <IconCheck size={12} style={{ color: "#fff" }} /> },
+                { label: "Rejected",              sublabel: "read the reason, submit a new one", color: "#dc2626", bg: "#fef2f2" },
+                { label: "Revision requested",    sublabel: "edit and resubmit — version increments", color: "#7c3aed", bg: "#f5f3ff" },
+              ]} />
+            </div>
+          </div>
 
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-2">Submitting a proposal</h3>
-          <Step num={1} title='Click "New Proposal"'>
-            The proposal form expands on the same page.
-          </Step>
-          <Step num={2} title="Fill in the Title">
-            Enter a clear project title (max 200 characters).
-          </Step>
-          <Step num={3} title="Write a Description">
-            Describe the project clearly. This is a required multi-line text area.
-          </Step>
-          <Step num={4} title="Choose a Supervisor Faculty">
-            Select the faculty member who will supervise your project from the dropdown.
-          </Step>
-          <Step num={5} title="Select Sustainable Development Goals (SDGs)">
-            Check at least one SDG that your project aligns with. Each SDG shows a number and title. Selected SDGs are highlighted with a navy border.
-          </Step>
-          <Step num={6} title='Click "Submit"'>
-            If all fields are valid, the proposal is submitted with status <StatusBadge label="pending" color="#92400e" bg="#fef3c7" />. The page reloads showing it in the proposals list.
-          </Step>
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">Proposal statuses</h3>
-          <GuideTable
-            headers={["Status", "Meaning", "Your next action"]}
-            rows={[
-              ["pending", "Submitted and awaiting faculty review.", "Wait for faculty decision."],
-              ["approved", "Faculty approved your proposal.", "Milestones and submission windows will appear."],
-              ["rejected", "Faculty rejected. Rejection reason shown.", "Form a new proposal after reading the reason."],
-              ["revision requested", "Faculty wants changes. Revision notes shown.", "Click 'Resubmit' link to submit a revised version."],
-            ]}
-          />
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">Resubmitting a revised proposal</h3>
-          <Step num={1} title="Find your proposal with 'revision requested' status">
-            Revision notes from the faculty are shown in orange below the proposal description.
-          </Step>
-          <Step num={2} title='Click the "Resubmit →" link'>
-            This takes you to <code className="text-xs">/student/proposals/{`{id}`}/resubmit</code>.
-          </Step>
-          <Step num={3} title="Edit and resubmit">
-            Update the fields based on the revision notes and submit again.
-          </Step>
+          <div>
+            <SectionHeading>Submitting</SectionHeading>
+            <StepList steps={[
+              { title: "Click New Proposal", body: "The form expands on the page." },
+              { title: "Enter title and description", body: "Title max 200 chars. Description explains the project." },
+              { title: "Choose a faculty supervisor", body: "Select from faculty in your section." },
+              { title: "Select SDGs", body: "Pick at least one Sustainable Development Goal." },
+              { title: "Click Submit", body: "Proposal created with status pending." },
+            ]} />
+          </div>
 
           <InfoBox type="tip">
-            Each resubmission increments the version number (v1, v2, …) shown beside the proposal title.
+            Each resubmission increments the version number (v1, v2…) shown beside the proposal title.
           </InfoBox>
         </div>
       ),
@@ -376,39 +203,32 @@ export function StudentGuideClient() {
     {
       id: "milestones",
       title: "Milestones",
+      icon: <IconFlag size={14} />,
       content: (
-        <div>
-          <p className="text-sm text-neutral-600 mb-4">
-            The Milestones page (<code className="text-xs">/student/milestones</code>) shows a timeline of all project milestones set by your faculty supervisor.
+        <div className="flex flex-col gap-6">
+          <p className="text-sm text-neutral-600">
+            Milestones are set by your faculty after your proposal is approved. The Milestones page shows a timeline with names, descriptions, deadlines, and statuses.
           </p>
 
+          <div>
+            <SectionHeading>Milestone status meanings</SectionHeading>
+            <div className="mt-3 flex flex-col gap-2">
+              {([
+                ["Open",      "pending",  "Active — submit your work before the deadline."],
+                ["Completed", "approved", "Faculty marked this done after reviewing your upload."],
+                ["Missed",    "rejected", "Deadline passed without an accepted submission."],
+              ] as [string, "pending"|"approved"|"rejected", string][]).map(([label, v, desc]) => (
+                <div key={label} className="flex items-center gap-3 rounded-lg px-3 py-2"
+                  style={{ border: "1px solid #e5e7eb", backgroundColor: "#f9fafb" }}>
+                  <StatusPill label={label} variant={v} />
+                  <span className="text-xs text-neutral-500">{desc}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <InfoBox type="note">
-            Milestones only appear after your proposal is <StatusBadge label="approved" color="#15803d" bg="#f0fdf4" />. If no milestones exist yet, you see an empty-state message.
-          </InfoBox>
-
-          <h3 className="font-semibold text-neutral-800 mb-3">Reading the milestone timeline</h3>
-          <GuideTable
-            headers={["Field", "Meaning"]}
-            rows={[
-              ["Milestone name", "Short name for this deliverable (e.g., 'Literature Review')."],
-              ["Description", "What is expected for this milestone."],
-              ["Deadline", "The date by which the milestone must be completed."],
-              ["Status badge", "open / completed / missed."],
-            ]}
-          />
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">Milestone status meanings</h3>
-          <GuideTable
-            headers={["Status", "Colour", "Meaning"]}
-            rows={[
-              ["open", "Amber", "Milestone is active. Submit your work through Submissions."],
-              ["completed", "Green", "Faculty marked this milestone as done."],
-              ["missed", "Red", "Deadline passed without a submission being accepted."],
-            ]}
-          />
-
-          <InfoBox type="tip">
-            Students cannot change milestone status directly. Upload your submissions on time - faculty marks milestones complete after reviewing them.
+            Students cannot change milestone status. Upload your work on time — faculty marks milestones complete.
           </InfoBox>
         </div>
       ),
@@ -416,92 +236,42 @@ export function StudentGuideClient() {
     {
       id: "submissions",
       title: "Submissions",
+      icon: <IconUpload size={14} />,
       content: (
-        <div>
-          <p className="text-sm text-neutral-600 mb-4">
-            The Submissions page (<code className="text-xs">/student/submissions</code>) is where you upload deliverables for each milestone.
+        <div className="flex flex-col gap-6">
+          <p className="text-sm text-neutral-600">
+            The Submissions page is where you upload deliverables within the time windows opened by your faculty.
           </p>
 
-          <InfoBox type="note">
-            This page is only populated once you have an approved proposal with milestones and at least one open submission window. Otherwise you see "No active milestones."
-          </InfoBox>
+          <div>
+            <SectionHeading>What you can submit per window</SectionHeading>
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              {[
+                { type: "PPT",    formats: ".pptx / .ppt", color: "#1e3a5f", bg: "#eff6ff" },
+                { type: "Report", formats: ".pdf only",    color: "#7c3aed", bg: "#f5f3ff" },
+                { type: "GitHub", formats: "Repository URL", color: "#16a34a", bg: "#f0fdf4" },
+              ].map((f) => (
+                <div key={f.type} className="rounded-xl p-3 text-center"
+                  style={{ backgroundColor: f.bg, border: `1px solid ${f.color}33` }}>
+                  <p className="text-sm font-semibold" style={{ color: f.color }}>{f.type}</p>
+                  <p className="mt-1 text-xs text-neutral-500">{f.formats}</p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-          <h3 className="font-semibold text-neutral-800 mb-3">Page layout</h3>
-          <p className="text-sm text-neutral-600 mb-3">
-            Each milestone appears as a card. Inside each card are the submission windows created by your faculty.
-          </p>
-
-          <h3 className="font-semibold text-neutral-800 mb-3">Submission window states</h3>
-          <GuideTable
-            headers={["Badge", "Meaning"]}
-            rows={[
-              ["Window Open (green)", "You can upload files or submit a GitHub link right now."],
-              ["Window Closed (grey)", "The window has passed. No new uploads accepted."],
-            ]}
-          />
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">What you can submit (per window)</h3>
-          <GuideTable
-            headers={["Type", "Accepted format", "How to submit"]}
-            rows={[
-              ["PPT", ".pptx or .ppt", "Click the file input in the PPT section and choose the file. Upload starts immediately."],
-              ["Report", ".pdf only", "Click the file input in the Report section and choose the PDF."],
-              ["GitHub Repository", "Valid GitHub URL", "Paste the URL and click Submit."],
-            ]}
-          />
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">Uploading a file</h3>
-          <Step num={1} title="Ensure the window is open">
-            The <StatusBadge label="Window Open" color="#15803d" bg="#f0fdf4" /> badge must be green. If it is grey, the window has closed.
-          </Step>
-          <Step num={2} title="Click the file input">
-            For PPT section choose a .pptx or .ppt file. For Report section choose a .pdf file.
-          </Step>
-          <Step num={3} title="Wait for upload">
-            "Uploading…" text appears. Do not navigate away.
-          </Step>
-          <Step num={4} title="Confirm submission">
-            On success, a green <span className="text-xs text-green-600 font-medium">Submitted ✓</span> label appears. If you need to update, upload again while the window is still open.
-          </Step>
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-4">Submitting a GitHub link</h3>
-          <Step num={1} title="Find the GitHub Repository section in an open window">
-            Below the PPT and Report sections.
-          </Step>
-          <Step num={2} title="Paste your repository URL">
-            Format: <code className="text-xs bg-neutral-100 px-1 rounded">https://github.com/owner/repo</code>
-          </Step>
-          <Step num={3} title='Click "Submit"'>
-            The link is saved. The current URL is shown in green for reference.
-          </Step>
+          <div>
+            <SectionHeading>Upload steps</SectionHeading>
+            <StepList steps={[
+              { title: "Find the milestone and open window", body: <><StatusPill label="Window Open" variant="approved" /> badge must be green. Grey = window closed.</> },
+              { title: "Click the file input", body: "Choose the correct file type (.pptx for PPT, .pdf for report)." },
+              { title: "Wait for upload", body: "'Uploading…' text appears. Do not navigate away." },
+              { title: "Confirm", body: "A green Submitted ✓ label appears. Upload again while the window is open if you need to update." },
+            ]} />
+          </div>
 
           <InfoBox type="warning">
-            Once a submission window closes, existing submissions are locked. You cannot upload or update after the window closes.
-          </InfoBox>
-        </div>
-      ),
-    },
-    {
-      id: "notifications",
-      title: "Notifications",
-      content: (
-        <div>
-          <p className="text-sm text-neutral-600 mb-4">
-            The Notifications page (<code className="text-xs">/student/notifications</code>) shows all system notifications sent to you - proposal decisions, milestone updates, and team events.
-          </p>
-          <h3 className="font-semibold text-neutral-800 mb-3">What triggers a notification</h3>
-          <GuideTable
-            headers={["Event", "Notification sent"]}
-            rows={[
-              ["Proposal approved", "Your proposal was approved."],
-              ["Proposal rejected", "Your proposal was rejected with a reason."],
-              ["Revision requested", "Faculty requests changes to your proposal."],
-              ["Team invitation received", "You have been invited to join a team."],
-              ["Milestone created", "A new milestone has been added to your project."],
-            ]}
-          />
-          <InfoBox type="tip">
-            Unread notifications are usually highlighted. Mark them as read by clicking on them (behaviour depends on your version of AcadeX).
+            Once a window closes, uploads are locked. No changes accepted after closure.
           </InfoBox>
         </div>
       ),
@@ -509,53 +279,91 @@ export function StudentGuideClient() {
     {
       id: "profile",
       title: "Profile",
+      icon: <IconSettings size={14} />,
       content: (
-        <div>
-          <p className="text-sm text-neutral-600 mb-4">
-            The Profile page (<code className="text-xs">/student/profile</code>) lets you update personal information.
+        <div className="flex flex-col gap-6">
+          <p className="text-sm text-neutral-600">
+            Your profile is visible to faculty when reviewing team compositions and onboarding submissions.
           </p>
-          <GuideTable
-            headers={["Field", "Editable by student?", "Notes"]}
+
+          <RuleTable
+            headers={["Field", "Editable?", "Notes"]}
             rows={[
-              ["Full name", "Yes", "Used across the portal for display."],
-              ["Email", "No", "Managed by the administrator."],
-              ["USN", "No", "Set by the administrator."],
-              ["CGPA", "No", "Set by the administrator - affects team eligibility."],
-              ["Password", "Via Forgot Password flow", "Use the forgot-password link on the login page."],
+              ["Full name",  "No",                   "Set by admin."],
+              ["Email",      "No",                   "Managed by admin."],
+              ["USN",        "No",                   "Affects CGPA display. Contact admin to change."],
+              ["CGPA",       "No",                   "Affects team slot eligibility. Contact admin to change."],
+              ["GitHub URL", "Yes",                  "Visible to faculty in team dashboards."],
+              ["Skills",     "Yes (max 20)",          "Visible during onboarding review."],
+              ["Resume",     "Yes (PDF, max 20 MB)", "Visible to faculty."],
+              ["Password",   "Via forgot-password",  "Use the link on the login page."],
             ]}
           />
+
           <InfoBox type="note">
-            If your CGPA or USN is incorrect, contact your department administrator. Students cannot edit these directly.
+            If your CGPA or USN is incorrect, contact your department administrator. You cannot edit these yourself.
           </InfoBox>
         </div>
       ),
     },
     {
-      id: "workflow",
-      title: "Complete Student Workflow",
+      id: "notifications",
+      title: "Notifications",
+      icon: <IconBell size={14} />,
       content: (
-        <div>
-          <p className="text-sm text-neutral-600 mb-4">
-            This section shows the end-to-end flow from login to final submission.
+        <div className="flex flex-col gap-6">
+          <p className="text-sm text-neutral-600">
+            Notifications appear in-app and are also emailed to you for important events.
           </p>
 
-          <h3 className="font-semibold text-neutral-800 mb-3">System flow diagram</h3>
-          <FlowRow steps={["Login (/login)", "Dashboard (/student)", "Join or Form Team (/student/teams)"]} />
-          <FlowRow steps={["Team: forming", "Faculty confirms team", "Team: confirmed"]} />
-          <FlowRow steps={["Submit Proposal (/student/proposals)", "Faculty reviews"]} />
-          <FlowRow steps={["Proposal: approved", "Milestones created by faculty", "Submission windows open"]} />
-          <FlowRow steps={["Upload PPT + Report + GitHub (/student/submissions)", "Milestone marked complete"]} />
-
-          <h3 className="font-semibold text-neutral-800 mb-3 mt-6">Edge cases & what to do</h3>
-          <GuideTable
-            headers={["Situation", "Cause", "Resolution"]}
+          <RuleTable
+            headers={["Event", "Notification sent to you"]}
             rows={[
-              ["Cannot see 'New Proposal' button", "Team not confirmed yet or already have active proposal.", "Wait for team confirmation or resolve the active proposal."],
-              ["Join button is disabled for all teams", "Your CGPA does not meet any slot requirement.", "Form your own team or ask your advisor."],
-              ["Submission window is missing", "Faculty has not created a window for that milestone.", "Contact your faculty supervisor."],
-              ["File upload fails", "Wrong file type or server error shown.", "Check file format (.pptx/.ppt for PPT; .pdf for report) and retry."],
-              ["Proposal stuck at 'pending'", "Faculty has not reviewed it yet.", "Check notifications for updates or contact faculty."],
-              ["Cannot invite a student", "All section mates already invited or team is confirmed.", "Team is full or locked; no further invitations possible."],
+              ["Proposal approved",          "Your proposal was approved by faculty."],
+              ["Proposal rejected",          "Your proposal was rejected — reason included."],
+              ["Revision requested",         "Faculty requests changes to your proposal."],
+              ["Team invitation received",   "Another team lead has invited you to join."],
+              ["Milestone deadline reminder","Upcoming deadline approaching (sent 3 days before)."],
+            ]}
+          />
+        </div>
+      ),
+    },
+    {
+      id: "workflow",
+      title: "Complete Workflow",
+      icon: <IconFlag size={14} />,
+      content: (
+        <div className="flex flex-col gap-6">
+          <p className="text-sm text-neutral-600">End-to-end flow from first login to final submission.</p>
+
+          <div>
+            <SectionHeading>Full student timeline</SectionHeading>
+            <div className="mt-3">
+              <VerticalTimeline nodes={[
+                { label: "Receive credentials",       sublabel: "from admin or onboarding link",        color: "#1e3a5f", bg: "#eff6ff" },
+                { label: "Login",                     sublabel: "/login → /student",                   color: "#0369a1", bg: "#f0f9ff" },
+                { label: "Join or form a team",       sublabel: "/student/teams",                      color: "#7c3aed", bg: "#f5f3ff" },
+                { label: "Invite team members",       sublabel: "Lead only — section mates",           color: "#d97706", bg: "#fffbeb" },
+                { label: "Faculty confirms team",     sublabel: "status: forming → confirmed",         color: "#0369a1", bg: "#f0f9ff" },
+                { label: "Submit proposal",           sublabel: "/student/proposals",                  color: "#7c3aed", bg: "#f5f3ff" },
+                { label: "Proposal approved",         sublabel: "faculty reviews",                     color: "#16a34a", bg: "#f0fdf4" },
+                { label: "Track milestones",          sublabel: "/student/milestones",                 color: "#0369a1", bg: "#f0f9ff" },
+                { label: "Upload deliverables",       sublabel: "/student/submissions",                color: "#7c3aed", bg: "#f5f3ff" },
+                { label: "Milestone marked complete", sublabel: "faculty action — cycle ends",         color: "#16a34a", bg: "#f0fdf4",
+                  icon: <IconCheck size={12} style={{ color: "#fff" }} /> },
+              ]} />
+            </div>
+          </div>
+
+          <SectionHeading>Common issues</SectionHeading>
+          <RuleTable
+            headers={["Problem", "Cause", "Fix"]}
+            rows={[
+              ["New Proposal button not visible",  "Team not confirmed or existing active proposal", "Wait for confirmation or resolve the existing proposal"],
+              ["Join button disabled on all teams","CGPA does not meet any slot requirement",        "Form your own team"],
+              ["No submission window shown",       "Faculty has not opened a window",               "Contact your faculty supervisor"],
+              ["File upload fails",                "Wrong file type",                               "Check format: .pptx/.ppt for PPT, .pdf for report"],
             ]}
           />
         </div>
@@ -563,69 +371,5 @@ export function StudentGuideClient() {
     },
   ];
 
-  return (
-    <div>
-      {/* Mobile section select — sits above content on small screens */}
-      <div className="lg:hidden mb-4">
-        <label className="block text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Jump to section</label>
-        <select
-          value={activeSection}
-          onChange={(e) => setActiveSection(e.target.value)}
-          className="block w-full rounded px-3 py-2 text-sm"
-          style={{ border: "1px solid #d1d5db", backgroundColor: "#fff" }}
-        >
-          {sections.map((s) => (
-            <option key={s.id} value={s.id}>{s.title}</option>
-          ))}
-        </select>
-      </div>
-
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* Desktop sidebar navigation */}
-        <aside
-          className="hidden lg:block w-56 flex-shrink-0"
-          style={{ position: "sticky", top: "1.5rem", alignSelf: "flex-start" }}
-        >
-          <div className="rounded-xl overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
-            <div className="px-4 py-3" style={{ backgroundColor: "#1e3a5f" }}>
-              <p className="text-xs font-bold text-white uppercase tracking-wider">Sections</p>
-            </div>
-            <nav className="flex flex-col">
-              {sections.map((s, i) => (
-                <button
-                  key={s.id}
-                  onClick={() => setActiveSection(s.id)}
-                  className="px-4 py-2.5 text-left text-sm transition-colors"
-                  style={{
-                    backgroundColor: activeSection === s.id ? "#eff6ff" : i % 2 === 0 ? "#ffffff" : "#f9fafb",
-                    color: activeSection === s.id ? "#1e3a5f" : "#374151",
-                    fontWeight: activeSection === s.id ? "600" : "400",
-                    borderLeft: activeSection === s.id ? "3px solid #1e3a5f" : "3px solid transparent",
-                  }}
-                >
-                  {s.title}
-                </button>
-              ))}
-            </nav>
-          </div>
-        </aside>
-
-        {/* Content area */}
-        <main className="flex-1 min-w-0">
-          {sections.map((s) =>
-            s.id === activeSection ? (
-              <div key={s.id}>
-                <h2 className="text-xl font-bold text-neutral-900 mb-1">{s.title}</h2>
-                <div
-                  className="mb-6 h-1 w-16 rounded"
-                  style={{ backgroundColor: "#1e3a5f" }}
-                />
-                {s.content}
-              </div>
-            ) : null
-          )}
-        </main>
-      </div>
-    </div>
-  );
+  return <GuideShell sections={sections} />;
 }

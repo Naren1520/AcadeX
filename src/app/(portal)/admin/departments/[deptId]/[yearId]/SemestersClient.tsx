@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { FormError } from "@/components/forms/FormError";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import type { Semester } from "./page";
 
 interface Props {
@@ -53,9 +54,10 @@ export function SemestersClient({ deptId, deptCode, yearId, initialSemesters }: 
       </div>
 
       {semesters.length === 0 && (
-        <div className="rounded-lg p-10 text-center text-sm text-neutral-500" style={{ border: "2px dashed #e5e7eb" }}>
-          No semesters yet for <strong>{deptCode}</strong>. Add one to get started.
-        </div>
+        <EmptyState
+          title="No semesters yet"
+          description={`Add a semester for ${deptCode} to get started.`}
+        />
       )}
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

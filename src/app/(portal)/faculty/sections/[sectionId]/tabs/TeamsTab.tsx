@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { IconUsers, IconCheck, IconAlertCircle } from "@/components/ui/Icon";
+import { EmptyState } from "@/components/feedback/Skeleton";
 
 interface SlotDef { cgpa_lower: number; cgpa_upper: number; count: number; label: string }
 
@@ -209,11 +210,10 @@ export function TeamsTab({ sectionId, initialTeams }: Props) {
       </div>
 
       {teams.length === 0 ? (
-        <div className="rounded-xl p-10 text-center text-sm text-neutral-500"
-          style={{ border: "2px dashed #e5e7eb" }}>
-          <IconUsers size={28} style={{ color: "#9ca3af", margin: "0 auto 8px" }} />
-          No teams yet. Students can form teams using the Team Rules you define.
-        </div>
+        <EmptyState
+          title="No teams yet"
+          description="Students can form teams using the Team Rules you define."
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {teams.map((t) => <TeamCard key={t.id} team={t} />)}

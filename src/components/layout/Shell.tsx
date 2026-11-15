@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sidebar, type NavItem } from "./Sidebar";
 import { Header } from "./Header";
+import { NetworkStatus } from "./NetworkStatus";
 
 interface ShellProps {
   children: React.ReactNode;
@@ -40,6 +41,7 @@ export function Shell({
           unreadCount={unreadCount}
           onMenuToggle={() => setMobileMenuOpen((o) => !o)}
         />
+        <NetworkStatus />
         <main className="flex-1 overflow-y-auto">
           {children}
         </main>

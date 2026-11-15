@@ -3,10 +3,20 @@
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { IconUsers, IconFileText, IconFlag, IconClipboard } from "@/components/ui/Icon";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import type { SectionCard } from "./page";
 
 export function SectionListClient({ cards }: { cards: SectionCard[] }) {
   const router = useRouter();
+
+  if (cards.length === 0) {
+    return (
+      <EmptyState
+        title="No sections assigned"
+        description="You haven't been assigned to any section yet. Contact your admin."
+      />
+    );
+  }
 
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

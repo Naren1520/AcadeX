@@ -3,10 +3,20 @@
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { IconUsers, IconFileText, IconFlag, IconUpload } from "@/components/ui/Icon";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import type { MenteeTeamCard } from "./page";
 
 export function MenteeTeamsClient({ cards }: { cards: MenteeTeamCard[] }) {
   const router = useRouter();
+
+  if (cards.length === 0) {
+    return (
+      <EmptyState
+        title="No mentee teams"
+        description="You haven't been assigned as a mentor for any team yet."
+      />
+    );
+  }
 
   return (
     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

@@ -3,50 +3,123 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { Shell } from "@/components/layout/Shell";
 import { PageWrapper } from "@/components/layout/PageWrapper";
-import { Card, CardContent } from "@/components/ui/Card";
-import { IconArrowRight } from "@/components/ui/Icon";
 import { adminNav } from "@/config/navigation";
+import { AdminDashboardClient } from "./AdminDashboardClient";
 
 export default async function AdminDashboard() {
   const supabase = await getSupabaseServerClient();
   const { data: { session } } = await supabase.auth.getSession();
   if (!session) redirect("/login");
 
-  const userId = session.user.id;
-
-  // Use service role to read profile - bypasses RLS
   const service = getSupabaseServiceRoleClient();
   const { data: profile } = await service
     .from("profiles")
     .select("role, full_name")
-    .eq("id", userId)
+    .eq("id", session.user.id)
     .single() as { data: { role: string; full_name: string } | null };
 
-  // Wrong role - redirect to their dashboard
   if (!profile) redirect("/login");
   if (profile.role === "faculty") redirect("/faculty");
   if (profile.role === "student") redirect("/student");
   if (profile.role !== "admin") redirect("/login");
 
-  const [{ count: deptCount }, { count: studentCount }, { count: facultyCount }] =
-    await Promise.all([
-      service.from("departments").select("id", { count: "exact", head: true }).eq("is_active", true),
-      service.from("profiles").select("id", { count: "exact", head: true }).eq("role", "student"),
-      service.from("profiles").select("id", { count: "exact", head: true }).eq("role", "faculty"),
-    ]);
+  const [
+    { count: deptCount },
+    { count: studentCount },
+    { count: facultyCount },
+    { count: sectionCount },
+    { count: teamCount },
+    { count: proposalCount },
+    { data: departments },
+    { data: students },
+    { data: facultyAssignments },
+    { data: teams },
+    { data: proposals },
+    { data: semesters },
+    { data: sections },
+    { data: recentProfiles },
+  ] = await Promise.all([
+    service.from("departments").select("id", { count: "exact", head: true }).eq("is_active", true),
+    service.from("profiles").select("id", { count: "exact", head: true }).eq("role", "student"),
+    service.from("profiles").select("id", { count: "exact", head: true }).eq("role", "faculty"),
+    service.from("sections").select("id", { count: "exact", head: true }),
+    service.from("teams").select("id", { count: "exact", head: true }),
+    service.from("proposals").select("id", { count: "exact", head: true }),
+    service.from("departments").select("id, code").eq("is_active", true),
+    service.from("students").select("id, department_id"),
+    service.from("faculty_assignments").select("faculty_id, department_id"),
+    service.from("teams").select("id, status"),
+    service.from("proposals").select("id, status"),
+    service.from("semesters").select("id, label"),
+    service.from("sections").select("id, semester_id"),
+    service.from("profiles").select("role, created_at").in("role", ["student", "faculty"]),
+  ]);
 
-  const stats = [
-    { label: "Active Departments", value: deptCount ?? 0 },
-    { label: "Students", value: studentCount ?? 0 },
-    { label: "Faculty", value: facultyCount ?? 0 },
+  // Students per department
+  type Dept = { id: string; code: string };
+  const deptList = (departments ?? []) as Dept[];
+
+  const studentsByDept = deptList.map((d) => ({
+    dept: d.code,
+    count: (students ?? []).filter((s: { department_id: string }) => s.department_id === d.id).length,
+  }));
+
+  // Faculty per department (via assignments — count unique faculty per dept)
+  const facultyByDept = deptList.map((d) => {
+    const unique = new Set(
+      (facultyAssignments ?? [])
+        .filter((a: { department_id: string }) => a.department_id === d.id)
+        .map((a: { faculty_id: string }) => a.faculty_id)
+    );
+    return { dept: d.code, count: unique.size };
+  });
+
+  // Team status breakdown
+  const teamStatusMap: Record<string, number> = {};
+  (teams ?? []).forEach((t: { status: string }) => {
+    teamStatusMap[t.status] = (teamStatusMap[t.status] ?? 0) + 1;
+  });
+  const teamsByStatus = [
+    { name: "Forming",   value: teamStatusMap["forming"]   ?? 0, color: "#d97706" },
+    { name: "Confirmed", value: teamStatusMap["confirmed"] ?? 0, color: "#16a34a" },
+    { name: "Dissolved", value: teamStatusMap["dissolved"] ?? 0, color: "#9ca3af" },
   ];
 
-  const quickActions = [
-    { label: "Manage Departments", href: "/admin/departments" },
-    { label: "Manage Academic Years", href: "/admin/academic-years" },
-    { label: "Assign Faculty", href: "/admin/faculty-assignments" },
-    { label: "View Audit Logs", href: "/admin/audit-logs" },
+  // Proposal status breakdown
+  const propStatusMap: Record<string, number> = {};
+  (proposals ?? []).forEach((p: { status: string }) => {
+    propStatusMap[p.status] = (propStatusMap[p.status] ?? 0) + 1;
+  });
+  const proposalsByStatus = [
+    { name: "Pending",  value: propStatusMap["pending"]            ?? 0, color: "#d97706" },
+    { name: "Approved", value: propStatusMap["approved"]           ?? 0, color: "#16a34a" },
+    { name: "Rejected", value: propStatusMap["rejected"]           ?? 0, color: "#dc2626" },
+    { name: "Revision", value: propStatusMap["revision_requested"] ?? 0, color: "#7c3aed" },
   ];
+
+  // Sections per semester
+  type Semester = { id: string; label: string };
+  const semList = (semesters ?? []) as Semester[];
+  const sectionsBySemester = semList.map((sem) => ({
+    semester: sem.label,
+    sections: (sections ?? []).filter((s: { semester_id: string }) => s.semester_id === sem.id).length,
+  })).filter((s) => s.sections > 0);
+
+  // Registration trend — last 6 months
+  const now = new Date();
+  const registrationTrend = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - 5 + i, 1);
+    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+    const monthLabel = d.toLocaleDateString("en", { month: "short" });
+    const profilesInMonth = (recentProfiles ?? []).filter((p: { created_at: string }) =>
+      p.created_at.startsWith(key)
+    );
+    return {
+      month: monthLabel,
+      students: profilesInMonth.filter((p: { role: string }) => p.role === "student").length,
+      faculty:  profilesInMonth.filter((p: { role: string }) => p.role === "faculty").length,
+    };
+  });
 
   return (
     <Shell
@@ -57,37 +130,24 @@ export default async function AdminDashboard() {
     >
       <PageWrapper
         title="Admin Dashboard"
-        description="Manage the platform's academic structure and settings."
+        description="Overview of the platform's academic structure and activity."
       >
-        <div className="grid gap-4 sm:grid-cols-3">
-          {stats.map((stat) => (
-            <Card key={stat.label}>
-              <CardContent>
-                <p className="text-sm text-neutral-500">{stat.label}</p>
-                <p className="mt-1 text-3xl font-bold" style={{ color: "#1e3a5f" }}>
-                  {stat.value}
-                </p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        <div className="mt-8">
-          <h2 className="mb-4 text-base font-semibold text-neutral-900">Quick Actions</h2>
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {quickActions.map((action) => (
-              <a
-                key={action.href}
-                href={action.href}
-                className="flex items-center justify-between rounded p-4 text-sm font-medium text-neutral-900 transition-colors hover:bg-neutral-50"
-                style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}
-              >
-                {action.label}
-                <IconArrowRight size={16} style={{ color: "#1e3a5f", flexShrink: 0 }} />
-              </a>
-            ))}
-          </div>
-        </div>
+        <AdminDashboardClient
+          stats={{
+            departments: deptCount ?? 0,
+            students:    studentCount ?? 0,
+            faculty:     facultyCount ?? 0,
+            sections:    sectionCount ?? 0,
+            teams:       teamCount ?? 0,
+            proposals:   proposalCount ?? 0,
+          }}
+          studentsByDept={studentsByDept}
+          facultyByDept={facultyByDept}
+          teamsByStatus={teamsByStatus}
+          proposalsByStatus={proposalsByStatus}
+          registrationTrend={registrationTrend}
+          sectionsBySemester={sectionsBySemester}
+        />
       </PageWrapper>
     </Shell>
   );

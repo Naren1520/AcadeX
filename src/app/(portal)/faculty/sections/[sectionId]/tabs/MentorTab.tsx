@@ -6,6 +6,7 @@ import { Select } from "@/components/ui/Select";
 import { Badge } from "@/components/ui/Badge";
 import { Dialog } from "@/components/ui/Dialog";
 import { FormError } from "@/components/forms/FormError";
+import { EmptyState } from "@/components/feedback/Skeleton";
 
 interface TeamWithMentor {
   team_id: string;
@@ -74,10 +75,10 @@ export function MentorTab({ sectionId, facultyId, initialTeams, facultyList }: P
       </p>
 
       {teams.length === 0 ? (
-        <div className="rounded-xl p-10 text-center text-sm text-neutral-500"
-          style={{ border: "2px dashed #e5e7eb" }}>
-          No teams in this section yet.
-        </div>
+        <EmptyState
+          title="No teams yet"
+          description="Teams will appear here once students form them in this section."
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {teams.map((t) => {

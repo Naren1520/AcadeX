@@ -2,6 +2,7 @@ import { requirePageRole } from "@/lib/supabase/pageAuth";
 import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { Shell } from "@/components/layout/Shell";
 import { PageWrapper } from "@/components/layout/PageWrapper";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import { facultyNav } from "@/config/navigation";
 import { MenteeTeamsClient } from "./MenteeTeamsClient";
 
@@ -35,10 +36,10 @@ export default async function MenteePage() {
         breadcrumbs={[{ label: "Faculty", href: "/faculty" }, { label: "Mentee Teams" }]}
         userFullName={fullName}>
         <PageWrapper title="Mentee Teams" description="Teams assigned to you as project mentor.">
-          <div className="rounded-xl p-12 text-center text-sm text-neutral-500"
-            style={{ border: "2px dashed #e5e7eb" }}>
-            No teams have been assigned to you as mentor yet.
-          </div>
+          <EmptyState
+            title="No mentee teams yet"
+            description="No teams have been assigned to you as mentor yet."
+          />
         </PageWrapper>
       </Shell>
     );

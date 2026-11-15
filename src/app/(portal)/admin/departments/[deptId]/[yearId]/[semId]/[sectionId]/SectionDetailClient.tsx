@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { Select } from "@/components/ui/Select";
 import { FormError } from "@/components/forms/FormError";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import type {
   StudentInSection, FacultyInSection,
   StudentOption, FacultyOption,
@@ -157,8 +158,8 @@ export function SectionDetailClient({
           {/* List */}
           <div className="divide-y divide-neutral-100">
             {faculty.length === 0 ? (
-              <div className="px-5 py-8 text-center text-sm text-neutral-400">
-                No faculty assigned yet.
+              <div className="px-5 py-2">
+                <EmptyState title="No faculty assigned yet" />
               </div>
             ) : (
               faculty.map((f) => (
@@ -251,8 +252,8 @@ export function SectionDetailClient({
           {/* List */}
           <div className="divide-y divide-neutral-100">
             {students.length === 0 ? (
-              <div className="px-5 py-8 text-center text-sm text-neutral-400">
-                No students enrolled yet.
+              <div className="px-5 py-2">
+                <EmptyState title="No students enrolled yet" />
               </div>
             ) : (
               students.map((s) => (

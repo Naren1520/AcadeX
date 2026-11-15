@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { FormError } from "@/components/forms/FormError";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import type { SubmissionWindow } from "../page";
 
 function isOpen(opens: string, closes: string) {
@@ -65,10 +66,10 @@ export function SubmissionWindowsTab({ initialWindows, openMilestones }: Props) 
       </div>
 
       {windows.length === 0 ? (
-        <div className="rounded-xl p-10 text-center text-sm text-neutral-500"
-          style={{ border: "2px dashed #e5e7eb" }}>
-          No submission windows yet.
-        </div>
+        <EmptyState
+          title="No submission windows"
+          description={openMilestones.length === 0 ? "Create a milestone first, then open a submission window for it." : "Click \"Create Window\" to open the first submission window."}
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {windows.map((w) => {

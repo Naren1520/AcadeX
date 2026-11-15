@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/Input";
 import { Dialog } from "@/components/ui/Dialog";
 import { Select } from "@/components/ui/Select";
 import { FormError } from "@/components/forms/FormError";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import { checkEligibility, findMatchingSlot } from "@/server/workflows/teamFormationEngine";
 import type { TeamFormationRule, SlotDefinition } from "@/server/workflows/teamFormationEngine";
 import { IconUsers, IconCheck, IconAlertCircle } from "@/components/ui/Icon";
@@ -363,10 +364,10 @@ export function TeamsClient({
           </h2>
           <FormError message={joinError} />
           {sectionTeams.length === 0 ? (
-            <div className="rounded-xl p-8 text-center text-sm text-neutral-500"
-              style={{ border: "2px dashed #e5e7eb" }}>
-              No teams accepting members right now.
-            </div>
+            <EmptyState
+              title="No teams available"
+              description="No teams are accepting members right now. Form a new one below."
+            />
           ) : (
             <div className="flex flex-col gap-3">
               {sectionTeams.map((t) => {

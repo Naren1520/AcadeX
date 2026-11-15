@@ -7,10 +7,10 @@ import { Dialog } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { Badge } from "@/components/ui/Badge";
 import { FormError } from "@/components/forms/FormError";
-import {
-  IconUsers, IconUpload, IconDownload, IconFolder,
+import { IconUsers, IconUpload, IconDownload, IconFolder,
   IconCheck, IconAlertCircle, IconGitHub,
 } from "@/components/ui/Icon";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import type { Student } from "../page";
 import type { BulkStudentResult } from "@/app/api/faculty/sections/[sectionId]/students/bulk/route";
 
@@ -247,11 +247,10 @@ export function StudentsTab({
 
       {/* Students list */}
       {students.length === 0 ? (
-        <div className="rounded-xl p-10 text-center" style={{ border: "2px dashed #e5e7eb" }}>
-          <IconUsers size={32} style={{ color: "#9ca3af", margin: "0 auto 8px" }} />
-          <p className="text-sm text-neutral-500">No students in this section yet.</p>
-          {canManage && <p className="text-xs text-neutral-400 mt-1">Click "+ Add Student" or use Bulk Upload.</p>}
-        </div>
+        <EmptyState
+          title="No students yet"
+          description={canManage ? "Click \"+ Add Student\" or use Bulk Upload to enrol students." : undefined}
+        />
       ) : (
         <div className="overflow-hidden rounded-xl" style={{ border: "1px solid #e5e7eb" }}>
           <table className="w-full text-sm">

@@ -23,6 +23,7 @@ export const adminNav: NavItem[] = [
   { label: "Students",            href: "/admin/students",              icon: <IconUsers size={16} /> },
   { label: "Audit Logs",          href: "/admin/audit-logs",            icon: <IconFileText size={16} /> },
   { label: "Notifications",       href: "/admin/notifications",         icon: <IconBell size={16} /> },
+  { label: "Guide",               href: "/admin/guide",                 icon: <IconFileText size={16} /> },
 ];
 
 export const facultyNav: NavItem[] = [

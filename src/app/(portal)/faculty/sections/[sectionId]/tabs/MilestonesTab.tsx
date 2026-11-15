@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { FormError } from "@/components/forms/FormError";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import type { Milestone } from "../page";
 
 const statusVariant: Record<Milestone["status"], "pending" | "approved" | "rejected"> = {
@@ -70,10 +71,10 @@ export function MilestonesTab({ initialMilestones, approvedProposals }: Props) {
       </div>
 
       {milestones.length === 0 ? (
-        <div className="rounded-xl p-10 text-center text-sm text-neutral-500"
-          style={{ border: "2px dashed #e5e7eb" }}>
-          No milestones yet.
-        </div>
+        <EmptyState
+          title="No milestones yet"
+          description={approvedProposals.length === 0 ? "Approve a proposal first, then create milestones for it." : "Click \"Add Milestone\" to create the first one."}
+        />
       ) : (
         <div className="flex flex-col gap-3">
           {milestones.map((m) => (

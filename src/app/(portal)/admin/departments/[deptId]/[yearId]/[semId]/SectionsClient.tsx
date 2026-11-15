@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { Dialog } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { FormError } from "@/components/forms/FormError";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import type { Section } from "./page";
 
 interface Props {
@@ -58,9 +59,10 @@ export function SectionsClient({
       </div>
 
       {sections.length === 0 && (
-        <div className="rounded-lg p-10 text-center text-sm text-neutral-500" style={{ border: "2px dashed #e5e7eb" }}>
-          No sections yet.{!isClosed && " Click \"Add Section\" to create one."}
-        </div>
+        <EmptyState
+          title="No sections yet"
+          description={!isClosed ? "Click \"Add Section\" to create the first section." : undefined}
+        />
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -7,6 +7,7 @@ import { Dialog } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { FormError } from "@/components/forms/FormError";
 import { IconCheck, IconAlertCircle, IconDownload } from "@/components/ui/Icon";
+import { EmptyState } from "@/components/feedback/Skeleton";
 
 interface Invitation {
   id: string;
@@ -195,10 +196,10 @@ export function OnboardingTab({
           )}
 
           {invitations.length === 0 ? (
-            <div className="rounded-xl p-10 text-center text-sm text-neutral-500"
-              style={{ border: "2px dashed #e5e7eb" }}>
-              No invitation links yet. Create one to allow students to self-register.
-            </div>
+            <EmptyState
+              title="No invitation links"
+              description="Create one to allow students to self-register for this section."
+            />
           ) : (
             <div className="flex flex-col gap-3">
               {invitations.map((inv) => {
@@ -245,10 +246,10 @@ export function OnboardingTab({
       {subTab === "submissions" && (
         <div className="flex flex-col gap-3">
           {submissions.length === 0 ? (
-            <div className="rounded-xl p-10 text-center text-sm text-neutral-500"
-              style={{ border: "2px dashed #e5e7eb" }}>
-              No submissions yet.
-            </div>
+            <EmptyState
+              title="No submissions yet"
+              description="Student registration submissions will appear here for review."
+            />
           ) : (
             submissions.map((s) => (
               <div key={s.id} className="rounded-xl p-5" style={{ border: "1px solid #e5e7eb", backgroundColor: "#fff" }}>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { IconUsers, IconFileText, IconFlag, IconClipboard, IconChat } from "@/components/ui/Icon";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import { ChatPanel } from "./chat/ChatPanel";
 import type { TeamPageMember, TeamPageMentor, TeamPageProposal, TeamPageMilestone } from "./page";
 
@@ -200,9 +201,10 @@ function ProposalsTab({ proposals }: { proposals: TeamPageProposal[] }) {
   return (
     <div className="flex flex-col gap-3">
       {proposals.length === 0 ? (
-        <div className="rounded-xl p-10 text-center text-sm text-neutral-500" style={{ border: "2px dashed #e5e7eb" }}>
-          No proposals submitted yet.
-        </div>
+        <EmptyState
+          title="No proposals yet"
+          description="Once your team is confirmed, submit a proposal to get started."
+        />
       ) : proposals.map((p) => (
         <div key={p.id} className="rounded-xl p-4" style={{ border: "1px solid #e5e7eb", backgroundColor: "#fff" }}>
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -223,9 +225,10 @@ function MilestonesTab({ milestones }: { milestones: TeamPageMilestone[] }) {
   return (
     <div className="flex flex-col gap-3">
       {milestones.length === 0 ? (
-        <div className="rounded-xl p-10 text-center text-sm text-neutral-500" style={{ border: "2px dashed #e5e7eb" }}>
-          No milestones yet.
-        </div>
+        <EmptyState
+          title="No milestones yet"
+          description="Milestones will appear here after your proposal is approved."
+        />
       ) : milestones.map((m) => {
         const overdue = m.status === "open" && new Date(m.deadline) < new Date();
         return (
