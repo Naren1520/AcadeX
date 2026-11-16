@@ -29,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="min-h-screen bg-white font-sans text-neutral-900 antialiased">
+      <body className="min-h-screen bg-neutral-50 font-sans text-neutral-900 antialiased">
         <Suspense>
           <NavigationProgress />
         </Suspense>

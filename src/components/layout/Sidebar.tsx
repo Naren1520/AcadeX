@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useState, useEffect, useTransition } from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 export interface NavItem {
   label: string;
@@ -14,7 +13,6 @@ export interface NavItem {
 interface SidebarProps {
   navItems: NavItem[];
   role: "admin" | "faculty" | "student";
-  /** controlled from Header hamburger on mobile */
   mobileOpen?: boolean;
   onMobileClose?: () => void;
 }
@@ -28,6 +26,8 @@ const roleLabel: Record<string, string> = {
 export function Sidebar({ navItems, role, mobileOpen = false, onMobileClose }: SidebarProps) {
   const [desktopCollapsed, setDesktopCollapsed] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   // Close mobile drawer on route change
   useEffect(() => {
@@ -35,9 +35,15 @@ export function Sidebar({ navItems, role, mobileOpen = false, onMobileClose }: S
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
 
+  function handleNavClick(e: React.MouseEvent<HTMLAnchorElement>, href: string) {
+    e.preventDefault();
+    startTransition(() => {
+      router.push(href);
+    });
+  }
+
   return (
     <>
-      {/* ── Mobile backdrop ── */}
       {mobileOpen && (
         <div
           className="fixed inset-0 z-30 md:hidden"
@@ -47,16 +53,12 @@ export function Sidebar({ navItems, role, mobileOpen = false, onMobileClose }: S
         />
       )}
 
-      {/* ── Sidebar ── */}
       <aside
         className={[
           "flex flex-col transition-all duration-200",
-          // Mobile: fixed drawer that slides in/out
           "fixed inset-y-0 left-0 z-40 md:relative md:z-auto md:translate-x-0",
           mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0",
-          // Desktop width
           desktopCollapsed ? "md:w-16" : "md:w-64",
-          // Mobile always full sidebar width when open
           "w-64",
         ].join(" ")}
         style={{ backgroundColor: "#1e3a5f", minHeight: "100dvh", flexShrink: 0 }}
@@ -80,7 +82,6 @@ export function Sidebar({ navItems, role, mobileOpen = false, onMobileClose }: S
               <span className="text-lg font-bold text-white tracking-tight">AcadeX</span>
             )}
           </div>
-          {/* Desktop collapse button */}
           <button
             onClick={() => setDesktopCollapsed((c) => !c)}
             className="hidden cursor-pointer rounded p-1 text-white/70 transition-colors hover:text-white md:block"
@@ -90,7 +91,6 @@ export function Sidebar({ navItems, role, mobileOpen = false, onMobileClose }: S
               <path d="M3 9h12M3 4h12M3 14h12" />
             </svg>
           </button>
-          {/* Mobile close button */}
           <button
             onClick={onMobileClose}
             className="cursor-pointer rounded p-1 text-white/70 transition-colors hover:text-white md:hidden"
@@ -122,14 +122,17 @@ export function Sidebar({ navItems, role, mobileOpen = false, onMobileClose }: S
                 item.href === "/admin" || item.href === "/faculty" || item.href === "/student"
                   ? pathname === item.href
                   : pathname === item.href || pathname.startsWith(`${item.href}/`);
+              const isLoading = isPending && !isActive;
               return (
                 <li key={item.href}>
-                  <Link
+                  <a
                     href={item.href}
-                    className="flex items-center gap-3 rounded px-3 py-2.5 text-sm transition-colors"
+                    onClick={(e) => handleNavClick(e, item.href)}
+                    className="flex cursor-pointer items-center gap-3 rounded px-3 py-2.5 text-sm transition-colors"
                     style={{
                       color: isActive ? "#ffffff" : "rgba(255,255,255,0.7)",
                       backgroundColor: isActive ? "rgba(255,255,255,0.15)" : "transparent",
+                      opacity: isLoading ? 0.6 : 1,
                     }}
                     aria-current={isActive ? "page" : undefined}
                   >
@@ -137,7 +140,7 @@ export function Sidebar({ navItems, role, mobileOpen = false, onMobileClose }: S
                       <span aria-hidden="true" className="flex-shrink-0">{item.icon}</span>
                     )}
                     {!desktopCollapsed && <span>{item.label}</span>}
-                  </Link>
+                  </a>
                 </li>
               );
             })}

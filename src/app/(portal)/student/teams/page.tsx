@@ -1,10 +1,10 @@
-﻿import { notFound, redirect } from "next/navigation";
-import { requirePageRole } from "@/lib/supabase/pageAuth";
+﻿import { requirePageRole } from "@/lib/supabase/pageAuth";
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
 import { Shell } from "@/components/layout/Shell";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { TeamsClient } from "./TeamsClient";
+import { ClientRedirect } from "./ClientRedirect";
 import { studentNav } from "@/config/navigation";
 
 export default async function StudentTeamsPage() {
@@ -22,8 +22,17 @@ export default async function StudentTeamsPage() {
   const sectionId = student?.section_id ?? null;
   const myTeamId  = (membership?.team_id) ?? null;
 
-  // If already in a team, go straight to team dashboard
-  if (myTeamId) redirect(`/student/teams/${myTeamId}`);
+  // Student already has a team — render shell immediately and redirect client-side
+  // (avoids the white flash that server-side redirect() causes before loading.tsx shows)
+  if (myTeamId) {
+    return (
+      <Shell role="student" navItems={studentNav}
+        breadcrumbs={[{ label: "Student", href: "/student" }, { label: "My Team" }]}
+        userFullName={fullName}>
+        <ClientRedirect to={`/student/teams/${myTeamId}`} />
+      </Shell>
+    );
+  }
 
   const [
     { data: sectionTeams },

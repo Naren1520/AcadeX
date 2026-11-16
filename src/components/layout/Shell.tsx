@@ -42,7 +42,7 @@ export function Shell({
           onMenuToggle={() => setMobileMenuOpen((o) => !o)}
         />
         <NetworkStatus />
-        <main className="flex-1 overflow-y-auto">
+        <main className="flex-1 overflow-y-auto" style={{ backgroundColor: "#f9fafb" }}>
           {children}
         </main>
       </div>
