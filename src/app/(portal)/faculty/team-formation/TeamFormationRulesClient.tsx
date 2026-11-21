@@ -22,6 +22,8 @@ export function TeamFormationRulesClient({ initialRules, sections }: Props) {
   const [form, setForm] = useState({ section_id: "", cgpa_lower: "0", cgpa_upper: "10", min_team_size: "2", max_team_size: "4", max_teams: "5" });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   function updateForm(field: string, value: string) {
     setForm((p) => ({ ...p, [field]: value }));
@@ -50,6 +52,7 @@ export function TeamFormationRulesClient({ initialRules, sections }: Props) {
 
   async function handleDelete(id: string) {
     if (!confirm("Delete this rule? Teams already formed will not be affected.")) return;
+    setDeleting(id); setDeleteError(null);
     const res = await fetch(`/api/team-formation/rules/${id}`, { method: "DELETE" });
     if (res.ok) {
       const data = await res.json() as { soft?: boolean };
@@ -58,7 +61,11 @@ export function TeamFormationRulesClient({ initialRules, sections }: Props) {
       } else {
         setRules((p) => p.filter((r) => r.id !== id));
       }
+    } else {
+      const data = await res.json() as { error?: string };
+      setDeleteError(data.error ?? "Failed to delete rule.");
     }
+    setDeleting(null);
   }
 
   const columns = [
@@ -79,7 +86,7 @@ export function TeamFormationRulesClient({ initialRules, sections }: Props) {
     {
       key: "actions", header: "", render: (r: Rule) => (
         r.is_enabled
-          ? <Button variant="ghost" size="sm" onClick={() => handleDelete(r.id)}>Delete</Button>
+          ? <Button variant="ghost" size="sm" isLoading={deleting === r.id} onClick={() => handleDelete(r.id)}>Delete</Button>
           : null
       )
     },
@@ -90,6 +97,11 @@ export function TeamFormationRulesClient({ initialRules, sections }: Props) {
       <div className="mb-4 flex justify-end">
         <Button variant="primary" size="sm" onClick={() => setShowCreate(true)}>Add Rule</Button>
       </div>
+      {deleteError && (
+        <p className="mb-3 rounded-lg px-3 py-2 text-xs" style={{ backgroundColor: "#fef2f2", color: "#dc2626", border: "1px solid #fecaca" }}>
+          {deleteError}
+        </p>
+      )}
       <div className="rounded" style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
         <DataTable columns={columns} data={rules} emptyMessage="No rules configured." caption="Team formation rules" />
       </div>

@@ -60,7 +60,12 @@ export function FacultyAssignmentsClient({ initialAssignments, faculty, sections
   async function handleRemove(id: string, name: string, section: string) {
     if (!confirm(`Remove ${name} from section ${section}?`)) return;
     const res = await fetch(`/api/admin/faculty-assignments/${id}`, { method: "DELETE" });
-    if (res.ok) setAssignments((prev) => prev.filter((a) => a.id !== id));
+    if (res.ok) {
+      setAssignments((prev) => prev.filter((a) => a.id !== id));
+    } else {
+      const data = await res.json() as { error?: string };
+      setError(data.error ?? "Failed to remove assignment.");
+    }
   }
 
   const columns = [
@@ -89,8 +94,8 @@ export function FacultyAssignmentsClient({ initialAssignments, faculty, sections
           Assign Faculty
         </Button>
       </div>
-
-      <div className="rounded" style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
+      <FormError message={error} />
+      <div className="rounded mt-2" style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
         <DataTable
           columns={columns}
           data={assignments}

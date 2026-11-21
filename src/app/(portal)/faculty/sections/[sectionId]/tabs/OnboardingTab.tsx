@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Dialog } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { FormError } from "@/components/forms/FormError";
-import { IconCheck, IconAlertCircle, IconDownload } from "@/components/ui/Icon";
+import { IconCheck, IconAlertCircle } from "@/components/ui/Icon";
 import { EmptyState } from "@/components/feedback/Skeleton";
 
 interface Invitation {
@@ -116,7 +116,12 @@ export function OnboardingTab({
       method: "PATCH", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ is_active: false }),
     });
-    if (res.ok) setInvitations((p) => p.map((i) => i.id === id ? { ...i, is_active: false } : i));
+    if (res.ok) {
+      setInvitations((p) => p.map((i) => i.id === id ? { ...i, is_active: false } : i));
+    } else {
+      const data = await res.json() as { error?: string };
+      alert(data.error ?? "Failed to deactivate invitation.");
+    }
   }
 
   async function handleReview(action: "approve" | "reject") {

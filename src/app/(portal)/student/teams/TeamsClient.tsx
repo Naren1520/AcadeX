@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -62,6 +63,7 @@ interface Props {
 
 // ── Pending invitations inbox 
 function InvitationsInbox({ invitations }: { invitations: Invitation[] }) {
+  const router = useRouter();
   const [list, setList] = useState(invitations);
   const [loading, setLoading] = useState<{ id: string; action: "accept" | "decline" } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -76,7 +78,7 @@ function InvitationsInbox({ invitations }: { invitations: Invitation[] }) {
     });
     const data = await res.json() as { error?: string };
     if (!res.ok) { setError(data.error ?? "Failed."); setLoading(null); return; }
-    if (action === "accept") { window.location.reload(); return; }
+    if (action === "accept") { router.refresh(); return; }
     setList((p) => p.filter((i) => i.id !== inv.id));
     setLoading(null);
   }
@@ -296,6 +298,7 @@ export function TeamsClient({
   pendingInvitations, sectionmates,
   teamMembers, sentInvitations,
 }: Props) {
+  const router = useRouter();
   const [joiningTeam, setJoiningTeam] = useState<string | null>(null);
   const [joinError, setJoinError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
@@ -315,7 +318,7 @@ export function TeamsClient({
     });
     const data = await res.json() as { error?: string };
     if (!res.ok) setJoinError(data.error ?? "Failed to join team.");
-    else window.location.reload();
+    else router.refresh();
     setJoiningTeam(null);
   }
 
@@ -329,7 +332,7 @@ export function TeamsClient({
     });
     const data = await res.json() as { error?: string };
     if (!res.ok) { setFormError(data.error ?? "Failed."); setIsForming(false); return; }
-    window.location.reload();
+    router.refresh();
   }
 
   // ── Already in a team 

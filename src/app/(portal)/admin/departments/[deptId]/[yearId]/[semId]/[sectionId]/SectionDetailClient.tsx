@@ -35,12 +35,15 @@ export function SectionDetailClient({
   const [selectedStudent, setSelectedStudent] = useState("");
   const [studentError, setStudentError] = useState<string | null>(null);
   const [studentLoading, setStudentLoading] = useState(false);
+  const [removeStudentError, setRemoveStudentError] = useState<string | null>(null);
 
   // ── Assign faculty 
   const [showAddFaculty, setShowAddFaculty] = useState(false);
   const [selectedFaculty, setSelectedFaculty] = useState("");
   const [facultyError, setFacultyError] = useState<string | null>(null);
   const [facultyLoading, setFacultyLoading] = useState(false);
+  const [removeFacultyError, setRemoveFacultyError] = useState<string | null>(null);
+  const [toggleError, setToggleError] = useState<string | null>(null);
 
   // Available options (exclude already-added)
   const studentInSet = new Set(students.map((s) => s.id));
@@ -69,12 +72,18 @@ export function SectionDetailClient({
 
   async function handleRemoveStudent(studentId: string, name: string) {
     if (!confirm(`Remove ${name} from this section?`)) return;
+    setRemoveStudentError(null);
     const res = await fetch(`/api/admin/students/${studentId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ section_id: null }),
     });
-    if (res.ok) setStudents((prev) => prev.filter((s) => s.id !== studentId));
+    if (res.ok) {
+      setStudents((prev) => prev.filter((s) => s.id !== studentId));
+    } else {
+      const data = await res.json() as { error?: string };
+      setRemoveStudentError(data.error ?? "Failed to remove student.");
+    }
   }
 
   async function handleAssignFaculty(e: React.FormEvent) {
@@ -97,6 +106,7 @@ export function SectionDetailClient({
 
   // ── Toggle can_manage_students 
   async function handleToggleManage(assignmentId: string, current: boolean) {
+    setToggleError(null);
     const res = await fetch(`/api/admin/faculty-assignments/${assignmentId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -106,13 +116,22 @@ export function SectionDetailClient({
       setFaculty((prev) => prev.map((f) =>
         f.assignment_id === assignmentId ? { ...f, can_manage_students: !current } : f
       ));
+    } else {
+      const data = await res.json() as { error?: string };
+      setToggleError(data.error ?? "Failed to update permission.");
     }
   }
 
   async function handleRemoveFaculty(assignmentId: string, name: string) {
     if (!confirm(`Remove ${name} from this section?`)) return;
+    setRemoveFacultyError(null);
     const res = await fetch(`/api/admin/faculty-assignments/${assignmentId}`, { method: "DELETE" });
-    if (res.ok) setFaculty((prev) => prev.filter((f) => f.assignment_id !== assignmentId));
+    if (res.ok) {
+      setFaculty((prev) => prev.filter((f) => f.assignment_id !== assignmentId));
+    } else {
+      const data = await res.json() as { error?: string };
+      setRemoveFacultyError(data.error ?? "Failed to remove faculty.");
+    }
   }
 
   // ────────
@@ -157,6 +176,12 @@ export function SectionDetailClient({
 
           {/* List */}
           <div className="divide-y divide-neutral-100">
+            {toggleError && (
+              <p className="px-5 py-2 text-xs" style={{ color: "#dc2626", backgroundColor: "#fef2f2" }}>{toggleError}</p>
+            )}
+            {removeFacultyError && (
+              <p className="px-5 py-2 text-xs" style={{ color: "#dc2626", backgroundColor: "#fef2f2" }}>{removeFacultyError}</p>
+            )}
             {faculty.length === 0 ? (
               <div className="px-5 py-2">
                 <EmptyState title="No faculty assigned yet" />
@@ -251,6 +276,9 @@ export function SectionDetailClient({
 
           {/* List */}
           <div className="divide-y divide-neutral-100">
+            {removeStudentError && (
+              <p className="px-5 py-2 text-xs" style={{ color: "#dc2626", backgroundColor: "#fef2f2" }}>{removeStudentError}</p>
+            )}
             {students.length === 0 ? (
               <div className="px-5 py-2">
                 <EmptyState title="No students enrolled yet" />

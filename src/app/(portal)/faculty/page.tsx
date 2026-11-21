@@ -1,27 +1,13 @@
-﻿import { redirect } from "next/navigation";
-import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
+﻿import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
+import { requirePageRole } from "@/lib/supabase/pageAuth";
 import { Shell } from "@/components/layout/Shell";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { facultyNav } from "@/config/navigation";
 import { FacultyDashboardClient } from "./FacultyDashboardClient";
 
 export default async function FacultyDashboard() {
-  const supabase = await getSupabaseServerClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) redirect("/login");
-
-  const userId = session.user.id;
+  const { userId, fullName } = await requirePageRole(["faculty"]);
   const service = getSupabaseServiceRoleClient();
-
-  const { data: profile } = await service
-    .from("profiles").select("role, full_name").eq("id", userId).single() as
-    { data: { role: string; full_name: string } | null };
-
-  if (!profile) redirect("/login");
-  if (profile.role === "admin") redirect("/admin");
-  if (profile.role === "student") redirect("/student");
-  if (profile.role !== "faculty") redirect("/login");
 
   // ── Fetch everything in parallel 
   const [
@@ -156,8 +142,8 @@ export default async function FacultyDashboard() {
   return (
     <Shell role="faculty" navItems={facultyNav}
       breadcrumbs={[{ label: "Faculty" }, { label: "Dashboard" }]}
-      userFullName={profile.full_name}>
-      <PageWrapper title={`Welcome, ${profile.full_name.split(" ")[0]}`}
+      userFullName={fullName}>
+      <PageWrapper title={`Welcome, ${fullName.split(" ")[0]}`}
         description="Your teaching analytics at a glance.">
         <FacultyDashboardClient
           stats={stats}

@@ -118,7 +118,9 @@ export function AuditLogsClient() {
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string | null>(null);
 
   // Filters
   const [email, setEmail] = useState("");
@@ -142,12 +144,14 @@ export function AuditLogsClient() {
   }
 
   const fetchLogs = useCallback(async () => {
-    setIsLoading(true);
+    setIsLoading(true); setFetchError(null);
     const res = await fetch(`/api/admin/audit-logs?${buildParams()}`);
     if (res.ok) {
       const data = await res.json() as { entries: AuditEntry[]; total: number };
       setEntries(data.entries ?? []);
       setTotal(data.total ?? 0);
+    } else {
+      setFetchError("Failed to load audit logs. Please try again.");
     }
     setIsLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -160,7 +164,7 @@ export function AuditLogsClient() {
   }
 
   async function handleDownload() {
-    setDownloading(true);
+    setDownloading(true); setDownloadError(null);
     const params = buildParams();
     params.set("export", "csv");
     const res = await fetch(`/api/admin/audit-logs?${params}`);
@@ -172,6 +176,8 @@ export function AuditLogsClient() {
       a.download = `audit_logs_${new Date().toISOString().slice(0, 10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
+    } else {
+      setDownloadError("Export failed. Please try again.");
     }
     setDownloading(false);
   }
@@ -279,9 +285,19 @@ export function AuditLogsClient() {
       </div>
 
       {/* ── Table ── */}
+      {downloadError && (
+        <p className="rounded-lg px-3 py-2 text-xs" style={{ backgroundColor: "#fef2f2", color: "#dc2626", border: "1px solid #fecaca" }}>
+          {downloadError}
+        </p>
+      )}
       <div className="overflow-hidden rounded-xl" style={{ border: "1px solid #e5e7eb", backgroundColor: "#fff" }}>
         {isLoading ? (
           <SkeletonTable rows={8} cols={6} />
+        ) : fetchError ? (
+          <div className="px-6 py-10 text-center text-sm" style={{ color: "#dc2626" }}>
+            {fetchError}
+            <button type="button" className="ml-2 cursor-pointer underline" onClick={() => fetchLogs()}>Retry</button>
+          </div>
         ) : (
           <>
             <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: "1px solid #f3f4f6", backgroundColor: "#f9fafb" }}>

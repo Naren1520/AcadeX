@@ -22,11 +22,19 @@ export function FacultyProposalsClient({ proposals: initialProposals }: Props) {
   const [notesError, setNotesError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [approveError, setApproveError] = useState<string | null>(null);
+  const [approving, setApproving] = useState<string | null>(null);
 
   async function approve(id: string) {
     if (!confirm("Approve this proposal?")) return;
+    setApproving(id); setApproveError(null);
     const res = await fetch(`/api/proposals/${id}/approve`, { method: "PATCH" });
-    if (res.ok) updateProposalStatus(id, "approved");
+    if (res.ok) { updateProposalStatus(id, "approved"); }
+    else {
+      const data = await res.json() as { error?: string };
+      setApproveError(data.error ?? "Failed to approve. Please try again.");
+    }
+    setApproving(null);
   }
 
   async function handleModalSubmit() {
@@ -112,7 +120,10 @@ export function FacultyProposalsClient({ proposals: initialProposals }: Props) {
 
                 {canAct && (
                   <div className="mt-4 flex flex-wrap gap-2">
-                    <Button variant="primary" size="sm" onClick={() => approve(String(p.id))}>Approve</Button>
+                    {approveError && String(p.id) === approving && (
+                      <p className="w-full text-xs text-red-600">{approveError}</p>
+                    )}
+                    <Button variant="primary" size="sm" isLoading={approving === String(p.id)} onClick={() => approve(String(p.id))}>Approve</Button>
                     <Button variant="secondary" size="sm" onClick={() => { setActionModal({ id: String(p.id), type: "revision" }); setNotes(""); }}>Request Revision</Button>
                     <Button variant="destructive" size="sm" onClick={() => { setActionModal({ id: String(p.id), type: "reject" }); setNotes(""); }}>Reject</Button>
                   </div>

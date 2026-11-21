@@ -51,6 +51,9 @@ export function DepartmentsClient({ initialDepartments }: Props) {
     });
     if (res.ok) {
       setDepartments((prev) => prev.map((d) => d.id === id ? { ...d, is_active: false } : d));
+    } else {
+      const data = await res.json() as { error?: string };
+      setError(data.error ?? "Failed to deactivate department.");
     }
   }
 
@@ -89,8 +92,8 @@ export function DepartmentsClient({ initialDepartments }: Props) {
           Add Department
         </Button>
       </div>
-
-      <div className="rounded" style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
+      <FormError message={error} />
+      <div className="rounded mt-2" style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
         <DataTable columns={columns} data={departments} emptyMessage="No departments found." caption="Departments list" />
       </div>
 

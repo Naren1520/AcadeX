@@ -1,6 +1,7 @@
 "use client";
 
 import { Badge } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/feedback/Skeleton";
 import { formatDate } from "@/lib/dates";
 
 interface Milestone {
@@ -24,6 +25,15 @@ export function MilestoneTimeline({
   milestones: any[];
 }) {
   const now = Date.now();
+
+  if (milestones.length === 0) {
+    return (
+      <EmptyState
+        title="No milestones yet"
+        description="Milestones will appear here once your proposal is approved."
+      />
+    );
+  }
 
   return (
     <ol className="relative flex flex-col gap-0" aria-label="Milestone timeline">

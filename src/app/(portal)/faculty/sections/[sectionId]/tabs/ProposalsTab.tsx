@@ -25,6 +25,8 @@ export function ProposalsTab({ initialProposals }: Props) {
   const [notes, setNotes]         = useState("");
   const [notesError, setNotesError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [approving, setApproving] = useState<string | null>(null);
+  const [approveError, setApproveError] = useState<string | null>(null);
 
   function update(id: string, status: string) {
     setProposals((prev) => prev.map((p) => p.id === id ? { ...p, status: status as Status } : p));
@@ -32,8 +34,14 @@ export function ProposalsTab({ initialProposals }: Props) {
 
   async function approve(id: string) {
     if (!confirm("Approve this proposal?")) return;
+    setApproving(id); setApproveError(null);
     const res = await fetch(`/api/proposals/${id}/approve`, { method: "PATCH" });
-    if (res.ok) update(id, "approved");
+    if (res.ok) { update(id, "approved"); }
+    else {
+      const data = await res.json() as { error?: string };
+      setApproveError(data.error ?? "Failed to approve. Please try again.");
+    }
+    setApproving(null);
   }
 
   async function handleModalSubmit() {
@@ -112,8 +120,11 @@ export function ProposalsTab({ initialProposals }: Props) {
               </div>
 
               {p.status === "pending" && (
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <Button variant="primary" size="sm" onClick={() => approve(p.id)}>Approve</Button>
+                <div className="mt-4 flex flex-wrap items-center gap-2">
+                  {approveError && approving === p.id && (
+                    <p className="w-full text-xs text-red-600">{approveError}</p>
+                  )}
+                  <Button variant="primary" size="sm" isLoading={approving === p.id} onClick={() => approve(p.id)}>Approve</Button>
                   <Button variant="secondary" size="sm"
                     onClick={() => { setModal({ id: p.id, type: "revision" }); setNotes(""); }}>
                     Request Revision

@@ -8,11 +8,12 @@ import { TeamsTab }             from "./tabs/TeamsTab";
 import { ProposalsTab }         from "./tabs/ProposalsTab";
 import { MilestonesTab }        from "./tabs/MilestonesTab";
 import { SubmissionWindowsTab } from "./tabs/SubmissionWindowsTab";
+import { SubmissionsTab }       from "./tabs/SubmissionsTab";
 import { OnboardingTab }        from "./tabs/OnboardingTab";
 import { MentorTab }            from "./tabs/MentorTab";
 import type { Student, Rule, Proposal, Milestone, SubmissionWindow } from "./page";
 
-type Tab = "overview" | "students" | "rules" | "teams" | "proposals" | "milestones" | "windows" | "onboarding" | "mentors";
+type Tab = "overview" | "students" | "rules" | "teams" | "proposals" | "milestones" | "windows" | "submissions" | "onboarding" | "mentors";
 
 interface Props {
   sectionId: string;
@@ -46,6 +47,7 @@ const TABS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   { id: "proposals",  label: "Proposals",          icon: <IconFileText size={14} /> },
   { id: "milestones", label: "Milestones",         icon: <IconFlag size={14} /> },
   { id: "windows",    label: "Submission Windows", icon: <IconUpload size={14} /> },
+  { id: "submissions",label: "Submissions",         icon: <IconUpload size={14} /> },
   { id: "onboarding", label: "Onboarding",         icon: <IconUsers size={14} /> },
   { id: "mentors",    label: "Mentors",            icon: <IconUsers size={14} /> },
 ];
@@ -152,6 +154,9 @@ export function SectionDashboard({
             initialWindows={initialWindows}
             openMilestones={openMilestones}
           />
+        )}
+        {activeTab === "submissions" && (
+          <SubmissionsTab sectionId={sectionId} />
         )}
         {activeTab === "onboarding" && (
           <OnboardingTab

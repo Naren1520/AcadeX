@@ -43,7 +43,12 @@ export function SemestersClient({ initialSemesters, academicYears }: Props) {
   async function handleClose(id: string, lbl: string) {
     if (!confirm(`Close semester "${lbl}"? This cannot be undone.`)) return;
     const res = await fetch(`/api/admin/semesters/${id}/close`, { method: "PATCH" });
-    if (res.ok) setSemesters((prev) => prev.map((s) => s.id === id ? { ...s, is_closed: true } : s));
+    if (res.ok) {
+      setSemesters((prev) => prev.map((s) => s.id === id ? { ...s, is_closed: true } : s));
+    } else {
+      const data = await res.json() as { error?: string };
+      setError(data.error ?? "Failed to close semester.");
+    }
   }
 
   const columns = [
@@ -78,8 +83,8 @@ export function SemestersClient({ initialSemesters, academicYears }: Props) {
           Add Semester
         </Button>
       </div>
-
-      <div className="rounded" style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
+      <FormError message={error} />
+      <div className="rounded mt-2" style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
         <DataTable columns={columns} data={semesters} emptyMessage="No semesters found." caption="Semesters" />
       </div>
 

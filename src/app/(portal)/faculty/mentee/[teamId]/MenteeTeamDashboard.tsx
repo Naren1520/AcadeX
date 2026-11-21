@@ -6,7 +6,7 @@ import {
 } from "recharts";
 import { useState } from "react";
 import { Badge } from "@/components/ui/Badge";
-import { IconUsers, IconFileText, IconFlag, IconUpload, IconCheck, IconChat } from "@/components/ui/Icon";
+import { IconUsers, IconFileText, IconFlag, IconUpload, IconCheck, IconChat, IconGitHub } from "@/components/ui/Icon";
 import { ChatPanel } from "@/app/(portal)/student/teams/[teamId]/chat/ChatPanel";
 
 // ── Types 
@@ -26,6 +26,81 @@ interface Props {
   mentorshipNotes: string | null;
   assignedBy: string;
   currentUserId: string;
+}
+
+function SubmissionsList({ submissions }: { submissions: Record<string, unknown>[] }) {
+  const [loading, setLoading] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  async function viewFile(id: string, label: string) {
+    setLoading(id); setError(null);
+    const res = await fetch(`/api/submissions/${id}/url`);
+    const data = await res.json() as { url?: string; error?: string };
+    if (data.url) { window.open(data.url, "_blank"); }
+    else { setError(data.error ?? `Could not open ${label}.`); }
+    setLoading(null);
+  }
+
+  const typeConfig: Record<string, { label: string; color: string; bg: string; border: string }> = {
+    ppt:         { label: "PPT",    color: "#1e3a5f", bg: "#eff6ff", border: "#bfdbfe" },
+    report:      { label: "Report", color: "#7c3aed", bg: "#f5f3ff", border: "#ddd6fe" },
+    github_link: { label: "GitHub", color: "#374151", bg: "#f9fafb", border: "#e5e7eb" },
+  };
+
+  return (
+    <div className="divide-y divide-neutral-100">
+      {error && (
+        <p className="px-5 py-2 text-xs" style={{ color: "#dc2626", backgroundColor: "#fef2f2" }}>{error}</p>
+      )}
+      {submissions.map((s) => {
+        const type = String(s.artefact_type);
+        const cfg  = typeConfig[type] ?? { label: type, color: "#374151", bg: "#f9fafb", border: "#e5e7eb" };
+        const hasFile = !!s.storage_path;
+        const isGithub = type === "github_link";
+
+        return (
+          <div key={String(s.id)} className="flex items-center gap-4 px-5 py-3">
+            <span className="rounded-md px-2 py-0.5 text-xs font-semibold"
+              style={{ backgroundColor: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}>
+              {cfg.label}
+            </span>
+            <div className="flex-1 min-w-0">
+              {isGithub && s.github_url ? (
+                <a href={String(s.github_url)} target="_blank" rel="noopener noreferrer"
+                  className="text-xs underline truncate block" style={{ color: "#1e3a5f" }}>
+                  {String(s.github_url)}
+                </a>
+              ) : (
+                <span className="text-xs text-neutral-400">
+                  {new Date(String(s.submitted_at)).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                </span>
+              )}
+            </div>
+            <span className="flex items-center gap-1 text-xs font-medium" style={{ color: "#16a34a" }}>
+              <IconCheck size={11} /> Submitted
+            </span>
+            {hasFile && (
+              <button
+                type="button"
+                disabled={loading === String(s.id)}
+                onClick={() => viewFile(String(s.id), cfg.label)}
+                className="cursor-pointer rounded-lg px-3 py-1 text-xs font-medium transition-colors hover:opacity-80 disabled:opacity-50"
+                style={{ backgroundColor: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}>
+                {loading === String(s.id) ? "Loading…" : "View"}
+              </button>
+            )}
+            {isGithub && s.github_url && (
+              <a href={String(s.github_url)} target="_blank" rel="noopener noreferrer"
+                className="rounded-lg px-3 py-1 text-xs font-medium no-underline transition-colors hover:opacity-80"
+                style={{ backgroundColor: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}>
+                Open →
+              </a>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
 }
 
 // ── Tooltip 
@@ -88,8 +163,6 @@ export function MenteeTeamDashboard({
 
   // CGPA bars
   const cgpaData = members.map((m) => ({ name: m.usn || m.full_name, cgpa: m.cgpa }));
-
-  const approvedProposal = proposals.find((p) => p.status === "approved");
 
   return (
     <div className="flex flex-col gap-7">
@@ -364,31 +437,15 @@ export function MenteeTeamDashboard({
             </div>
           )}
 
-          {/* ── Recent submissions ── */}
+          {/* ── Submissions by milestone ── */}
           {submissions.length > 0 && (
             <div className="rounded-2xl overflow-hidden" style={{ border: "1px solid #e5e7eb" }}>
               <div className="px-5 py-4 flex items-center gap-2" style={{ backgroundColor: "#f0f9ff", borderBottom: "1px solid #e5e7eb" }}>
                 <IconUpload size={16} style={{ color: "#0369a1" }} />
-                <p className="font-semibold text-neutral-800">Recent Submissions</p>
+                <p className="font-semibold text-neutral-800">Submissions</p>
+                <span className="ml-auto text-xs text-neutral-400">{submissions.length} artefact{submissions.length !== 1 ? "s" : ""}</span>
               </div>
-              <div className="divide-y divide-neutral-100">
-                {submissions.slice(0, 8).map((s) => {
-                  const st = String(s.status);
-                  return (
-                    <div key={String(s.id)} className="flex items-center justify-between px-5 py-3">
-                      <div>
-                        <p className="text-sm font-medium capitalize text-neutral-800">{String(s.artefact_type).replace("_", " ")}</p>
-                        <p className="text-xs text-neutral-400">
-                          {new Date(String(s.submitted_at)).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
-                        </p>
-                      </div>
-                      <Badge variant={st === "accepted" ? "approved" : st === "missed_deadline" ? "rejected" : "pending"}>
-                        {st.replace("_", " ")}
-                      </Badge>
-                    </div>
-                  );
-                })}
-              </div>
+              <SubmissionsList submissions={submissions} />
             </div>
           )}
         </>

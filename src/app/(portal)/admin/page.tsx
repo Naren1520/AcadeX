@@ -1,27 +1,13 @@
-﻿import { redirect } from "next/navigation";
-import { getSupabaseServerClient } from "@/lib/supabase/server";
-import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
+﻿import { getSupabaseServiceRoleClient } from "@/lib/supabase/serviceRole";
+import { requirePageRole } from "@/lib/supabase/pageAuth";
 import { Shell } from "@/components/layout/Shell";
 import { PageWrapper } from "@/components/layout/PageWrapper";
 import { adminNav } from "@/config/navigation";
 import { AdminDashboardClient } from "./AdminDashboardClient";
 
 export default async function AdminDashboard() {
-  const supabase = await getSupabaseServerClient();
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) redirect("/login");
-
+  const { userId, fullName } = await requirePageRole(["admin"]);
   const service = getSupabaseServiceRoleClient();
-  const { data: profile } = await service
-    .from("profiles")
-    .select("role, full_name")
-    .eq("id", session.user.id)
-    .single() as { data: { role: string; full_name: string } | null };
-
-  if (!profile) redirect("/login");
-  if (profile.role === "faculty") redirect("/faculty");
-  if (profile.role === "student") redirect("/student");
-  if (profile.role !== "admin") redirect("/login");
 
   const [
     { count: deptCount },
@@ -126,7 +112,7 @@ export default async function AdminDashboard() {
       role="admin"
       navItems={adminNav}
       breadcrumbs={[{ label: "Admin" }, { label: "Dashboard" }]}
-      userFullName={profile.full_name}
+      userFullName={fullName}
     >
       <PageWrapper
         title="Admin Dashboard"

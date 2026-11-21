@@ -177,18 +177,27 @@ function TeamCard({ team }: { team: Team }) {
 export function TeamsTab({ sectionId, initialTeams }: Props) {
   const [teams, setTeams] = useState<Team[]>(initialTeams);
   const [loading, setLoading] = useState(initialTeams.length === 0);
+  const [fetchError, setFetchError] = useState<string | null>(null);
 
-  // Lazy-load on first render if not pre-fetched
   useEffect(() => {
     if (initialTeams.length > 0) { setLoading(false); return; }
     fetch(`/api/teams?sectionId=${sectionId}`)
       .then((r) => r.json())
       .then((d: { teams?: Team[] }) => { setTeams(d.teams ?? []); setLoading(false); })
-      .catch(() => setLoading(false));
+      .catch(() => { setFetchError("Failed to load teams. Please refresh the page."); setLoading(false); });
   }, [sectionId, initialTeams.length]);
 
   if (loading) {
     return <div className="py-10 text-center text-sm text-neutral-400">Loading teams…</div>;
+  }
+
+  if (fetchError) {
+    return (
+      <div className="rounded-xl px-4 py-3 text-sm"
+        style={{ backgroundColor: "#fef2f2", border: "1px solid #fecaca", color: "#dc2626" }}>
+        {fetchError}
+      </div>
+    );
   }
 
   return (

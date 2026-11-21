@@ -240,7 +240,12 @@ export function ChatPanel({ teamId, currentUserId }: Props) {
   async function handleDelete(id: string) {
     if (!confirm("Delete this message?")) return;
     const res = await fetch(`/api/teams/${teamId}/messages/${id}`, { method: "DELETE" });
-    if (res.ok) setMessages((prev) => prev.map((m) => m.id === id ? { ...m, is_deleted: true, content: "" } : m));
+    if (res.ok) {
+      setMessages((prev) => prev.map((m) => m.id === id ? { ...m, is_deleted: true, content: "" } : m));
+    } else {
+      const data = await res.json() as { error?: string };
+      setError(data.error ?? "Failed to delete message.");
+    }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {

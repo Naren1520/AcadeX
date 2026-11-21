@@ -41,7 +41,12 @@ export function DeptAcademicYearsClient({ deptId, deptCode, initialYears }: Prop
   async function handleClose(id: string, lbl: string) {
     if (!confirm(`Close academic year "${lbl}"? This cannot be undone.`)) return;
     const res = await fetch(`/api/admin/academic-years/${id}/close`, { method: "PATCH" });
-    if (res.ok) setYears((prev) => prev.map((y) => y.id === id ? { ...y, is_closed: true } : y));
+    if (res.ok) {
+      setYears((prev) => prev.map((y) => y.id === id ? { ...y, is_closed: true } : y));
+    } else {
+      const data = await res.json() as { error?: string };
+      setError(data.error ?? "Failed to close academic year.");
+    }
   }
 
   const columns = [
@@ -86,7 +91,8 @@ export function DeptAcademicYearsClient({ deptId, deptCode, initialYears }: Prop
         </Button>
       </div>
 
-      <div className="rounded" style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
+      <FormError message={error} />
+      <div className="mt-2 rounded" style={{ border: "1px solid #e5e7eb", backgroundColor: "#ffffff" }}>
         <DataTable
           columns={columns}
           data={years}

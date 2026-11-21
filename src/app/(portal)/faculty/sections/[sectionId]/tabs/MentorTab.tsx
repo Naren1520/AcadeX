@@ -33,6 +33,8 @@ export function MentorTab({ sectionId, facultyId, initialTeams, facultyList }: P
   const [notes, setNotes] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [removing, setRemoving] = useState<string | null>(null);
+  const [removeError, setRemoveError] = useState<string | null>(null);
 
   const availableFaculty = facultyList;
 
@@ -59,12 +61,17 @@ export function MentorTab({ sectionId, facultyId, initialTeams, facultyList }: P
 
   async function handleRemove(teamId: string, mentorName: string) {
     if (!confirm(`Remove ${mentorName} as mentor from this team?`)) return;
+    setRemoving(teamId); setRemoveError(null);
     const res = await fetch(`/api/faculty/teams/${teamId}/mentor`, { method: "DELETE" });
     if (res.ok) {
       setTeams((prev) => prev.map((t) =>
         t.team_id === teamId ? { ...t, mentor_id: null, mentor_name: null, mentor_email: null } : t
       ));
+    } else {
+      const data = await res.json() as { error?: string };
+      setRemoveError(data.error ?? "Failed to remove mentor.");
     }
+    setRemoving(null);
   }
 
   return (
@@ -74,6 +81,11 @@ export function MentorTab({ sectionId, facultyId, initialTeams, facultyList }: P
         visibility into the team&apos;s full progress.
       </p>
 
+      {removeError && (
+        <p className="rounded-lg px-3 py-2 text-xs" style={{ backgroundColor: "#fef2f2", color: "#dc2626", border: "1px solid #fecaca" }}>
+          {removeError}
+        </p>
+      )}
       {teams.length === 0 ? (
         <EmptyState
           title="No teams yet"
@@ -98,7 +110,7 @@ export function MentorTab({ sectionId, facultyId, initialTeams, facultyList }: P
                         style={{ backgroundColor: "#f5f3ff", color: "#7c3aed", border: "1px solid #ddd6fe" }}>
                         Mentor: <strong>{t.mentor_name}</strong>
                       </div>
-                      <Button variant="ghost" size="sm" onClick={() => handleRemove(t.team_id, t.mentor_name!)}>
+                      <Button variant="ghost" size="sm" isLoading={removing === t.team_id} onClick={() => handleRemove(t.team_id, t.mentor_name!)}>
                         Remove
                       </Button>
                     </div>

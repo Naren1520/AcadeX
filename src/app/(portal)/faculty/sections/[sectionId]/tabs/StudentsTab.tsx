@@ -182,7 +182,12 @@ export function StudentsTab({
   async function handleRemove(studentId: string, name: string) {
     if (!confirm(`Remove ${name} from this section?`)) return;
     const res = await fetch(`/api/faculty/sections/${sectionId}/students?student_id=${studentId}`, { method: "DELETE" });
-    if (res.ok) setStudents((prev) => prev.filter((s) => s.id !== studentId));
+    if (res.ok) {
+      setStudents((prev) => prev.filter((s) => s.id !== studentId));
+    } else {
+      const data = await res.json() as { error?: string };
+      alert(data.error ?? "Failed to remove student.");
+    }
   }
 
   // Bulk
@@ -208,8 +213,7 @@ export function StudentsTab({
     setBulkResults(data.results ?? []); setBulkSummary({ success: data.successCount ?? 0, error: data.errorCount ?? 0 });
     setBulkStep("results"); setSubmitting(false);
     if ((data.successCount ?? 0) > 0) {
-      // Re-fetch students
-      const fr = await fetch(`/api/admin/students?sectionId=${sectionId}`);
+      const fr = await fetch(`/api/faculty/sections/${sectionId}/students`);
       if (fr.ok) {
         const fd = await fr.json() as { students: Array<{ id: string; usn: string; cgpa: number; section_id: string | null; github_url: string | null; profiles: { full_name: string; email: string } | null }> };
         setStudents((fd.students ?? []).map((s) => ({
@@ -217,6 +221,7 @@ export function StudentsTab({
           full_name: s.profiles?.full_name ?? "", email: s.profiles?.email ?? "",
         })));
       }
+      // If the re-fetch fails the student list just stays as-is — not critical, user can refresh
     }
   }
 

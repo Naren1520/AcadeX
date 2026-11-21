@@ -42,7 +42,12 @@ export function SemestersClient({ deptId, deptCode, yearId, initialSemesters }: 
   async function handleClose(semId: string, lbl: string) {
     if (!confirm(`Close semester "${lbl}"? This cannot be undone.`)) return;
     const res = await fetch(`/api/admin/semesters/${semId}/close`, { method: "PATCH" });
-    if (res.ok) setSemesters((prev) => prev.map((s) => s.id === semId ? { ...s, is_closed: true } : s));
+    if (res.ok) {
+      setSemesters((prev) => prev.map((s) => s.id === semId ? { ...s, is_closed: true } : s));
+    } else {
+      const data = await res.json() as { error?: string };
+      setError(data.error ?? "Failed to close semester.");
+    }
   }
 
   return (
@@ -53,6 +58,7 @@ export function SemestersClient({ deptId, deptCode, yearId, initialSemesters }: 
         </Button>
       </div>
 
+      <FormError message={error} />
       {semesters.length === 0 && (
         <EmptyState
           title="No semesters yet"

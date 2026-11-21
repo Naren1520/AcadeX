@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -28,6 +29,7 @@ const statusVariant: Record<ProposalStatus, "pending" | "approved" | "rejected" 
 };
 
 export function StudentProposalsClient({ teamId, teamStatus, proposals, facultyList }: Props) {
+  const router = useRouter();
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -51,7 +53,8 @@ export function StudentProposalsClient({ teamId, teamStatus, proposals, facultyL
     });
     const data = await res.json() as { error?: string };
     if (!res.ok) { setError(data.error ?? "Failed to submit proposal."); setIsSubmitting(false); return; }
-    window.location.reload();
+    router.refresh();
+    setShowForm(false);
   }
 
   const canSubmit = teamStatus === "confirmed";

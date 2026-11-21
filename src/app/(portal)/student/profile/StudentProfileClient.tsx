@@ -35,7 +35,6 @@ export function StudentProfileClient({
   const [resumeError, setResumeError] = useState<string | null>(null);
   const [uploadingResume, setUploadingResume] = useState(false);
   const [resumeUploaded, setResumeUploaded] = useState(!!resumePath);
-  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
   const [draggingResume, setDraggingResume] = useState(false);
   const resumeInputRef = useRef<HTMLInputElement>(null);
 
@@ -92,9 +91,14 @@ export function StudentProfileClient({
   }
 
   async function viewResume() {
+    setResumeError(null);
     const res = await fetch(`/api/students/${studentId}/resume/url`);
     const data = await res.json() as { url?: string; error?: string };
-    if (data.url) { setResumeUrl(data.url); window.open(data.url, "_blank"); }
+    if (!res.ok || !data.url) {
+      setResumeError(data.error ?? "Could not retrieve resume URL. Please try again.");
+      return;
+    }
+    window.open(data.url, "_blank");
   }
 
   return (

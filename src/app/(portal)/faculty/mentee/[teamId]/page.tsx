@@ -65,7 +65,7 @@ export default async function MenteeTeamPage({
       .order("deadline"),
 
     service.from("submissions")
-      .select("id, artefact_type, status, submitted_at, milestone_id")
+      .select("id, artefact_type, status, submitted_at, milestone_id, storage_path, github_url")
       .eq("team_id", teamId)
       .order("submitted_at", { ascending: false }),
   ]);
