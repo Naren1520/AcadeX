@@ -65,7 +65,7 @@ function SubmissionsList({ submissions }: { submissions: Record<string, unknown>
               {cfg.label}
             </span>
             <div className="flex-1 min-w-0">
-              {isGithub && s.github_url ? (
+              {isGithub && !!s.github_url ? (
                 <a href={String(s.github_url)} target="_blank" rel="noopener noreferrer"
                   className="text-xs underline truncate block" style={{ color: "#1e3a5f" }}>
                   {String(s.github_url)}
@@ -89,7 +89,7 @@ function SubmissionsList({ submissions }: { submissions: Record<string, unknown>
                 {loading === String(s.id) ? "Loading…" : "View"}
               </button>
             )}
-            {isGithub && s.github_url && (
+            {isGithub && !!s.github_url && (
               <a href={String(s.github_url)} target="_blank" rel="noopener noreferrer"
                 className="rounded-lg px-3 py-1 text-xs font-medium no-underline transition-colors hover:opacity-80"
                 style={{ backgroundColor: cfg.bg, color: cfg.color, border: `1px solid ${cfg.border}` }}>
